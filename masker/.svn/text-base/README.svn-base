@@ -1,0 +1,92 @@
+#!/bin/csh
+## MASKER README
+
+ modified: Thu Jun 14 09:26:02 EDT 2007
+ C. Bystroff
+
+ MASKER is a fortan module for calculating solvent accessible surface (SAS)
+ solvent excluded surface (SES) and solvation energy. See this publication for details:
+ Bystroff C. (2002). MASKER: Improved solvent excluded molecular surface area 
+ estimations using Boolean masks. Protein Eng 15, 959
+
+ MASKER is open source. To get the current archived version, go to 
+ http://www.bioinfo.rpi.edu/bystrc/MASKER/downloads/masker.tgz
+
+To install, unpack the package
+
+ tar -zxvf masker.tgz
+
+Change directories
+
+ cd masker
+
+And install the package using the makefile
+
+ make clean
+ make set4096
+ make all
+ make install
+
+NOTE: you can use smaller masks by substitution one of the following for "set4096":
+set128, set256, set512, set1024, or set2048
+Look at this site to see images of a MASKER surface using the different mask sizes:
+http://www.bioinfo.rpi.edu/~bystrc/MASKER/downloads/masker_install.html
+The number is the number of bits in a mask, equal to the number of points on the template 
+spherical mask. Higher resolution is better, but slower. The published results all used
+4096-bit masks.
+
+----------PDBMASK-----------
+You can calculate the surface areas using
+
+  pdbmask file.pdb
+
+where file.pdb are the atoms in PDB format. Only ATOM and HETATM lines are used. All other lines are ignored.
+or, if you want to see the surface as water-dots in a 10x scaled-up coordinate fie in PDB format, use
+
+  pdbmask file.pdb  dots.pdb
+
+Use RasMol to visualize the dots in "dots.pdb". Everything is scaled by 10 to keep RasMol from
+drawing numerous bonds in wireframe mode.
+The following RasMol script will higlight the surface types and re-entrant
+water locations. The contact surface will be red, toroidal surface magenta, reentrant surface green,
+centers of re-entrant surfaces (i.e. re-entrant waters) cyan, and contact edges yellow.
+
+select all
+wireframe off
+spacefill 200
+select :E
+spacefill 400
+color yellow
+select :S
+color magenta
+select :B
+spacefill 300
+color green
+select :W
+spacefill 700
+color cyan
+stereo -7
+
+
+PdbMask also produces a "triangle" file for input to Raster3D prorgams (render) for
+photo-realistic surfaces for publication. The output is unit 14 (usually fort.14).
+This triangle file has no header for the time being. You can paste one in by looking at the 
+Raster3D website. No guarantees on this feature. Let me know if it works for you.
+
+----------CONTACTMASK-----------
+[ documentation to be filled in ater. Use Usage line for now. ]
+----------VOIDMASK-----------
+[ documentation to be filled in ater. Use Usage line for now. ]
+
+Good luck!  
+
+This package is (always) under construction. If you have questions, please contact me.
+
+Please feel free to add to this package. If you make something useful, add it to the
+"package" line in the Makefile, type "make package", then please send it to me!
+
+Chris Bystroff
+Dept of Biology
+Rensselaer Polytechnic Institute, Troy NY
+bystrc@rpi.edu
+Tue Apr 15 19:39:20 EDT 2008

@@ -1,0 +1,23 @@
+NPSI=    20
+PSI=    0.00 NPHI=     1 Mask#=      1
+PSI=    9.00 NPHI=     6 Mask#=      2
+PSI=   18.00 NPHI=    12 Mask#=      8
+PSI=   27.00 NPHI=    18 Mask#=     20
+PSI=   36.00 NPHI=    24 Mask#=     38
+PSI=   45.00 NPHI=    28 Mask#=     62
+PSI=   54.00 NPHI=    32 Mask#=     90
+PSI=   63.00 NPHI=    36 Mask#=    122
+PSI=   72.00 NPHI=    38 Mask#=    158
+PSI=   81.00 NPHI=    40 Mask#=    196
+PSI=   90.00 NPHI=    40 Mask#=    236
+PSI=   99.00 NPHI=    40 Mask#=    276
+PSI=  108.00 NPHI=    38 Mask#=    316
+PSI=  117.00 NPHI=    36 Mask#=    354
+PSI=  126.00 NPHI=    32 Mask#=    390
+PSI=  135.00 NPHI=    28 Mask#=    422
+PSI=  144.00 NPHI=    24 Mask#=    450
+PSI=  153.00 NPHI=    18 Mask#=    474
+PSI=  162.00 NPHI=    12 Mask#=    492
+PSI=  171.00 NPHI=     6 Mask#=    504
+PSI=  180.00 NPHI=     1 Mask#=    510
+NMASK=    510

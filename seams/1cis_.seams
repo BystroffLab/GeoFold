@@ -1,0 +1,7 @@
+ Size of PDB file =           66
+# Format
+# NBARRELS  <Number of Barrels>
+# BARREL :  <id>  <Number of Seams>
+# SEAM :    <id>  <Number of Buttons> <Total Energy> <x1-beta1> <x2-beta1> <x1-beta2> <x2-beta2>
+# BUTTON :  <id>  <Energy-Beta1> <Energy-beta2>
+NBARRELS      0

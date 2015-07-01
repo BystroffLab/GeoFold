@@ -1,0 +1,8 @@
+  call getenv("MASKLIB",aline); write(*,*) "MASKLIB=",trim(aline)
+  call getenv("VMASK",aline); write(*,*) "VMASK=",trim(aline)
+  call getenv("VTRIANGLE",aline); write(*,*) "VTRIANGLE=",trim(aline)
+  call getenv("MASKTEMPLATE",aline); write(*,*) "MASKTEMPLATE=",trim(aline)
+  call getenv("MASKDAT",aline); write(*,*) "MASKDAT=",trim(aline)
+  call getenv("ATOMLIB",aline); write(*,*) "ATOMLIB=",trim(aline)
+  call getenv("COUNTBITS",aline); write(*,*) "COUNTBITS=",trim(aline)
+  call getenv("COLLARS",aline); write(*,*) "COLLARS=",trim(aline)

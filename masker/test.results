@@ -1,0 +1,12 @@
+******** RESULTS FOR test.pdb USING MASKSIZE 512 *******
+V.  Tue Oct  2 09:45:21 EDT 2007
+ Number of atoms: 10
+
+Total contact surface   =    109.51
+Total toroidal surface  =     59.98
+Total reentrant surface =      7.17
+Total SES surface area  =    176.66
+Total contact energy    =      3.35 kJ
+Total toroidal energy   =     13.16 kJ
+Total reentrant energy  =      2.07 kJ
+Total SES energy        =     18.57 kJ

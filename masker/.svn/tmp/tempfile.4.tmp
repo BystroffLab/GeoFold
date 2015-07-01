@@ -1,0 +1,222 @@
+GFORTRAN module version '0' created from masker.f90 on Mon Jun 30 16:52:56 2014
+MD5:6314b6b35d8f9af79d0e1b893fdb0ca5 -- If you edit this, you'll get what you deserve.
+
+(() () () () () () () () () () () ()
+() () () () () () () () () () () () () () ())
+
+()
+
+()
+
+()
+
+()
+
+(2 'atomlib' 'masker' 'atomlib' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+UNKNOWN UNKNOWN ALLOCATABLE DIMENSION) (DERIVED 3 0 0 DERIVED ()) 0 0 ()
+(1 DEFERRED () ()) 0 () () () 0 0)
+4 'atype' 'masker' 'atype' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+UNKNOWN UNKNOWN ALLOCATABLE DIMENSION TARGET) (INTEGER 4 0 0 INTEGER ())
+0 0 () (1 DEFERRED () ()) 0 () () () 0 0)
+5 'dtheta' 'masker' 'dtheta' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+UNKNOWN UNKNOWN) (REAL 4 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
+6 'knd' 'masker' 'knd' 1 ((PARAMETER UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+IMPLICIT-SAVE) (INTEGER 4 0 0 INTEGER ()) 0 0 () (CONSTANT (INTEGER 4 0
+0 INTEGER ()) 0 '2') () 0 () () () 0 0)
+7 'masker_allocatoms' 'masker' 'masker_allocatoms' 1 ((PROCEDURE
+UNKNOWN-INTENT MODULE-PROC DECL UNKNOWN SUBROUTINE) (UNKNOWN 0 0 0
+UNKNOWN ()) 8 0 (9) () 0 () () () 0 0)
+10 'masker_deallo' 'masker' 'masker_deallo' 1 ((PROCEDURE UNKNOWN-INTENT
+MODULE-PROC DECL UNKNOWN SUBROUTINE) (UNKNOWN 0 0 0 UNKNOWN ()) 0 0 () ()
+0 () () () 0 0)
+11 'masker_dpsi' 'masker' 'masker_dpsi' 1 ((PROCEDURE UNKNOWN-INTENT
+MODULE-PROC DECL UNKNOWN FUNCTION) (REAL 4 0 0 REAL ()) 0 0 () () 11 ()
+() () 0 0)
+12 'masker_drawsurface' 'masker' 'masker_drawsurface' 1 ((PROCEDURE
+UNKNOWN-INTENT MODULE-PROC DECL UNKNOWN SUBROUTINE ALWAYS_EXPLICIT) (
+UNKNOWN 0 0 0 UNKNOWN ()) 13 0 (14 15 16 17 18 19 20 21 22) () 0 () () ()
+0 0)
+23 'masker_getatypeptr' 'masker' 'masker_getatypeptr' 1 ((PROCEDURE
+UNKNOWN-INTENT MODULE-PROC DECL UNKNOWN SUBROUTINE ALWAYS_EXPLICIT) (
+UNKNOWN 0 0 0 UNKNOWN ()) 24 0 (25) () 0 () () () 0 0)
+26 'masker_getimask' 'masker' 'masker_getimask' 1 ((PROCEDURE
+UNKNOWN-INTENT MODULE-PROC DECL UNKNOWN FUNCTION) (INTEGER 4 0 0 INTEGER
+()) 27 0 (28) () 26 () () () 0 0)
+29 'masker_getms' 'masker' 'masker_getms' 1 ((PROCEDURE UNKNOWN-INTENT
+MODULE-PROC DECL UNKNOWN SUBROUTINE ALWAYS_EXPLICIT) (UNKNOWN 0 0 0
+UNKNOWN ()) 30 0 (31 32 33 34 35 36 37 38) () 0 () () () 0 0)
+39 'masker_getmxyz' 'masker' 'masker_getmxyz' 1 ((PROCEDURE
+UNKNOWN-INTENT MODULE-PROC DECL UNKNOWN SUBROUTINE ALWAYS_EXPLICIT) (
+UNKNOWN 0 0 0 UNKNOWN ()) 40 0 (41) () 0 () () () 0 0)
+42 'masker_getvmask' 'masker' 'masker_getvmask' 1 ((PROCEDURE
+UNKNOWN-INTENT MODULE-PROC DECL UNKNOWN SUBROUTINE) (UNKNOWN 0 0 0
+UNKNOWN ()) 43 0 (44) () 0 () () () 0 0)
+45 'masker_getwaters' 'masker' 'masker_getwaters' 1 ((PROCEDURE
+UNKNOWN-INTENT MODULE-PROC DECL UNKNOWN SUBROUTINE ALWAYS_EXPLICIT) (
+UNKNOWN 0 0 0 UNKNOWN ()) 46 0 (47 48) () 0 () () () 0 0)
+49 'masker_initcollars' 'masker' 'masker_initcollars' 1 ((PROCEDURE
+UNKNOWN-INTENT MODULE-PROC DECL UNKNOWN SUBROUTINE) (UNKNOWN 0 0 0
+UNKNOWN ()) 0 0 () () 0 () () () 0 0)
+50 'masker_initmasks' 'masker' 'masker_initmasks' 1 ((PROCEDURE
+UNKNOWN-INTENT MODULE-PROC DECL UNKNOWN SUBROUTINE) (UNKNOWN 0 0 0
+UNKNOWN ()) 0 0 () () 0 () () () 0 0)
+51 'masker_maskj' 'masker' 'masker_maskj' 1 ((PROCEDURE UNKNOWN-INTENT
+MODULE-PROC DECL UNKNOWN FUNCTION) (INTEGER 4 0 0 INTEGER ()) 52 0 (53
+54) () 51 () () () 0 0)
+55 'masker_nmask' 'masker' 'masker_nmask' 1 ((PROCEDURE UNKNOWN-INTENT
+MODULE-PROC DECL UNKNOWN FUNCTION) (INTEGER 4 0 0 INTEGER ()) 0 0 () ()
+55 () () () 0 0)
+56 'masker_plot' 'masker' 'masker_plot' 1 ((PROCEDURE UNKNOWN-INTENT
+MODULE-PROC DECL UNKNOWN SUBROUTINE) (UNKNOWN 0 0 0 UNKNOWN ()) 57 0 (
+58) () 0 () () () 0 0)
+59 'masker_plotting' 'masker' 'masker_plotting' 1 ((PROCEDURE
+UNKNOWN-INTENT MODULE-PROC DECL UNKNOWN FUNCTION) (LOGICAL 4 0 0 LOGICAL
+()) 0 0 () () 59 () () () 0 0)
+60 'masker_render' 'masker' 'masker_render' 1 ((PROCEDURE UNKNOWN-INTENT
+MODULE-PROC DECL UNKNOWN SUBROUTINE ALWAYS_EXPLICIT) (UNKNOWN 0 0 0
+UNKNOWN ()) 61 0 (62 63 64 65) () 0 () () () 0 0)
+66 'masker_renderheader' 'masker' 'masker_renderheader' 1 ((PROCEDURE
+UNKNOWN-INTENT MODULE-PROC DECL UNKNOWN SUBROUTINE) (UNKNOWN 0 0 0
+UNKNOWN ()) 67 0 (68 69) () 0 () () () 0 0)
+70 'masker_saying' 'masker' 'masker_saying' 1 ((VARIABLE UNKNOWN-INTENT
+UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE) (LOGICAL 4 0 0 LOGICAL ()) 0 0 () ()
+0 () () () 0 0)
+71 'masker_setcoloring' 'masker' 'masker_setcoloring' 1 ((PROCEDURE
+UNKNOWN-INTENT MODULE-PROC DECL UNKNOWN SUBROUTINE) (UNKNOWN 0 0 0
+UNKNOWN ()) 72 0 (73) () 0 () () () 0 0)
+74 'masker_setlbox' 'masker' 'masker_setlbox' 1 ((PROCEDURE
+UNKNOWN-INTENT MODULE-PROC DECL UNKNOWN SUBROUTINE) (UNKNOWN 0 0 0
+UNKNOWN ()) 75 0 (76) () 0 () () () 0 0)
+77 'masker_usage' 'masker' 'masker_usage' 1 ((PROCEDURE UNKNOWN-INTENT
+MODULE-PROC DECL UNKNOWN SUBROUTINE) (UNKNOWN 0 0 0 UNKNOWN ()) 0 0 () ()
+0 () () () 0 0)
+78 'maxatom' 'masker' 'maxatom' 1 ((PARAMETER UNKNOWN-INTENT
+UNKNOWN-PROC UNKNOWN IMPLICIT-SAVE) (INTEGER 4 0 0 INTEGER ()) 0 0 () (
+CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '512') () 0 () () () 0 0)
+79 'nattype' 'masker' 'nattype' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+UNKNOWN UNKNOWN) (INTEGER 4 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
+80 'nbit' 'masker' 'nbit' 1 ((PARAMETER UNKNOWN-INTENT UNKNOWN-PROC
+UNKNOWN IMPLICIT-SAVE) (INTEGER 4 0 0 INTEGER ()) 0 0 () (CONSTANT (
+INTEGER 4 0 0 INTEGER ()) 0 '16') () 0 () () () 0 0)
+81 'ntheta' 'masker' 'ntheta' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+UNKNOWN UNKNOWN) (INTEGER 4 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
+82 'rw' 'masker' 'rw' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+IMPLICIT-SAVE) (REAL 4 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
+3 'atomtype' 'masker' 'atomtype' 1 ((DERIVED UNKNOWN-INTENT UNKNOWN-PROC
+UNKNOWN UNKNOWN) (UNKNOWN 0 0 0 UNKNOWN ()) 0 0 () () 0 ((83 'r' (REAL 4
+0 0 REAL ()) () (UNKNOWN-FL UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN UNKNOWN)
+UNKNOWN-ACCESS ()) (84 'm' (REAL 4 0 0 REAL ()) () (UNKNOWN-FL
+UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN UNKNOWN) UNKNOWN-ACCESS ()) (85 'w1'
+(REAL 4 0 0 REAL ()) () (UNKNOWN-FL UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+UNKNOWN) UNKNOWN-ACCESS ()) (86 'w2' (REAL 4 0 0 REAL ()) () (
+UNKNOWN-FL UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN UNKNOWN) UNKNOWN-ACCESS ())
+(87 'w3' (REAL 4 0 0 REAL ()) () (UNKNOWN-FL UNKNOWN-INTENT UNKNOWN-PROC
+UNKNOWN UNKNOWN) UNKNOWN-ACCESS ()) (88 'name' (CHARACTER 1 0 0
+CHARACTER ((CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '5'))) () (UNKNOWN-FL
+UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN UNKNOWN) UNKNOWN-ACCESS ())) PUBLIC
+(() ()) () 0 0)
+14 'iunit' '' 'iunit' 13 ((VARIABLE IN UNKNOWN-PROC UNKNOWN UNKNOWN
+DUMMY) (INTEGER 4 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
+31 'xyz' '' 'xyz' 30 ((VARIABLE IN UNKNOWN-PROC UNKNOWN UNKNOWN
+DIMENSION DUMMY) (REAL 4 0 0 REAL ()) 0 0 () (2 EXPLICIT (CONSTANT (
+INTEGER 4 0 0 INTEGER ()) 0 '1') (CONSTANT (INTEGER 4 0 0 INTEGER ()) 0
+'3') (CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '1') (VARIABLE (INTEGER 4 0
+0 INTEGER ()) 0 32 ())) 0 () () () 0 0)
+32 'nat' '' 'nat' 30 ((VARIABLE IN UNKNOWN-PROC UNKNOWN UNKNOWN DUMMY) (
+INTEGER 4 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
+33 'ms' '' 'ms' 30 ((VARIABLE OUT UNKNOWN-PROC UNKNOWN UNKNOWN DUMMY) (
+REAL 4 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
+34 'buried' '' 'buried' 30 ((VARIABLE OUT UNKNOWN-PROC UNKNOWN UNKNOWN
+DIMENSION OPTIONAL DUMMY) (REAL 4 0 0 REAL ()) 0 0 () (1 EXPLICIT (
+CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '1') (VARIABLE (INTEGER 4 0 0
+INTEGER ()) 0 32 ())) 0 () () () 0 0)
+35 'gradient' '' 'gradient' 30 ((VARIABLE INOUT UNKNOWN-PROC UNKNOWN
+UNKNOWN DIMENSION OPTIONAL DUMMY) (REAL 8 0 0 REAL ()) 0 0 () (2
+EXPLICIT (CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '1') (CONSTANT (INTEGER
+4 0 0 INTEGER ()) 0 '3') (CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '1') (
+VARIABLE (INTEGER 4 0 0 INTEGER ()) 0 32 ())) 0 () () () 0 0)
+36 'start' '' 'start' 30 ((VARIABLE IN UNKNOWN-PROC UNKNOWN UNKNOWN
+OPTIONAL DUMMY) (INTEGER 4 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
+37 'sas' '' 'sas' 30 ((VARIABLE IN UNKNOWN-PROC UNKNOWN UNKNOWN OPTIONAL
+DUMMY) (LOGICAL 4 0 0 LOGICAL ()) 0 0 () () 0 () () () 0 0)
+38 'ses' '' 'ses' 30 ((VARIABLE OUT UNKNOWN-PROC UNKNOWN UNKNOWN
+OPTIONAL DUMMY) (REAL 4 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
+73 'str' '' 'str' 72 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+UNKNOWN DUMMY) (CHARACTER 1 0 0 CHARACTER (())) 0 0 () () 0 () () () 0 0)
+69 'scale' '' 'scale' 67 ((VARIABLE IN UNKNOWN-PROC UNKNOWN UNKNOWN
+DUMMY) (REAL 4 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
+9 'nat' '' 'nat' 8 ((VARIABLE IN UNKNOWN-PROC UNKNOWN UNKNOWN DUMMY) (
+INTEGER 4 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
+54 'itheta' '' 'itheta' 52 ((VARIABLE IN UNKNOWN-PROC UNKNOWN UNKNOWN
+DUMMY) (INTEGER 4 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
+18 'amask' '' 'amask' 13 ((VARIABLE IN UNKNOWN-PROC UNKNOWN UNKNOWN
+DIMENSION DUMMY) (INTEGER 2 0 0 INTEGER ()) 0 0 () (1 EXPLICIT (
+CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '1') (CONSTANT (INTEGER 4 0 0
+INTEGER ()) 0 '32')) 0 () () () 0 0)
+19 'bb' '' 'bb' 13 ((VARIABLE IN UNKNOWN-PROC UNKNOWN UNKNOWN DUMMY) (
+REAL 4 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
+28 'uvec' '' 'uvec' 27 ((VARIABLE IN UNKNOWN-PROC UNKNOWN UNKNOWN
+DIMENSION DUMMY) (REAL 4 0 0 REAL ()) 0 0 () (1 EXPLICIT (CONSTANT (
+INTEGER 4 0 0 INTEGER ()) 0 '1') (CONSTANT (INTEGER 4 0 0 INTEGER ()) 0
+'3')) 0 () () () 0 0)
+15 'cen' '' 'cen' 13 ((VARIABLE IN UNKNOWN-PROC UNKNOWN UNKNOWN
+DIMENSION DUMMY) (REAL 4 0 0 REAL ()) 0 0 () (1 EXPLICIT (CONSTANT (
+INTEGER 4 0 0 INTEGER ()) 0 '1') (CONSTANT (INTEGER 4 0 0 INTEGER ()) 0
+'3')) 0 () () () 0 0)
+16 'r' '' 'r' 13 ((VARIABLE IN UNKNOWN-PROC UNKNOWN UNKNOWN DUMMY) (
+REAL 4 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
+17 'iat' '' 'iat' 13 ((VARIABLE IN UNKNOWN-PROC UNKNOWN UNKNOWN DUMMY) (
+INTEGER 4 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
+20 'ch' '' 'ch' 13 ((VARIABLE IN UNKNOWN-PROC UNKNOWN UNKNOWN DUMMY) (
+CHARACTER 1 0 0 CHARACTER ((CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '1')))
+0 0 () () 0 () () () 0 0)
+21 'scale' '' 'scale' 13 ((VARIABLE IN UNKNOWN-PROC UNKNOWN UNKNOWN
+DUMMY) (REAL 4 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
+22 'ires' '' 'ires' 13 ((VARIABLE IN UNKNOWN-PROC UNKNOWN UNKNOWN
+OPTIONAL DUMMY) (INTEGER 4 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
+41 'maskxyz' '' 'maskxyz' 40 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+UNKNOWN UNKNOWN DIMENSION POINTER DUMMY) (REAL 4 0 0 REAL ()) 0 0 () (2
+DEFERRED () () () ()) 0 () () () 0 0)
+68 'cen' '' 'cen' 67 ((VARIABLE IN UNKNOWN-PROC UNKNOWN UNKNOWN
+DIMENSION DUMMY) (REAL 4 0 0 REAL ()) 0 0 () (1 EXPLICIT (CONSTANT (
+INTEGER 4 0 0 INTEGER ()) 0 '1') (CONSTANT (INTEGER 4 0 0 INTEGER ()) 0
+'3')) 0 () () () 0 0)
+47 'watout' '' 'watout' 46 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+UNKNOWN UNKNOWN DIMENSION POINTER DUMMY) (REAL 4 0 0 REAL ()) 0 0 () (2
+DEFERRED () () () ()) 0 () () () 0 0)
+48 'nw' '' 'nw' 46 ((VARIABLE OUT UNKNOWN-PROC UNKNOWN UNKNOWN DUMMY) (
+INTEGER 4 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
+53 'imask' '' 'imask' 52 ((VARIABLE IN UNKNOWN-PROC UNKNOWN UNKNOWN
+DUMMY) (INTEGER 4 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
+44 'amask' '' 'amask' 43 ((VARIABLE OUT UNKNOWN-PROC UNKNOWN UNKNOWN
+DIMENSION DUMMY) (INTEGER 2 0 0 INTEGER ()) 0 0 () (1 EXPLICIT (
+CONSTANT (INTEGER 4 0 0 INTEGER ()) 0 '1') (CONSTANT (INTEGER 4 0 0
+INTEGER ()) 0 '32')) 0 () () () 0 0)
+62 'bool' '' 'bool' 61 ((VARIABLE IN UNKNOWN-PROC UNKNOWN UNKNOWN DUMMY)
+(LOGICAL 4 0 0 LOGICAL ()) 0 0 () () 0 () () () 0 0)
+63 'unit' '' 'unit' 61 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+UNKNOWN OPTIONAL DUMMY) (INTEGER 4 0 0 INTEGER ()) 0 0 () () 0 () () ()
+0 0)
+64 'filename' '' 'filename' 61 ((VARIABLE IN UNKNOWN-PROC UNKNOWN
+UNKNOWN OPTIONAL DUMMY) (CHARACTER 1 0 0 CHARACTER (())) 0 0 () () 0 ()
+() () 0 0)
+65 'smooth' '' 'smooth' 61 ((VARIABLE IN UNKNOWN-PROC UNKNOWN UNKNOWN
+OPTIONAL DUMMY) (LOGICAL 4 0 0 LOGICAL ()) 0 0 () () 0 () () () 0 0)
+58 'bool' '' 'bool' 57 ((VARIABLE IN UNKNOWN-PROC UNKNOWN UNKNOWN DUMMY)
+(LOGICAL 4 0 0 LOGICAL ()) 0 0 () () 0 () () () 0 0)
+25 'atype_ptr' '' 'atype_ptr' 24 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+UNKNOWN UNKNOWN DIMENSION POINTER DUMMY) (INTEGER 4 0 0 INTEGER ()) 0 0
+() (1 DEFERRED () ()) 0 () () () 0 0)
+76 'll' '' 'll' 75 ((VARIABLE IN UNKNOWN-PROC UNKNOWN UNKNOWN DUMMY) (
+REAL 4 0 0 REAL ()) 0 0 () () 0 () () () 0 0)
+)
+
+('atomlib' 0 2 'atype' 0 4 'dtheta' 0 5 'knd' 0 6 'masker_allocatoms' 0
+7 'masker_deallo' 0 10 'masker_dpsi' 0 11 'masker_drawsurface' 0 12
+'masker_getatypeptr' 0 23 'masker_getimask' 0 26 'masker_getms' 0 29
+'masker_getmxyz' 0 39 'masker_getvmask' 0 42 'masker_getwaters' 0 45
+'masker_initcollars' 0 49 'masker_initmasks' 0 50 'masker_maskj' 0 51
+'masker_nmask' 0 55 'masker_plot' 0 56 'masker_plotting' 0 59
+'masker_render' 0 60 'masker_renderheader' 0 66 'masker_saying' 0 70
+'masker_setcoloring' 0 71 'masker_setlbox' 0 74 'masker_usage' 0 77
+'maxatom' 0 78 'nattype' 0 79 'nbit' 0 80 'ntheta' 0 81 'rw' 0 82)

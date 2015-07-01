@@ -1,0 +1,4 @@
+#!/bin/csh
+setenv MSET `which masker_setup.csh`
+source $MSET
+$MASKERDIR/xcontactmask $1 $2 $3 

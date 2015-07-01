@@ -1,0 +1,7 @@
+import commands
+pdbs = ['1e65','1aps','1avz','1ayi','1fkf','1imq','1jo8','1jyg','1k0s','1l8w','1lmb','1m9s','1n88','1nti','1o6x','1rfa','1ris','1rlq','1shg','1spr','1ubq','1urn','2ci2','2ptl','3gb1']
+for pdb in pdbs:
+  cmd = "python rungeofold.py spsa/%sp.par walcob & python rungeofold.py spsa/%sm.par walcob" %(pdb,pdb)
+  status,output = commands.getstatusoutput(cmd)
+  print("%s: %s"%(status,output))
+

@@ -1,0 +1,5 @@
+attempt to fix permission errors
+--This line, and those below, will be ignored--
+
+M    seams_pdbtools.f90
+M    seams_utils.f90
