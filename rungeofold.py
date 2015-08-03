@@ -787,6 +787,8 @@ else:
   cgi = open("%s/httpd.conf"%(htmlDir),'w+')
   cgi.write("AddHandler cgi-script .cgi\nAddHandler cgi-script .py\n")
   cgi.close()
+  cp = "cp -p %s/isegment.cgi %s/isegment.cgi"%(gDir,htmlDir)
+  commands.getstatusoutput(cp)
 
 
   #### FILES ####
