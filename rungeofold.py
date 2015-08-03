@@ -65,7 +65,10 @@ def createForm(out):
 
 #new energy profile function
 def writeEnergyProfile(tmpDir,htmlDir,LName,nn):
-  gnuplot = "/bach1/home/walcob/usr/bin/gnuplot"
+  return (0,'')
+  """
+  #gnuplot = "/bach1/home/walcob/usr/bin/gnuplot"
+  gnuplot = "gnuplot"
   #list of colors to use
   colors = ['black','red','orange','yellow','green','blue','violet','cyan','magenta','pink','gold']
   plot = [[]]
@@ -173,6 +176,7 @@ def writeEnergyProfile(tmpDir,htmlDir,LName,nn):
     gnuOut.close()
     status,output = commands.getstatusoutput("%s < %s/%s_%s.nrg2.gnu"%(gnuplot,tmpDir,LName,nn))
     return [status,output]
+    """
 
 #generate the molscript movie
 def makeMolScript(mol, toDir = ' '):
@@ -767,7 +771,10 @@ else:
   if status != 0:
     barrels = True
 
-
+  tmpDir = "%s/%s"%(tmpDir,LName)
+  htmlDir = "%s/%s"%(htmlDir,LName)
+  os.makedirs(tmpDir,0755)
+  os.makedirs(htmlDir,0755)
 
 
 
@@ -846,11 +853,11 @@ else:
     maxSplit = 4
   status, doIt = findParam (paramFile, "RUNGEOFOLD")
   if status != 0:
-    doIt = True
-  doIt = bool(int(doIt))
+    doIt = 1
+  doIt = int(doIt)
   print("doIt: %s"%(doIt))
   os.environ['LNAME'] = LName
-  if doIt :
+  if doIt == 1 :
     print "Running  GEOFOLD"
   else:
     print "Skipping GEOFOLD"
@@ -875,7 +882,7 @@ else:
       sys.exit()
     cp = "cp %s/%s.dag %s/%s.dag" %(tmpDir,OName,tmpDir,LName)
     commands.getstatusoutput(cp)
-  if doIt :
+  if doIt == 1 :
     print("============= PARAMETERS =============")
     tmpWrite.write("============= PARAMETERS =============<br>")
     writeOut("============= PARAMETERS =============\n")
@@ -1148,59 +1155,62 @@ else:
   outWrite.close()
   ##SKIPGEOFOLD
   LNamePDB = "%s/%s.pdb" %(tmpDir,LName)
-  print("============= UNFOLDSIM =============")
-  tmpWrite.write("Unfolding %s%s<br>" %(pdbCode,chain))
-  tmpWrite.write("============= UNFOLDSIM =============<br>")
-  writeOut("============= UNFOLDSIM =============\n")
-  nn = 0
-  for value in omegaRange:
-    nn += 1
-    cp = "cp %s/%s.dag %s/%s_%s.dag" %(tmpDir,LName,tmpDir,LName,nn)
-    commands.getstatusoutput(cp)
-    if not thermal:
-      sed = "sed -e \"s/^OMEGA .*/OMEGA %s/\" %s > %s.1" %(value,paramFilename,paramFilename)
-    else:
-      sed = "sed -e \"s/^TEMPERATURE .*/TEMPERATURE %s/\" %s > %s.1"%(value, paramFilename,paramFilename)
-    status,output=commands.getstatusoutput(sed)
-    logFile = "%s/%s_%s.log" %(tmpDir,LName,nn)
-    if not thermal:
-      print("============= run %s omega = %s =============" %(nn,value))
-      tmpWrite.write("============= run %s omega = %s =============<br>" %(nn,value))
-      writeOut("============= run %s omega = %s =============\n" %(nn,value))
-    else:
-      print("============= run %s temp = %s K =============" %(nn,value))
-      tmpWrite.write("============= run %s temp = %s K =============<br>" %(nn,value))
-      writeOut("============= run %s temp = %s K =============\n" %(nn,value))
-    writeTime = "Time before running UNFOLDSIM "+time.strftime("%c") +'<br>'
-    tmpWrite.write(writeTime)
-    writeOut(writeTime)
-    unfoldsim = "%s/xunfoldsim %s/%s_%s.dag %s.1 > %s" %(gDir,tmpDir,LName,nn,paramFilename,logFile)
-    tmpWrite.write(unfoldsim+'<br>')
-    runProgram(unfoldsim)
-    writeTime = "Time after running UNFOLDSIM "+time.strftime("%c")+'<br>'
-    tmpWrite.write(writeTime)
-    writeOut(writeTime)
-    tmpWrite.write("<p><pre><br>")
-    # grep = "grep ^\"TIMECOURSE\" %s | tail -1 >> %s" %(logFile,htmlTmp)
-    log = open(logFile,'r')
-    lines = []
-    for line in log:
-      linesplit = line.split()
-      if len(linesplit) != 0 and linesplit[0]=='TIMECOURSE':
-        lines.append(line)
-    if len(lines)==0:
-      sys.stderr.write("No timecourse data\n")
-      tmpWrite.write("No timecourse data\n")
-      runProgram("error")
-    tmpWrite.write(lines[len(lines)-1])
-    log.close()
-    if debug:
-      tmpWrite.close()
-      makeCopy(htmlTmp,htmlOut)
-      tmpWrite = open(htmlTmp,'a')
-      outWrite = open(htmlOut,'a')
-      outWrite.write('</pre></body></html>\n')
-      outWrite.close()
+  if doIt != 3:
+      print(doIt == 3)
+      print(doIt)
+      print("============= UNFOLDSIM =============")
+      tmpWrite.write("Unfolding %s%s<br>" %(pdbCode,chain))
+      tmpWrite.write("============= UNFOLDSIM =============<br>")
+      writeOut("============= UNFOLDSIM =============\n")
+      nn = 0
+      for value in omegaRange:
+        nn += 1
+        cp = "cp %s/%s.dag %s/%s_%s.dag" %(tmpDir,LName,tmpDir,LName,nn)
+        commands.getstatusoutput(cp)
+        if not thermal:
+          sed = "sed -e \"s/^OMEGA .*/OMEGA %s/\" %s > %s.1" %(value,paramFilename,paramFilename)
+        else:
+          sed = "sed -e \"s/^TEMPERATURE .*/TEMPERATURE %s/\" %s > %s.1"%(value, paramFilename,paramFilename)
+        status,output=commands.getstatusoutput(sed)
+        logFile = "%s/%s_%s.log" %(tmpDir,LName,nn)
+        if not thermal:
+          print("============= run %s omega = %s =============" %(nn,value))
+          tmpWrite.write("============= run %s omega = %s =============<br>" %(nn,value))
+          writeOut("============= run %s omega = %s =============\n" %(nn,value))
+        else:
+          print("============= run %s temp = %s K =============" %(nn,value))
+          tmpWrite.write("============= run %s temp = %s K =============<br>" %(nn,value))
+          writeOut("============= run %s temp = %s K =============\n" %(nn,value))
+        writeTime = "Time before running UNFOLDSIM "+time.strftime("%c") +'<br>'
+        tmpWrite.write(writeTime)
+        writeOut(writeTime)
+        unfoldsim = "%s/xunfoldsim %s/%s_%s.dag %s.1 > %s" %(gDir,tmpDir,LName,nn,paramFilename,logFile)
+        tmpWrite.write(unfoldsim+'<br>')
+        runProgram(unfoldsim)
+        writeTime = "Time after running UNFOLDSIM "+time.strftime("%c")+'<br>'
+        tmpWrite.write(writeTime)
+        writeOut(writeTime)
+        tmpWrite.write("<p><pre><br>")
+        # grep = "grep ^\"TIMECOURSE\" %s | tail -1 >> %s" %(logFile,htmlTmp)
+        log = open(logFile,'r')
+        lines = []
+        for line in log:
+          linesplit = line.split()
+          if len(linesplit) != 0 and linesplit[0]=='TIMECOURSE':
+            lines.append(line)
+        if len(lines)==0:
+          sys.stderr.write("No timecourse data\n")
+          tmpWrite.write("No timecourse data\n")
+          runProgram("error")
+        tmpWrite.write(lines[len(lines)-1])
+        log.close()
+        if debug:
+          tmpWrite.close()
+          makeCopy(htmlTmp,htmlOut)
+          tmpWrite = open(htmlTmp,'a')
+          outWrite = open(htmlOut,'a')
+          outWrite.write('</pre></body></html>\n')
+          outWrite.close()
   print("============= PATHWAY2PS =============")
   tmpWrite.write("============= PATHWAY2PS =============<br>")
   writeOut("============= PATHWAY2PS =============\n")
@@ -1410,7 +1420,7 @@ else:
       fit("%s/%s.plot"%(tmpDir,LName),"%s/%s_fit.plot"%(tmpDir,LName))
     else:
       commands.getstatusoutput("cp %s/%s.plot %s/%s_fit.plot"%(tmpDir,LName,tmpDir,LName))
-  except ValueError:
+  except Exception:
     commands.getstatusoutput("cp %s/%s.plot %s/%s_fit.plot"%(tmpDir,LName,tmpDir,LName))
   fit_poly = "%s/xfit_poly %s/%s_fit.plot 1 %s/%s.fit >> %s" %(gDir,tmpDir,LName,tmpDir,LName,htmlTmp)
   runProgram(fit_poly)
@@ -1460,18 +1470,18 @@ else:
   for value in omegaRange:
     nn+=1
     plotTimeCourse("%s/%s"%(tmpDir,LName),nn)
-    runConvert = '%s -trim -geometry 100 %s/%s_%s.tc.ps %s/%s_%s.tc_thumb.png'%(convert,tmpDir,LName,nn,htmlDir,LName,nn)
-    runProgram(runConvert)
-    runConvert = '%s -trim %s/%s_%s.tc.ps %s/%s_%s.tc.png'%(convert,tmpDir,LName,nn,htmlDir,LName,nn)
-    runProgram(runConvert)
+    #runConvert = '%s -trim -geometry 100 %s/%s_%s.tc.ps %s/%s_%s.tc_thumb.png'%(convert,tmpDir,LName,nn,htmlDir,LName,nn)
+    #runProgram(runConvert)
+    #runConvert = '%s -trim %s/%s_%s.tc.ps %s/%s_%s.tc.png'%(convert,tmpDir,LName,nn,htmlDir,LName,nn)
+    #runProgram(runConvert)
     status,output = writeEnergyProfile(tmpDir,htmlDir,LName, nn)
     if status != 0:
       sys.exit(output)
     picLink(htmlDir,LName,nn)
-    runConvert = '%s -trim -geometry 100 %s/%s_%s.nrg.ps %s/%s_%s.nrg_thumb.png'%(convert,tmpDir,LName,nn,htmlDir,LName,nn)
-    runProgram(runConvert)
-    runConvert = '%s -trim %s/%s_%s.nrg.ps %s/%s_%s.nrg.png'%(convert,tmpDir,LName,nn,htmlDir,LName,nn)
-    runProgram(runConvert)
+    #runConvert = '%s -trim -geometry 100 %s/%s_%s.nrg.ps %s/%s_%s.nrg_thumb.png'%(convert,tmpDir,LName,nn,htmlDir,LName,nn)
+    #runProgram(runConvert)
+    #runConvert = '%s -trim %s/%s_%s.nrg.ps %s/%s_%s.nrg.png'%(convert,tmpDir,LName,nn,htmlDir,LName,nn)
+    #runProgram(runConvert)
   status,output = energyProfileAll("%s/%s"%(tmpDir,LName),omegaRange)
   if status != 0:
     print(status)
