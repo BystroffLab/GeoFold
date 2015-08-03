@@ -771,11 +771,22 @@ else:
   if status != 0:
     barrels = True
 
+  #job directory setup
   tmpDir = "%s/%s"%(tmpDir,LName)
   htmlDir = "%s/%s"%(htmlDir,LName)
-  os.makedirs(tmpDir,0755)
-  os.makedirs(htmlDir,0755)
-
+  try:
+    os.makedirs(tmpDir,0755)
+    os.makedirs(htmlDir,0755)
+  except OSError as e:
+    pass
+  #dagDir setup
+  #htmlDirs = htmlDir.split('/')
+  #gDirs = gDir.split('/')
+  #dagDir = '/'.join(htmlDirs[len(gDirs)+1:len(htmlDirs)])
+  os.environ["dagDir"] = htmlDir
+  cgi = open("%s/httpd.conf"%(htmlDir),'w+')
+  cgi.write("AddHandler cgi-script .cgi\nAddHandler cgi-script .py\n")
+  cgi.close()
 
 
   #### FILES ####
@@ -1528,7 +1539,7 @@ else:
   for value in omegaRange:
     nn+=1
     commands.getstatusoutput("cp %s/%s_%s.dag.out %s/%s_%s.dag.out"%(tmpDir,LName,nn,htmlDir,LName,nn))
-    commands.getstatusoutput("cp %s/%s_%s.dag.out %s/../%s_%s.dag.out"%(tmpDir,LName,nn,htmlDir,LName,nn))
+    #commands.getstatusoutput("cp %s/%s_%s.dag.out %s/../%s_%s.dag.out"%(tmpDir,LName,nn,htmlDir,LName,nn))
     commands.getstatusoutput("cp %s/%s_%s.dag.out %s/%s_%s.dag.out"%(tmpDir,LName,nn,baseDir,LName,nn))
     commands.getstatusoutput("cp %s/%s_%s.log %s/%s_%s.log" %(tmpDir,LName,nn,htmlDir,LName,nn))
 
