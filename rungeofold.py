@@ -65,10 +65,8 @@ def createForm(out):
 
 #new energy profile function
 def writeEnergyProfile(tmpDir,htmlDir,LName,nn):
-  return (0,'')
-  """
-  #gnuplot = "/bach1/home/walcob/usr/bin/gnuplot"
-  gnuplot = "gnuplot"
+  gnuplot = "/bach1/home/walcob/usr/bin/gnuplot"
+  #gnuplot = "gnuplot"
   #list of colors to use
   colors = ['black','red','orange','yellow','green','blue','violet','cyan','magenta','pink','gold']
   plot = [[]]
@@ -176,7 +174,6 @@ def writeEnergyProfile(tmpDir,htmlDir,LName,nn):
     gnuOut.close()
     status,output = commands.getstatusoutput("%s < %s/%s_%s.nrg2.gnu"%(gnuplot,tmpDir,LName,nn))
     return [status,output]
-    """
 
 #generate the molscript movie
 def makeMolScript(mol, toDir = ' '):
