@@ -47,18 +47,21 @@ def writeOut(x):
   wout.write(x)
   wout.close()
 
-def createForm(out):
+def createForm(out,parfile):
   """write the output for the final form for do-over submission"""
   global parameters
   print parameters
-  out.write('<FORM METHOD="POST" ACTION="http://www.bioinfo.rpi.edu/geofold/geofold1cgi.py" >\n')
+  out.write('<FORM METHOD="POST" ACTION="http://www.bioinfo.rpi.edu/geofold/geocgi.cgi" >\n')
+  out.write('<input type="hidden" name="script" value=3>\n')
   ##New name for job
   out.write('<br><input type="text" name="keyword" value="" placeholder="Enter a new unique id for this job (avoid the words \'error\' and \'bug\')" size=80>\n')
   ##hidden parameters
   #Keep same pdb file
-  out.write('<input type="hidden" name="pdbcode" value="%s">\n'%(parameters["PDBCODE"]))
+  #link to old parameters file to parsed by script
+  out.write('<input type="hidden" name="oldParameters" value="%s">\n'%(parfile))
+  #out.write('<input type="hidden" name="pdbcode" value="%s">\n'%(parameters["PDBCODE"]))
   #Keep same email
-  out.write('<input type="hidden" name="email_address" value="%s">\n'%(parameters["EMAIL"]))
+  #out.write('<input type="hidden" name="email_address" value="%s">\n'%(parameters["EMAIL"]))
   #submit button
   out.write('<br><input type="submit" name = "submit" value="submit"></form>')
 
@@ -1480,18 +1483,18 @@ else:
   for value in omegaRange:
     nn+=1
     plotTimeCourse("%s/%s"%(tmpDir,LName),nn)
-    #runConvert = '%s -trim -geometry 100 %s/%s_%s.tc.ps %s/%s_%s.tc_thumb.png'%(convert,tmpDir,LName,nn,htmlDir,LName,nn)
-    #runProgram(runConvert)
-    #runConvert = '%s -trim %s/%s_%s.tc.ps %s/%s_%s.tc.png'%(convert,tmpDir,LName,nn,htmlDir,LName,nn)
-    #runProgram(runConvert)
+    runConvert = '%s -trim -geometry 100 %s/%s_%s.tc.ps %s/%s_%s.tc_thumb.png'%(convert,tmpDir,LName,nn,htmlDir,LName,nn)
+    runProgram(runConvert)
+    runConvert = '%s -trim %s/%s_%s.tc.ps %s/%s_%s.tc.png'%(convert,tmpDir,LName,nn,htmlDir,LName,nn)
+    runProgram(runConvert)
     status,output = writeEnergyProfile(tmpDir,htmlDir,LName, nn)
     if status != 0:
       sys.exit(output)
     picLink(htmlDir,LName,nn)
-    #runConvert = '%s -trim -geometry 100 %s/%s_%s.nrg.ps %s/%s_%s.nrg_thumb.png'%(convert,tmpDir,LName,nn,htmlDir,LName,nn)
-    #runProgram(runConvert)
-    #runConvert = '%s -trim %s/%s_%s.nrg.ps %s/%s_%s.nrg.png'%(convert,tmpDir,LName,nn,htmlDir,LName,nn)
-    #runProgram(runConvert)
+    runConvert = '%s -trim -geometry 100 %s/%s_%s.nrg.ps %s/%s_%s.nrg_thumb.png'%(convert,tmpDir,LName,nn,htmlDir,LName,nn)
+    runProgram(runConvert)
+    runConvert = '%s -trim %s/%s_%s.nrg.ps %s/%s_%s.nrg.png'%(convert,tmpDir,LName,nn,htmlDir,LName,nn)
+    runProgram(runConvert)
   status,output = energyProfileAll("%s/%s"%(tmpDir,LName),omegaRange)
   if status != 0:
     print(status)
@@ -1516,7 +1519,7 @@ else:
     runConvert = "%s %s/%s.gp_thumb.png %s/%s.gp_thumb.png" %(convert,tmpDir,LName,htmlDir,LName)
     runProgram(runConvert)
   ######Create "do over" button
-  createForm(permWrite)
+  createForm(permWrite,paramFilename)
   #####BACK button
   permWrite.write('<h3><a href="../geofold.php">Back to GeoFold server</a></h3><br>\n')
   permWrite.write('</body></html>\n')
@@ -1538,8 +1541,6 @@ else:
   for value in omegaRange:
     nn+=1
     commands.getstatusoutput("cp %s/%s_%s.dag.out %s/%s_%s.dag.out"%(tmpDir,LName,nn,htmlDir,LName,nn))
-    #commands.getstatusoutput("cp %s/%s_%s.dag.out %s/../%s_%s.dag.out"%(tmpDir,LName,nn,htmlDir,LName,nn))
-    commands.getstatusoutput("cp %s/%s_%s.dag.out %s/%s_%s.dag.out"%(tmpDir,LName,nn,baseDir,LName,nn))
     commands.getstatusoutput("cp %s/%s_%s.log %s/%s_%s.log" %(tmpDir,LName,nn,htmlDir,LName,nn))
 
 
