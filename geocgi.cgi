@@ -328,6 +328,115 @@ def secondScript(form):
     commands.getstatusoutput('chmod 0777 %s/%s.par'%(tmpdir,form["lname"].value))
     
 def redo(form):
+    #based on firstScript    
+    checked = ['',' checked']
+    #set directories
+    basedir = "/bach1/home/flex"
+    urldir = "/bach1/home/flex/public_html/geofold"
+    tmpdir = "%s/server/geofold/tmp"%(basedir)
+    dbgfile = "%s/output/debug.out"%(urldir)
+    #default parameters file
+    paramfile = "%s/server/geofold/bin/parameters"%(basedir)
+    #pdb repository
+    pdbdir = "%s/server/data/pdb"%(basedir)
+    pdbunit = "%s/server/data/pdb1"%(basedir)
+    settings= "settings.html"
+    pid = os.getpid()
+    outdir = "output/"
+    jobdir = "jobs/"
+    #read info from oldparfile
+    oldParameterFile = form['oldParameters'].value
+    readOldParameters = open(oldParameterFile,'r')
+    oldParameters = {}
+    for line in readOldParameters:
+      line = line.split()
+      oldParameters[line[0]]=' '.join(line[1:])
+    readOldParameters.close()
+    #keyword is changed
+    keyword = form["keyword"].value
+    keyword = keyword.split()
+    keyword = "_".join(keyword)
+    #remove the words bug and error from keyword
+    keyword = keyword.lower().split("bug")
+    keyword = "bg".join(keyword)
+    keyword = keyword.lower().split("error")
+    keyword = "err".join(keyword)
+    keyword = keyword.strip("/*{}[]!@#$%^&();:<>,?\\~\"\'")
+    lname="%s.%s"%(keyword,pid)
+    #Note to users about redo script
+    print('<title>GeoFOLD: %s rerun</title><h3>GeoFOLD: %s</h3></head>\n'%(lname,lname))
+    print('<body><br><p>Please configure your rerun of GeoFOLD.  Below are the options selected from the previous run.  Please adjust them accordingly.')    
+    print("<br>Select chains for <strong>%s</strong>"%(lname))
+    #recreate form from firstScript using default info from oldparfile as needed
+    print('<form method="post" action="geocgi.cgi">')
+    #hidden input script = 4
+    print('<input type="hidden" name="script" value=4>')
+    #chains
+    chains = getchains("%s/%s.pdb"%(pdbdir,oldParameters['PDB'])
+    if len(chains)==0:
+      print("Error, no chains found.")
+      raise IOError 
+    for chain in chains:
+      if chain in oldParameters['CHAIN']:
+        print('<br><input type="checkbox" name="chain_%s" value="%s" checked>%s'%(chain,chain,chain))
+      else:
+        print('<br><input type="checkbox" name="chain_%s" value="%s">%s'%(chain,chain,chain))
+    #hidden inputs
+    print('<input type="hidden" name="lname" value="%s">'%(lname))
+    print('<input type="hidden" name="email" value="%s">'%(oldParameters['EMAIL']))
+    print('<input type="hidden" name="pdbcode" value="%s">'%(oldParameters['PDB']))
+    print('<input type="hidden" name="omega" value="1.">')
+    print('<input type="hidden" name="intermediate" value="0">')
+    print('<input type="hidden" name="barrelmoves" value="1">')
+    print('<input type="hidden" name="oldParameters" value="%s">'%(oldParameterFile))
+    print('<br>mouseover for more info')
+    #ORANGE
+    print('<br><span title="Enter a range of solvation weights (space-separated with decimal points ie. 5. 10. 20.)">&omega; range</span><input type="text" name="orange" value="%s" size=40>'%(oldParameters['ORANGE']))
+    #Folding
+    print('<br><input type="checkbox" name="fing" value="1"%s>Folding simulation'%(checked[oldParameters['FING']]))
+    #Half-life
+    print('<br><input type="checkbox" name="hlfe" value="1"%s>Run until half folded/unfolded'%(checked[oldParameters['HLFE']]))
+    #reducing
+    print('<br><input type="checkbox" name="reducing" value="1"%s>Reduce cysteine disulfides'%(checked[oldParameters['REDUCING']]))
+    #molscript
+    print('<br><input type="checkbox" name="molscript" value="1"%s>Create gif of protein'%(checked[oldParameters['MOLSCRIPT']]))
+    #debug
+    print('<br><input type="checkbox" name="debug" value="1"%s>Show detailed output while running'%(checked[oldParameters["DEBUG"]]))
+    #Advanced options
+    print('<br><strong>Advanced Options</strong>')
+    collapseHead()
+    print('<table><tr><td>')
+    #breakcut
+    print('<br><span title="cut-off percentage (expressed as decimal) for break move">Break cut</span>:<br><input type="text" name="breakcut" alue="%s" size=15>'%(oldParameters['BREAKCUT']))
+    #pivotcut
+    print('<br><span title="Cut-off percentage (expressed as decimal) for pivot move">Pivot cut</span>:\n<input type="text" name="pivotcut"
+    #hingecut
+    #seamcut
+    #breakpointentropy
+    #hingepointentropy
+    #temperature
+    #concentration
+    #voidentropy
+    #solidity
+    #hbondenergy
+    #hammond
+    #sidechainentropy
+    #hingebarrier
+    #pivotbarrier
+    #water
+    #maxsplit
+    #maxtime
+    #minseg
+    #end table
+    print('</td></tr></table>')
+    #FLORY
+    #submit
+    print('</div></div>\n<br><input type="submit" name="submit" value="submit"></form>\n</body></html>')
+    
+    #script 4 will determine which parts of geofold will need to be rerun if any and direct things accordingly
+
+def fourthScript(form):
+    """This script determines what parts of GeoFold need to be rerun and will send the results to secondScript"""
     None
 
 #HTML header
@@ -343,8 +452,10 @@ if query == 1:
     firstScript(form)
 elif query == 2:
     secondScript(form)
-#else:
-#    redo(form)
+elif query == 3:
+    redo(form)
+elif query == 4:
+    fourthScript(form)
 else:
      print("</head><body>Invalid query: %s"%(query))
      for entry in form:
