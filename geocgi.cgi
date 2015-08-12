@@ -341,8 +341,8 @@ form = cgi.FieldStorage()
 query = int(form['script'].value)
 if query == 1:
     firstScript(form)
-#elif query == 2:
-#    secondScript(form)
+elif query == 2:
+    secondScript(form)
 #else:
 #    redo(form)
 else:
