@@ -88,8 +88,6 @@ def firstScript(form):
     pid = os.getpid()
     outdir = "output/"
     jobdir = "jobs/"
-    #read form data
-    form = cgi.FieldStorage()
     #set variables from form data
     email = form["email_address"].value
     try:
@@ -150,7 +148,8 @@ def firstScript(form):
       print("Error, no chains found.")
       raise IOError
     print("<br>Select chains for <strong>%s</strong>"%(lname))
-    print('<form method="post" action="geocgi.cgi?2">')
+    print('<form method="post" action="geocgi.cgi">')
+    print('<input type="hidden" name="script" value=2>')
     for chain in chains:
       print('<br><input type="checkbox" name="chain_%s" value="%s">%s'%(chain,chain,chain))
     #hidden inputs
@@ -261,8 +260,6 @@ def secondScript(form):
     pid = os.getpid()
     outdir = "output/"
     jobdir = "%s/jobs"%(gdir)
-    #read form data
-    form = cgi.FieldStorage()
     #set url name
     try:
       lname = form["lname"].value
@@ -273,7 +270,7 @@ def secondScript(form):
     urlwrite = "http://www.bioinfo.rpi.edu/geofold/%s%s.html"%(outdir,form["lname"].value)
     
     #write HTML output
-    print('<html><head>')
+    #print('<html><head>')
     print('<meta http-equiv="refresh" content="2;url=%s">'%(urlwrite))
     print('</head><body><h4>Creating GeoFOLD job. Please wait...</h4><br>')
     print('</body></html>')
@@ -334,19 +331,25 @@ def redo(form):
     None
 
 #HTML header
-print "Content-Type: text/html;charset=utf-8"
-print
+print "Content-Type: text/html;charset=utf-8\n\n"
 #Test statement
 print("<html><head>")
 printStyle()
-try:
-    query = int(os.environ['QUERY_STRING'])
-except Exception as e:
-    query = 1
+
+#print("</head><body>")
 form = cgi.FieldStorage()
+query = int(form['script'].value)
 if query == 1:
     firstScript(form)
-elif query == 2:
-    secondScript(form)
+#elif query == 2:
+#    secondScript(form)
+#else:
+#    redo(form)
 else:
-    redo(form)
+     print("</head><body>Invalid query: %s"%(query))
+     for entry in form:
+       print entry
+       print form[entry].value
+       print
+     print "</body></html>"
+       

@@ -4,7 +4,7 @@
 <link rev=made href="mailto:bystrc@rpi.edu">
 </head>
 <BODY background="geofold_backdrop.jpg">
-<form method="post" action="./geocgi.cgi?1" enctype="multipart/form-data">
+<form method="post" action="./geocgi.cgi" enctype="multipart/form-data">
 <center>
 <table width=100%>
   <tr>
@@ -28,6 +28,7 @@ Tue Jun 17 14:49:59 EDT 2014
   </tr>
 </table>
 </center>
+<input type="hidden" name="script" value=1>
 <p> Email address:
 <input type="text" name="email_address" value="" size=40>
 <p>Key word(s):
