@@ -8,7 +8,7 @@ echo "Running on `hostname` `date` in `pwd`" > Running
 ############ change SHOME to the directory geofold is installed in ##########
 setenv SHOME /bach1/home/walcob
 setenv LHOME /home/walcob
-setenv GDIR $SHOME/geofold
+setenv GDIR $SHOME/GeoFold
 setenv BDIR $GDIR
 setenv PYTHON /usr/bin/python
 echo "Jobs currently running on `hostname` 0" > Load
