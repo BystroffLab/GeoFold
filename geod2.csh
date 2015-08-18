@@ -6,19 +6,19 @@ echo "Running on `hostname` `date` in `pwd`" > Running
 ## /home/bystrc/server/geofold
 ## NOTE: server/geofold is located on brahms
 ############ change SHOME to the directory geofold is installed in ##########
-setenv SHOME /bach1/home/bystrc/server
-setenv LHOME /home/bystrc/server
+setenv SHOME /bach1/home/walcob
+setenv LHOME /home/walcob
 setenv GDIR $SHOME/geofold
-setenv BDIR $GDIR/bin
-setenv PYTHON /bach1/usr/local/bin/python
+setenv BDIR $GDIR
+setenv PYTHON /usr/bin/python
 echo "Jobs currently running on `hostname` 0" > Load
 echo "Running in $GDIR" >> Running
-setenv PDBDIR $SHOME/data/pdb
-if !(-e $PDBDIR ) setenv PDBDIR $LHOME/data/pdb
+setenv PDBDIR $GDIR/pdbs
+if !(-e $PDBDIR ) setenv PDBDIR $LHOME/GeoFold/pdbs
 setenv LOGDIR $GDIR/log
-setenv BIOLUNIT $SHOME/data/pdb1
-if !(-e $BIOLUNIT ) setenv BIOLUNIT $LHOME/data/pdb1
-setenv GETCHAIN $GDIR/src/geofold/xgetchain
+setenv BIOLUNIT $PDBDIR
+if !(-e $BIOLUNIT ) setenv BIOLUNIT $PDBDIR
+setenv GETCHAIN $GDIR/xgetchain
 setenv STMP $GDIR/tmp
 setenv SJOB $GDIR/jobs
 setenv WGETPDB 'ssh bach1 cd server/geofold; /bach1/home/bystrc/bin/wgetpdb'
@@ -51,7 +51,7 @@ while ( 1 )
     echo "geod.csh queue unpaused `date`"
   end
   ## COUNT GEOFOLD PROCESSES CURRENTLY RUNNING
-  set N = `ps ax -o user -o pid -o command | awk -v w=bystrc '$1 == w' | grep "${STMP}/.*csh" | grep -v "grep" | wc -l | awk '{print $1}'`
+  set N = `ps ax -o user -o pid -o command | awk -v w=walcob '$1 == w' | grep "${STMP}/.*csh" | grep -v "grep" | wc -l | awk '{print $1}'`
   if ( $N < $ALLOWABLE ) then
     ## if we can start another job, then do the following:
     ##  1. submit a geofold job using the basename of the file as the basename of the output,
@@ -108,7 +108,7 @@ while ( 1 )
           mv -fv $CFILE ${CFILE}.x
           # if ($CHAIN == "" ) setenv CHAIN  _
           ## mv ${GDIR}/${SJOB}/${LNAME}.par $STMP/
-          $PYTHON $GDIR/bin/rungeofold.py ${STMP}/$PARFILE > $GDIR/tmp/${LNAME}.log
+          $PYTHON $GDIR/rungeofold.py ${STMP}/$PARFILE > $LOGDIR/${LNAME}.log
           # chmod +x $GDIR/tmp/${LNAME}.csh
           ############ NEXT LINE SHOULD BE A JOB SUBMISSION -- MACHINE DEPENDENT
           ## qsub -b n -j y -cwd -o $LOGDIR/${LNAME}.log tmp/${LNAME}.csh $PDBCODE $CHAIN ${LNAME}  ${ONAME}
