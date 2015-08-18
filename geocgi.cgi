@@ -76,7 +76,7 @@ def makeParameters(form,out):
 def firstScript(form):
     #set directories
     basedir = "/bach1/home/walcob"
-    urldir = "/bach1/home/flex/public_html/GeoFold"
+    urldir = "/bach1/home/walcob/public_html/GeoFold"
     tmpdir = "%s/GeoFold/tmp"%(basedir)
     dbgfile = "%s/output/debug.out"%(urldir)
     #default parameters file
