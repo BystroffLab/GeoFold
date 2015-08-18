@@ -75,15 +75,15 @@ def makeParameters(form,out):
   
 def firstScript(form):
     #set directories
-    basedir = "/bach1/home/flex"
-    urldir = "/bach1/home/flex/public_html/geofold"
-    tmpdir = "%s/server/geofold/tmp"%(basedir)
+    basedir = "/bach1/home/walcob"
+    urldir = "/bach1/home/flex/public_html/GeoFold"
+    tmpdir = "%s/GeoFold/tmp"%(basedir)
     dbgfile = "%s/output/debug.out"%(urldir)
     #default parameters file
-    paramfile = "%s/server/geofold/bin/parameters"%(basedir)
+    paramfile = "%s/GeoFold/parameters"%(basedir)
     #pdb repository
-    pdbdir = "%s/server/data/pdb"%(basedir)
-    pdbunit = "%s/server/data/pdb1"%(basedir)
+    pdbdir = "%s/GeoFold/pdbs"%(basedir)
+    pdbunit = pdbdir
     settings= "settings.html"
     pid = os.getpid()
     outdir = "output/"
@@ -247,15 +247,15 @@ def secondScript(form):
     #directories and basic settings
     waitimage = "http://www.bioinfo.rpi.edu/bystrc/pub/mpeg/peptide.gif"
     #set directories
-    basedir = "/bach1/home/flex"
-    gdir = "%s/server/geofold"%(basedir)
-    urldir = "/bach1/home/flex/public_html/geofold"
+    basedir = "/bach1/home/walcob"
+    gdir = "%s/GeoFold"%(basedir)
+    urldir = "/bach1/home/walcob/public_html/GeoFold"
     tmpdir = "%s/tmp"%(gdir)
     #default parameters file
-    paramfile = "%s/server/geofold/bin/parameters"%(basedir)
+    paramfile = "%s/GeoFold/parameters"%(basedir)
     #pdb repository
-    pdbdir = "%s/server/data/pdb/"%(basedir)
-    pdbunit = "%s/server/data/pdb1/"%(basedir)
+    pdbdir = "%s/GeoFold/pdbs/"%(basedir)
+    pdbunit = pdbdir
     settings= "settings.html"
     pid = os.getpid()
     outdir = "output/"
@@ -265,9 +265,10 @@ def secondScript(form):
       lname = form["lname"].value
     except KeyError:
       lname = "%s.%s"%(form["keyword"].value,form["pdbcode"].value)
-    url = "%s/%s%s.html"%(urldir,outdir,lname)
+    url = "%s/%s%s/%s.html"%(urldir,outdir,lname,lname)
     
-    urlwrite = "http://www.bioinfo.rpi.edu/geofold/%s%s.html"%(outdir,form["lname"].value)
+    #urlwrite = "http://www.bioinfo.rpi.edu/geofold/%s%s.html"%(outdir,form["lname"].value)
+    urlwrite = "http://bach1.bio.rpi.edu/walcob/GeoFold/%s%s/%s.html"%(outdir,lname,lname)
     
     #write HTML output
     #print('<html><head>')
@@ -331,15 +332,15 @@ def redo(form):
     #based on firstScript    
     checked = ['',' checked']
     #set directories
-    basedir = "/bach1/home/flex"
-    urldir = "/bach1/home/flex/public_html/geofold"
-    tmpdir = "%s/server/geofold/tmp"%(basedir)
+    basedir = '/bach1/home/walcob' #"/bach1/home/flex"
+    urldir = '/bach1/home/walcob/public_html/GeoFold' #"/bach1/home/flex/public_html/geofold"
+    tmpdir = '%s/GeoFold/tmp'%(basedir) #"%s/server/geofold/tmp"%(basedir)
     dbgfile = "%s/output/debug.out"%(urldir)
     #default parameters file
-    paramfile = "%s/server/geofold/bin/parameters"%(basedir)
+    paramfile = '%s/GeoFold/parameters'%(basedir) #"%s/server/geofold/bin/parameters"%(basedir)
     #pdb repository
-    pdbdir = "%s/server/data/pdb"%(basedir)
-    pdbunit = "%s/server/data/pdb1"%(basedir)
+    pdbdir = '%s/GeoFold/pdbs'%(basedir) #"%s/server/data/pdb"%(basedir)
+    pdbunit = pdbdir #"%s/server/data/pdb1"%(basedir)
     settings= "settings.html"
     pid = os.getpid()
     outdir = "output/"
@@ -492,15 +493,15 @@ def fourthScript(form):
     #directories and basic settings
     waitimage = "http://www.bioinfo.rpi.edu/bystrc/pub/mpeg/peptide.gif"
     #set directories
-    basedir = "/bach1/home/flex"
-    gdir = "%s/server/geofold"%(basedir)
-    urldir = "/bach1/home/flex/public_html/geofold"
+    basedir = '/bach1/home/walcob' #"/bach1/home/flex"
+    gdir = '%s/GeoFold'%(basedir) #"%s/server/geofold"%(basedir)
+    urldir = '/bach1/home/walcob/public_html/GeoFold' #"/bach1/home/flex/public_html/geofold"
     tmpdir = "%s/tmp"%(gdir)
     #default parameters file
-    paramfile = "%s/server/geofold/bin/parameters"%(basedir)
+    paramfile = '%s/parameters'%(gdir) #"%s/server/geofold/bin/parameters"%(basedir)
     #pdb repository
-    pdbdir = "%s/server/data/pdb/"%(basedir)
-    pdbunit = "%s/server/data/pdb1/"%(basedir)
+    pdbdir = '%s/pdbs'%(gdir) #"%s/server/data/pdb/"%(basedir)
+    pdbunit = pdbdir #"%s/server/data/pdb1/"%(basedir)
     settings= "settings.html"
     pid = os.getpid()
     outdir = "output/"
@@ -510,9 +511,10 @@ def fourthScript(form):
       lname = form["lname"].value
     except KeyError:
       lname = "%s.%s"%(form["keyword"].value,form["pdbcode"].value)
-    url = "%s/%s%s.html"%(urldir,outdir,lname)
+    url = "%s/%s%s/%s.html"%(urldir,outdir,lname,lname)
     
-    urlwrite = "http://www.bioinfo.rpi.edu/geofold/%s%s.html"%(outdir,form["lname"].value)
+    #urlwrite = "http://www.bioinfo.rpi.edu/geofold/%s%s/%s.html"%(outdir,lname,lname)
+    urlwrite = 'http://bach1.bio.rpi.edu/walcob/GeoFold/%s%s/%s.html'%(outdir,lname,lname)
     
     #write HTML output
     #print('<html><head>')
@@ -523,9 +525,9 @@ def fourthScript(form):
     #new URL settings
     out = open(url,'w+')
     #reset url name
-    url = "%s.html"%(form["lname"].value)
+    url = "%s/%s.html"%(lname,lname)
     #write-out parameters file
-    file = open("%s/%s.par"%(tmpdir,form["lname"].value),'w+')
+    file = open("%s/%s.par"%(tmpdir,lname),'w+')
     makeParameters(form,file)
     #get chain info for html results
     chains = ''
@@ -559,8 +561,8 @@ def fourthScript(form):
     out.write('</body></html>')
     out.close()
     #write job file
-    job = open("%s/%s.job"%(jobdir,form["lname"].value),'w+')
-    job.write('%s %s %s'%(form["pdbcode"].value,chains,form["lname"].value))
+    job = open("%s/%s.job"%(jobdir,lname),'w+')
+    job.write('%s %s %s'%(form["pdbcode"].value,chains,lname))
     try:
       oname = form["oname"].value
     except KeyError:
@@ -569,8 +571,8 @@ def fourthScript(form):
     job.close()
     #deprotect files
     commands.getstatusoutput('chmod 0777 %s/%s'%(outdir,url))
-    commands.getstatusoutput('chmod 0777 %s/%s.job'%(jobdir,form["lname"].value))
-    commands.getstatusoutput('chmod 0777 %s/%s.par'%(tmpdir,form["lname"].value))
+    commands.getstatusoutput('chmod 0777 %s/%s.job'%(jobdir,lname))
+    commands.getstatusoutput('chmod 0777 %s/%s.par'%(tmpdir,lname))
     
 
 #HTML header
