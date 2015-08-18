@@ -468,7 +468,110 @@ def redo(form):
 
 def fourthScript(form):
     """This script determines what parts of GeoFold need to be rerun and will send the results to secondScript"""
-    None
+    oldParameters = {}
+    changeParameters = ['REDUCING','BREAKCUT','PIVOTCUT','HINGECUT','SEAMCUT','BREAKPOINTENTROPY','HINGEPOINTENTROPY','TEMPERATURE','VOIDENTROPY','SOLIDITY','HBONDENERGY','HAMMOND','SIDECHAINENTROPY','HINGEBARRIER','PIVOTBARRIER','WATER','MAXSPLIT','MINSEG','CAVITATION','FLORY','FLORYW']
+    Parameters = {}
+    runGeoFold = False
+    #Read in old parameters
+    oldParFile = open(form['oldParameters'].value,'r')
+    for line in oldParFile:
+        line = line.split()
+        oldParameters[line[0]] = " ".join(line[1:])
+    oldParFile.close()
+    #Check if any parameters have changed
+    for parameter in changeParameters:
+        if oldParameters[parameter] != form[parameter.lower()].value:
+            runGeoFold = True
+            exit
+    if runGeoFold:
+        form.add_field('rungeofold', '1')
+    else:
+        form.add_field('rungeofold','0')
+    #Everything else is the same as secondScript, so copypasta
+    
+    #directories and basic settings
+    waitimage = "http://www.bioinfo.rpi.edu/bystrc/pub/mpeg/peptide.gif"
+    #set directories
+    basedir = "/bach1/home/flex"
+    gdir = "%s/server/geofold"%(basedir)
+    urldir = "/bach1/home/flex/public_html/geofold"
+    tmpdir = "%s/tmp"%(gdir)
+    #default parameters file
+    paramfile = "%s/server/geofold/bin/parameters"%(basedir)
+    #pdb repository
+    pdbdir = "%s/server/data/pdb/"%(basedir)
+    pdbunit = "%s/server/data/pdb1/"%(basedir)
+    settings= "settings.html"
+    pid = os.getpid()
+    outdir = "output/"
+    jobdir = "%s/jobs"%(gdir)
+    #set url name
+    try:
+      lname = form["lname"].value
+    except KeyError:
+      lname = "%s.%s"%(form["keyword"].value,form["pdbcode"].value)
+    url = "%s/%s%s.html"%(urldir,outdir,lname)
+    
+    urlwrite = "http://www.bioinfo.rpi.edu/geofold/%s%s.html"%(outdir,form["lname"].value)
+    
+    #write HTML output
+    #print('<html><head>')
+    print('<meta http-equiv="refresh" content="2;url=%s">'%(urlwrite))
+    print('</head><body><h4>Creating GeoFOLD job. Please wait...</h4><br>')
+    print('</body></html>')
+    
+    #new URL settings
+    out = open(url,'w+')
+    #reset url name
+    url = "%s.html"%(form["lname"].value)
+    #write-out parameters file
+    file = open("%s/%s.par"%(tmpdir,form["lname"].value),'w+')
+    makeParameters(form,file)
+    #get chain info for html results
+    chains = ''
+    for value in form:
+      if "chain_" in value:
+        chains+=form[value].value
+      else:
+        chains = '.'
+    #Write out initial HTML results page
+    out.write('<html><head><title>%s</title>\n'%(url))
+    out.write('<meta http-equiv="refresh" content="4;url=%s">\n'%(url))
+    out.write('</head><body>\n')
+    out.write('<h4>Your GeoFold job is in the queue but has not yet started.</h4>\n')
+    out.write('<p>Your input coordinates were uploaded as filename %s chains %s\n'%(form["pdbcode"].value,chains))
+    out.write('<p>Notifications will be sent to %s\n'%(form["email"].value))
+    out.write('<p><a href="%s">BOOKMARK THIS PAGE</a>:\n'%(url))
+    out.write('<p>Stay on this page, or return to this page to see your results,')
+    out.write('which will include the following:<br><ul>\n')
+    out.write('<li>The timecourse of unfolding as concentrations of Folded, Unfolded, and Intermediate states.</li>\n')
+    out.write('<li>An unfolding pathway in the form of a clickable pathway tree.</li>\n')
+    out.write('<li>An Age Plot expressing the order of contact loss during unfolding.</li>\n')
+    out.write('<li>Unfolding/folding kinetics simulations and associated plots.</li>\n')
+    out.write('</ul>')
+    out.write('<p>You will see results for multiple values of &omega; (virtual denaturant).\n')
+    out.write('<p>You will have the option to Do Over, changing the &omega; values or any other parameters.\n')
+    out.write('<p><a href="http://www.bioinfo.rpi.edu/bystrc/geofold/settings.html">Click on this page')
+    out.write('to see a brief explanation of the parameters.</a>\n')
+    out.write('<p><a href="http://www.bioinfo.rpi.edu/bystrc/geofold/howtoreadit.htm">Click on this page')
+    out.write('to see a guide to GeoFold output.</a>\n')
+    out.write('<p><img src="%s"><br>\n'%(waitimage))
+    out.write('</body></html>')
+    out.close()
+    #write job file
+    job = open("%s/%s.job"%(jobdir,form["lname"].value),'w+')
+    job.write('%s %s %s'%(form["pdbcode"].value,chains,form["lname"].value))
+    try:
+      oname = form["oname"].value
+    except KeyError:
+      oname = ''
+    job.write(' %s'%(oname))
+    job.close()
+    #deprotect files
+    commands.getstatusoutput('chmod 0777 %s/%s'%(outdir,url))
+    commands.getstatusoutput('chmod 0777 %s/%s.job'%(jobdir,form["lname"].value))
+    commands.getstatusoutput('chmod 0777 %s/%s.par'%(tmpdir,form["lname"].value))
+    
 
 #HTML header
 print "Content-Type: text/html;charset=utf-8\n\n"
