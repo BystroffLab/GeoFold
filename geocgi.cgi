@@ -23,9 +23,9 @@ def getchains(pdbfile):
     for line in read:
       line = line.split()
       if line[0]=='ATOM':
-        if line[4] not in result and line[4].isalpha():
+        if line[4] not in result and line[4].isalnum():
           result.append(line[4])
-        elif "_" not in result and not line[4].isalpha():
+        elif "_" not in result and not line[4].isalnum():
           result.append("_")
     read.close()
     return result
@@ -88,6 +88,23 @@ def firstScript(form):
     pid = os.getpid()
     outdir = "output/"
     jobdir = "jobs/"
+    """#Flex settings    
+    #set directories
+    basedir = "/bach1/home/flex"
+    urldir = "/bach1/home/flex/public_html/geofold"
+    tmpdir = "%s/server/geofold/tmp"%(basedir)
+    dbgfile = "%s/output/debug.out"%(urldir)
+    #default parameters file
+    paramfile = "%s/server/geofold/bin/parameters"%(basedir)
+    #pdb repository
+    pdbdir = "%s/server/data/pdb"%(basedir)
+    pdbunit = "%s/server/data/pdb1"%(basedir)
+    settings= "settings.html"
+    pid = os.getpid()
+    outdir = "output/"
+    jobdir = "jobs/"
+    """
+    
     #set variables from form data
     email = form["email_address"].value
     try:
@@ -220,7 +237,7 @@ def firstScript(form):
     print('<br><span title="Optional additional barrier for pivot moves.">Pivot barrier</span>:<br><input type="text" name="pivotbarrier" value="0." size=15>')
     print('</td><td>')
     #WATER# 30.
-    print('<br><span title="Virtual denaturant level equivalent to water.  kJ/mol/&Aring;&sup2;">Water &omega;</span>:<br><input type="text" name="water" value="30." size=15>')
+    print('<br><span title="Virtual denaturant level equivalent to water.  kJ/mol/&Aring;&sup2;">Water &omega;</span>:<br><input type="text" name="water" value="1." size=15>')
     #MAXSPLIT# 4
     print('<br><span title="Maximum number of elemental unfolding steps applied to one intermediate. Optional values are 2,4,8,16, and 32. Speed is effected by higher settings.">Max split</span>:<br><input type="text" name="maxsplit" value="4" size=15>')
     #MAXTIME# 10.
@@ -266,20 +283,36 @@ def secondScript(form):
     except KeyError:
       lname = "%s.%s"%(form["keyword"].value,form["pdbcode"].value)
     url = "%s/%s%s/%s.html"%(urldir,outdir,lname,lname)
-    
-    #urlwrite = "http://www.bioinfo.rpi.edu/geofold/%s%s.html"%(outdir,form["lname"].value)
+    """
+    try:
+      os.mkdir("%s/%s%s"%(gdir,outdir,lname))
+    except OSError:
+      print "<pre>Failed to make dir %s/%s%s</pre>"%(gdir,outdir,lname)
+    try:    
+      os.chown("%s/%s%s"%(gdir,outdir,lname),1083,100)
+    except OSError:
+      print "<b><i>ARRRRRRRRGH!</i></b>"
+      statusoutput = commands.getstatusoutput('chown -Rv walcob %s/%s%s'%(gdir,outdir,lname))
+      print('%s: %s'%statusoutput)
+      """
+    urlwrite = "http://www.bioinfo.rpi.edu/geofold/%s%s.html"%(outdir,form["lname"].value)
     urlwrite = "http://bach1.bio.rpi.edu/walcob/GeoFold/%s%s/%s.html"%(outdir,lname,lname)
     
     #write HTML output
-    #print('<html><head>')
-    print('<meta http-equiv="refresh" content="2;url=%s">'%(urlwrite))
+    print('<html><head>')
+    print('<meta http-equiv="refresh" content="30;url=%s">'%(urlwrite))
     print('</head><body><h4>Creating GeoFOLD job. Please wait...</h4><br>')
-    print('</body></html>')
-    
+    #print('</body></html>')
     #new URL settings
-    out = open(url,'w+')
+    """
+    try:
+      out = open(url,'w+')
+    except IOError:
+      print 'IOERROR'
+      """
     #reset url name
     url = "%s.html"%(form["lname"].value)
+    print url
     #write-out parameters file
     file = open("%s/%s.par"%(tmpdir,form["lname"].value),'w+')
     makeParameters(form,file)
@@ -290,30 +323,34 @@ def secondScript(form):
         chains+=form[value].value
       else:
         chains = '.'
+    """
     #Write out initial HTML results page
-    out.write('<html><head><title>%s</title>\n'%(url))
-    out.write('<meta http-equiv="refresh" content="4;url=%s">\n'%(url))
-    out.write('</head><body>\n')
-    out.write('<h4>Your GeoFold job is in the queue but has not yet started.</h4>\n')
-    out.write('<p>Your input coordinates were uploaded as filename %s chains %s\n'%(form["pdbcode"].value,chains))
-    out.write('<p>Notifications will be sent to %s\n'%(form["email"].value))
-    out.write('<p><a href="%s">BOOKMARK THIS PAGE</a>:\n'%(url))
-    out.write('<p>Stay on this page, or return to this page to see your results,')
-    out.write('which will include the following:<br><ul>\n')
-    out.write('<li>The timecourse of unfolding as concentrations of Folded, Unfolded, and Intermediate states.</li>\n')
-    out.write('<li>An unfolding pathway in the form of a clickable pathway tree.</li>\n')
-    out.write('<li>An Age Plot expressing the order of contact loss during unfolding.</li>\n')
-    out.write('<li>Unfolding/folding kinetics simulations and associated plots.</li>\n')
-    out.write('</ul>')
-    out.write('<p>You will see results for multiple values of &omega; (virtual denaturant).\n')
-    out.write('<p>You will have the option to Do Over, changing the &omega; values or any other parameters.\n')
-    out.write('<p><a href="http://www.bioinfo.rpi.edu/bystrc/geofold/settings.html">Click on this page')
-    out.write('to see a brief explanation of the parameters.</a>\n')
-    out.write('<p><a href="http://www.bioinfo.rpi.edu/bystrc/geofold/howtoreadit.htm">Click on this page')
-    out.write('to see a guide to GeoFold output.</a>\n')
-    out.write('<p><img src="%s"><br>\n'%(waitimage))
-    out.write('</body></html>')
+    print('<html><head><title>%s</title>\n'%(url))
+    print('<meta http-equiv="refresh" content="4;url=%s">\n'%(url))
+    print('</head><body>\n')
+    """
+    print('<h4>Your GeoFold job is in the queue but has not yet started.</h4>\n')
+    print('<p>Your input coordinates were uploaded as filename %s chains %s\n'%(form["pdbcode"].value,chains))
+    print('<p>Notifications will be sent to %s\n'%(form["email"].value))
+    print('<p><a href="%s">BOOKMARK THIS PAGE</a>:\n'%(url))
+    print('<p>Stay on this page, or return to this page to see your results,')
+    print('which will include the following:<br><ul>\n')
+    print('<li>The timecourse of unfolding as concentrations of Folded, Unfolded, and Intermediate states.</li>\n')
+    print('<li>An unfolding pathway in the form of a clickable pathway tree.</li>\n')
+    print('<li>An Age Plot expressing the order of contact loss during unfolding.</li>\n')
+    print('<li>Unfolding/folding kinetics simulations and associated plots.</li>\n')
+    print('</ul>')
+    print('<p>You will see results for multiple values of &omega; (virtual denaturant).\n')
+    print('<p>You will have the option to Do Over, changing the &omega; values or any other parameters.\n')
+    print('<p><a href="http://www.bioinfo.rpi.edu/bystrc/geofold/settings.html">Click on this page')
+    print('to see a brief explanation of the parameters.</a>\n')
+    print('<p><a href="http://www.bioinfo.rpi.edu/bystrc/geofold/howtoreadit.htm">Click on this page')
+    print('to see a guide to GeoFold output.</a>\n')
+    print('<p><img src="%s"><br>\n'%(waitimage))
+    print('</body></html>')
+    """
     out.close()
+    """
     #write job file
     job = open("%s/%s.job"%(jobdir,form["lname"].value),'w+')
     job.write('%s %s %s'%(form["pdbcode"].value,chains,form["lname"].value))
@@ -330,7 +367,7 @@ def secondScript(form):
     
 def redo(form):
     #based on firstScript    
-    checked = ['',' checked']
+    checked = {'1':' checked','0':''} #['',' checked']
     #set directories
     basedir = '/bach1/home/walcob' #"/bach1/home/flex"
     urldir = '/bach1/home/walcob/public_html/GeoFold' #"/bach1/home/flex/public_html/geofold"
@@ -350,8 +387,9 @@ def redo(form):
     readOldParameters = open(oldParameterFile,'r')
     oldParameters = {}
     for line in readOldParameters:
-      line = line.split()
-      oldParameters[line[0]]=' '.join(line[1:])
+      if len(line) != 1:
+        line = line.split()
+        oldParameters[line[0]]=' '.join(line[1:])
     readOldParameters.close()
     #keyword is changed
     keyword = form["keyword"].value
@@ -373,7 +411,7 @@ def redo(form):
     #hidden input script = 4
     print('<input type="hidden" name="script" value=4>')
     #chains
-    chains = getchains("%s/%s.pdb"%(pdbdir,oldParameters['PDB']))
+    chains = getchains("%s/%s.pdb"%(tmpdir,oldParameters['PDBCODE']))
     if len(chains)==0:
       print("Error, no chains found.")
       raise IOError 
@@ -385,7 +423,7 @@ def redo(form):
     #hidden inputs
     print('<input type="hidden" name="lname" value="%s">'%(lname))
     print('<input type="hidden" name="email" value="%s">'%(oldParameters['EMAIL']))
-    print('<input type="hidden" name="pdbcode" value="%s">'%(oldParameters['PDB']))
+    print('<input type="hidden" name="pdbcode" value="%s">'%(oldParameters['PDBCODE']))
     print('<input type="hidden" name="omega" value="1.">')
     print('<input type="hidden" name="intermediate" value="0">')
     print('<input type="hidden" name="barrelmoves" value="1">')
@@ -402,7 +440,10 @@ def redo(form):
     #molscript
     print('<br><input type="checkbox" name="molscript" value="1"%s>Create gif of protein'%(checked[oldParameters['MOLSCRIPT']]))
     #debug
-    print('<br><input type="checkbox" name="debug" value="1"%s>Show detailed output while running'%(checked[oldParameters["DEBUG"]]))
+    try:
+    	print('<br><input type="checkbox" name="debug" value="1"%s>Show detailed output while running'%(checked[oldParameters["DEBUG"]]))
+    except:
+      print('<br><input type="checkbox" name="debug" value="1">Show detailed output while running')
     #Advanced options
     print('<br><strong>Advanced Options</strong>')
     collapseHead()
@@ -410,9 +451,9 @@ def redo(form):
     #breakcut
     print('<br><span title="cut-off percentage (expressed as decimal) for break move">Break cut</span>:<br><input type="text" name="breakcut" alue="%s" size=15>'%(oldParameters['BREAKCUT']))
     #pivotcut
-    print('<br><span title="Cut-off percentage (expressed as decimal) for pivot move">Pivot cut</span>:\n<input type="text" name="pivotcut" value="%s" size=15>'%(oldParameters["PIVOTCUT"]))
+    print('<br><span title="Cut-off percentage (expressed as decimal) for pivot move">Pivot cut</span>:<br><input type="text" name="pivotcut" value="%s" size=15>'%(oldParameters["PIVOTCUT"]))
     #hingecut
-    print('<br><span title="Cut-off percentage (expressed as decimal) for hinge move">Hinge cut</span>:\n<input type="text" name="hingecut" value="%s" size=15>'%(oldParameters["HINGECUT"]))
+    print('<br><span title="Cut-off percentage (expressed as decimal) for hinge move">Hinge cut</span>:<br><input type="text" name="hingecut" value="%s" size=15>'%(oldParameters["HINGECUT"]))
     #seamcut
     print('<br><span title="Cut off for seam move">Seam cut</span>:<br><input type="text" name="seamcut" value="%s" size=15>'%(oldParameters["SEAMCUT"]))
     #breakpointentropy
@@ -430,7 +471,7 @@ def redo(form):
     print('<br><span title="When the total buried surface of an intermediate is less than SOLIDITY, the intermediate is treated as a liquid, otherwise it is a solid. For a solid, the entropy of unfolding is expressed after the transition state. For a liquid, it is expressed before the transition state.">Solidity</span>:<br><input type="text" name="solidity" value="%s" size=15>'%(oldParameters["SOLIDITY"])) 
     print('</td><td>')
     #h-bond energy
-    print('<br><span title="J/mol per hydrogen bond.">H-bond energy</span>:<br><input type="text" name="hbondenergy" value="%s" size=15>'%s(oldParameters["HBONDENERGY"]))    
+    print('<br><span title="J/mol per hydrogen bond.">H-bond energy</span>:<br><input type="text" name="hbondenergy" value="%s" size=15>'%(oldParameters["HBONDENERGY"]))    
     #Hammond
     print('<br><span title="Hammond postulated that the tranition state lies closer to the higher energy ground state on the reaction coordinate. The reaction coordinate in GeoFold is the solvent accessible surface area (SAS). The transition state position (&Theta;-m) is defined for each unfolding step as the fraction of &Delta;SAS expressed at the t-state. HAMMONDSCALE (H) is in units of surface area &Aring;&sup2;. The location of the transitions state, &Theta;-m = ( tanh( dNRG/ H) +1 ) /0.5">Hammond scale</span>:<br><input type="text" name="hammondscale" value="%s" size=15>'%(oldParameters["HAMMONDSCALE"]))
     #sidechainentropy
@@ -470,24 +511,21 @@ def redo(form):
 def fourthScript(form):
     """This script determines what parts of GeoFold need to be rerun and will send the results to secondScript"""
     oldParameters = {}
-    changeParameters = ['REDUCING','BREAKCUT','PIVOTCUT','HINGECUT','SEAMCUT','BREAKPOINTENTROPY','HINGEPOINTENTROPY','TEMPERATURE','VOIDENTROPY','SOLIDITY','HBONDENERGY','HAMMOND','SIDECHAINENTROPY','HINGEBARRIER','PIVOTBARRIER','WATER','MAXSPLIT','MINSEG','CAVITATION','FLORY','FLORYW']
+    changeParameters = ['REDUCING','BREAKCUT','PIVOTCUT','HINGECUT','SEAMCUT','BREAKPOINTENTROPY','HINGEPOINTENTROPY','TEMPERATURE','VOIDENTROPY','SOLIDITY','HBONDENERGY','HAMMONDSCALE','SIDECHAINENTROPY','HINGEBARRIER','PIVOTBARRIER','WATER','MAXSPLIT','MINSEG','CAVITATION','FLORY','FLORYW']
     Parameters = {}
-    runGeoFold = False
+    runGeoFold = '0'
     #Read in old parameters
     oldParFile = open(form['oldParameters'].value,'r')
     for line in oldParFile:
-        line = line.split()
-        oldParameters[line[0]] = " ".join(line[1:])
+        if len(line) != 1:
+          line = line.split()
+          oldParameters[line[0]] = " ".join(line[1:])
     oldParFile.close()
     #Check if any parameters have changed
     for parameter in changeParameters:
-        if oldParameters[parameter] != form[parameter.lower()].value:
-            runGeoFold = True
-            exit
-    if runGeoFold:
-        form.add_field('rungeofold', '1')
-    else:
-        form.add_field('rungeofold','0')
+        if oldParameters[parameter] != form.getvalue(parameter.lower(),'0'):
+            runGeoFold = '1'
+    form.add_field('rungeofold', runGeoFold)
     #Everything else is the same as secondScript, so copypasta
     
     #directories and basic settings
@@ -518,12 +556,12 @@ def fourthScript(form):
     
     #write HTML output
     #print('<html><head>')
-    print('<meta http-equiv="refresh" content="2;url=%s">'%(urlwrite))
+    print('<meta http-equiv="refresh" content="30;url=%s">'%(urlwrite))
     print('</head><body><h4>Creating GeoFOLD job. Please wait...</h4><br>')
-    print('</body></html>')
+    #print('</body></html>')
     
     #new URL settings
-    out = open(url,'w+')
+    #out = open(url,'w+')
     #reset url name
     url = "%s/%s.html"%(lname,lname)
     #write-out parameters file
@@ -537,29 +575,29 @@ def fourthScript(form):
       else:
         chains = '.'
     #Write out initial HTML results page
-    out.write('<html><head><title>%s</title>\n'%(url))
-    out.write('<meta http-equiv="refresh" content="4;url=%s">\n'%(url))
-    out.write('</head><body>\n')
-    out.write('<h4>Your GeoFold job is in the queue but has not yet started.</h4>\n')
-    out.write('<p>Your input coordinates were uploaded as filename %s chains %s\n'%(form["pdbcode"].value,chains))
-    out.write('<p>Notifications will be sent to %s\n'%(form["email"].value))
-    out.write('<p><a href="%s">BOOKMARK THIS PAGE</a>:\n'%(url))
-    out.write('<p>Stay on this page, or return to this page to see your results,')
-    out.write('which will include the following:<br><ul>\n')
-    out.write('<li>The timecourse of unfolding as concentrations of Folded, Unfolded, and Intermediate states.</li>\n')
-    out.write('<li>An unfolding pathway in the form of a clickable pathway tree.</li>\n')
-    out.write('<li>An Age Plot expressing the order of contact loss during unfolding.</li>\n')
-    out.write('<li>Unfolding/folding kinetics simulations and associated plots.</li>\n')
-    out.write('</ul>')
-    out.write('<p>You will see results for multiple values of &omega; (virtual denaturant).\n')
-    out.write('<p>You will have the option to Do Over, changing the &omega; values or any other parameters.\n')
-    out.write('<p><a href="http://www.bioinfo.rpi.edu/bystrc/geofold/settings.html">Click on this page')
-    out.write('to see a brief explanation of the parameters.</a>\n')
-    out.write('<p><a href="http://www.bioinfo.rpi.edu/bystrc/geofold/howtoreadit.htm">Click on this page')
-    out.write('to see a guide to GeoFold output.</a>\n')
-    out.write('<p><img src="%s"><br>\n'%(waitimage))
-    out.write('</body></html>')
-    out.close()
+    #print('<html><head><title>%s</title>\n'%(url))
+    #print('<meta http-equiv="refresh" content="4;url=%s">\n'%(url))
+    #print('</head><body>\n')
+    print('<h4>Your GeoFold job is in the queue but has not yet started.</h4>\n')
+    print('<p>Your input coordinates were uploaded as filename %s chains %s\n'%(form["pdbcode"].value,chains))
+    print('<p>Notifications will be sent to %s\n'%(form["email"].value))
+    print('<p><a href="%s">BOOKMARK THIS PAGE</a>:\n'%(url))
+    print('<p>Stay on this page, or return to this page to see your results,')
+    print('which will include the following:<br><ul>\n')
+    print('<li>The timecourse of unfolding as concentrations of Folded, Unfolded, and Intermediate states.</li>\n')
+    print('<li>An unfolding pathway in the form of a clickable pathway tree.</li>\n')
+    print('<li>An Age Plot expressing the order of contact loss during unfolding.</li>\n')
+    print('<li>Unfolding/folding kinetics simulations and associated plots.</li>\n')
+    print('</ul>')
+    print('<p>You will see results for multiple values of &omega; (virtual denaturant).\n')
+    print('<p>You will have the option to Do Over, changing the &omega; values or any other parameters.\n')
+    print('<p><a href="http://www.bioinfo.rpi.edu/bystrc/geofold/settings.html">Click on this page')
+    print('to see a brief explanation of the parameters.</a>\n')
+    print('<p><a href="http://www.bioinfo.rpi.edu/bystrc/geofold/howtoreadit.htm">Click on this page')
+    print('to see a guide to GeoFold output.</a>\n')
+    print('<p><img src="%s"><br>\n'%(waitimage))
+    print('</body></html>')
+    #out.close()
     #write job file
     job = open("%s/%s.job"%(jobdir,lname),'w+')
     job.write('%s %s %s'%(form["pdbcode"].value,chains,lname))
