@@ -51,7 +51,7 @@ def createForm(out,parfile):
   """write the output for the final form for do-over submission"""
   global parameters
   print parameters
-  out.write('<FORM METHOD="POST" ACTION="http://www.bioinfo.rpi.edu/geofold/geocgi.cgi" >\n')
+  out.write('<FORM METHOD="POST" ACTION="http://bach1.bio.rpi.edu/walcob/GeoFold/geocgi.cgi" >\n')
   out.write('<input type="hidden" name="script" value=3>\n')
   ##New name for job
   out.write('<br><input type="text" name="keyword" value="" placeholder="Enter a new unique id for this job (avoid the words \'error\' and \'bug\')" size=80>\n')
@@ -784,11 +784,35 @@ else:
   #gDirs = gDir.split('/')
   #dagDir = '/'.join(htmlDirs[len(gDirs)+1:len(htmlDirs)])
   os.environ["dagDir"] = htmlDir
-  cgi = open("%s/httpd.conf"%(htmlDir),'w+')
-  cgi.write("AddHandler cgi-script .cgi\nAddHandler cgi-script .py\n")
-  cgi.close()
   cp = "cp -p %s/isegment.cgi %s/isegment.cgi"%(gDir,htmlDir)
   commands.getstatusoutput(cp)
+  
+  #Added for do-over script interface
+  status,redo = findParam(paramFile,"REDO")
+  if status == 0 and len(redo) != 0:
+    print tmpDir
+    cmd = "cp -v %s%s/* %s/"%(tmpDir.split(LName)[0],redo,tmpDir)
+    status,output = commands.getstatusoutput(cmd)
+    print cmd
+    print status
+    print output
+    cmd = "find %s -name %s* -print"%(tmpDir,redo)
+    status,output = commands.getstatusoutput(cmd)
+    print cmd
+    print status
+    print output
+    print "line parsing"
+    output = output.split('\n')
+    print output
+    for line in output:
+      line = line.split(redo)
+      if len(line) > 1:
+        print line
+        cmd = "mv -v %s/%s%s %s/%s%s"%(tmpDir,redo,line[1],tmpDir,LName,line[1])
+        print cmd
+        status,output = commands.getstatusoutput(cmd)
+        print status
+        print output
 
 
   #### FILES ####
@@ -1442,6 +1466,8 @@ else:
   line = fitFile.readline()
   lines = []
   lsq = False
+  sl = 1
+  ic = 0
   while not lsq:
     line = fitFile.readline()
     if "Least-squares" in line:
@@ -1449,6 +1475,7 @@ else:
       lines.append(fitFile.readline())
       lines.append(fitFile.readline())
       lines.append(fitFile.readline())
+      print lines
       ic = lines[1]
       sl = lines[2]
       ic = ic.split()

@@ -288,7 +288,7 @@ def secondScript(form):
     
     #write HTML output
     print('<html><head>')
-    print('<meta http-equiv="refresh" content="30;url=%s">'%(urlwrite))
+    print('<meta http-equiv="refresh" content="4;url=%s">'%(urlwrite))
     print('</head><body><h4>Creating GeoFOLD job. Please wait...</h4><br>')
     os.environ["JOBURL"] = urlwrite
     #print('</body></html>')
@@ -406,6 +406,7 @@ def redo(form):
     #hidden inputs
     print('<input type="hidden" name="lname" value="%s">'%(lname))
     print('<input type="hidden" name="email" value="%s">'%(oldParameters['EMAIL']))
+    print('<input type="hidden" name="redo" value="%s">'%(oldParameters['LNAME']))
     print('<input type="hidden" name="pdbcode" value="%s">'%(oldParameters['PDBCODE']))
     print('<input type="hidden" name="omega" value="1.">')
     print('<input type="hidden" name="intermediate" value="0">')
@@ -481,11 +482,11 @@ def redo(form):
     flory[int(oldParameters["FLORY"])] = ' checked'
     print('<br>Flory effect Modeling:')
     num = 0
-    print('<br><input type="radio" name="FLORY" value="0"%s>Don\'t model'%(flory[0]))
-    print('<br><input type="radio" name="FLORY" value="1"%s>Take lowest path'%(flory[1]))
-    print('<br><input type="radio" name="FLORY" value="2"%s>Take highest path'%(flory[2]))
-    print('<br><input type="radio" name="FLORY" value="3"%s>Take lowest weighted avg path'%(flory[3]))
-    print('<br><span title="weight to be used for non-covalent contacts.">Non-covalent weight</span>:<br><input type="text" name="FLORYW" value="%s" size=15>'%(oldParameters["FLORYW"]))
+    print('<br><input type="radio" name="flory" value="0"%s>Don\'t model'%(flory[0]))
+    print('<br><input type="radio" name="flory" value="1"%s>Take lowest path'%(flory[1]))
+    print('<br><input type="radio" name="flory" value="2"%s>Take highest path'%(flory[2]))
+    print('<br><input type="radio" name="flory" value="3"%s>Take lowest weighted avg path'%(flory[3]))
+    print('<br><span title="weight to be used for non-covalent contacts.">Non-covalent weight</span>:<br><input type="text" name="floryw" value="%s" size=15>'%(oldParameters["FLORYW"]))
     #submit
     print('</div></div>\n<br><input type="submit" name="submit" value="submit"></form>\n</body></html>')
     
@@ -540,7 +541,7 @@ def fourthScript(form):
     #write HTML output
     #print('<html><head>')
     os.environ["JOBURL"] = urlwrite
-    print('<meta http-equiv="refresh" content="30;url=%s">'%(urlwrite))
+    print('<meta http-equiv="refresh" content="4;url=%s">'%(urlwrite))
     print('</head><body><h4>Creating GeoFOLD job. Please wait...</h4><br>')
     #print('</body></html>')
     
