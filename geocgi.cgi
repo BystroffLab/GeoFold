@@ -283,25 +283,14 @@ def secondScript(form):
     except KeyError:
       lname = "%s.%s"%(form["keyword"].value,form["pdbcode"].value)
     url = "%s/%s%s/%s.html"%(urldir,outdir,lname,lname)
-    """
-    try:
-      os.mkdir("%s/%s%s"%(gdir,outdir,lname))
-    except OSError:
-      print "<pre>Failed to make dir %s/%s%s</pre>"%(gdir,outdir,lname)
-    try:    
-      os.chown("%s/%s%s"%(gdir,outdir,lname),1083,100)
-    except OSError:
-      print "<b><i>ARRRRRRRRGH!</i></b>"
-      statusoutput = commands.getstatusoutput('chown -Rv walcob %s/%s%s'%(gdir,outdir,lname))
-      print('%s: %s'%statusoutput)
-      """
-    urlwrite = "http://www.bioinfo.rpi.edu/geofold/%s%s.html"%(outdir,form["lname"].value)
+    #urlwrite = "http://www.bioinfo.rpi.edu/geofold/%s%s/%s.html"%(outdir,lname,lname)
     urlwrite = "http://bach1.bio.rpi.edu/walcob/GeoFold/%s%s/%s.html"%(outdir,lname,lname)
     
     #write HTML output
     print('<html><head>')
     print('<meta http-equiv="refresh" content="30;url=%s">'%(urlwrite))
     print('</head><body><h4>Creating GeoFOLD job. Please wait...</h4><br>')
+    os.environ["JOBURL"] = urlwrite
     #print('</body></html>')
     #new URL settings
     """
@@ -311,10 +300,10 @@ def secondScript(form):
       print 'IOERROR'
       """
     #reset url name
-    url = "%s.html"%(form["lname"].value)
+    url = "%s.html"%(lname)
     print url
     #write-out parameters file
-    file = open("%s/%s.par"%(tmpdir,form["lname"].value),'w+')
+    file = open("%s/%s.par"%(tmpdir,lname),'w+')
     makeParameters(form,file)
     #get chain info for html results
     chains = ''
@@ -323,12 +312,6 @@ def secondScript(form):
         chains+=form[value].value
       else:
         chains = '.'
-    """
-    #Write out initial HTML results page
-    print('<html><head><title>%s</title>\n'%(url))
-    print('<meta http-equiv="refresh" content="4;url=%s">\n'%(url))
-    print('</head><body>\n')
-    """
     print('<h4>Your GeoFold job is in the queue but has not yet started.</h4>\n')
     print('<p>Your input coordinates were uploaded as filename %s chains %s\n'%(form["pdbcode"].value,chains))
     print('<p>Notifications will be sent to %s\n'%(form["email"].value))
@@ -449,7 +432,7 @@ def redo(form):
     collapseHead()
     print('<table><tr><td>')
     #breakcut
-    print('<br><span title="cut-off percentage (expressed as decimal) for break move">Break cut</span>:<br><input type="text" name="breakcut" alue="%s" size=15>'%(oldParameters['BREAKCUT']))
+    print('<br><span title="cut-off percentage (expressed as decimal) for break move">Break cut</span>:<br><input type="text" name="breakcut" value="%s" size=15>'%(oldParameters['BREAKCUT']))
     #pivotcut
     print('<br><span title="Cut-off percentage (expressed as decimal) for pivot move">Pivot cut</span>:<br><input type="text" name="pivotcut" value="%s" size=15>'%(oldParameters["PIVOTCUT"]))
     #hingecut
@@ -525,7 +508,7 @@ def fourthScript(form):
     for parameter in changeParameters:
         if oldParameters[parameter] != form.getvalue(parameter.lower(),'0'):
             runGeoFold = '1'
-    form.add_field('rungeofold', runGeoFold)
+    #form.add_field('rungeofold', runGeoFold)
     #Everything else is the same as secondScript, so copypasta
     
     #directories and basic settings
@@ -556,6 +539,7 @@ def fourthScript(form):
     
     #write HTML output
     #print('<html><head>')
+    os.environ["JOBURL"] = urlwrite
     print('<meta http-equiv="refresh" content="30;url=%s">'%(urlwrite))
     print('</head><body><h4>Creating GeoFOLD job. Please wait...</h4><br>')
     #print('</body></html>')
@@ -567,6 +551,9 @@ def fourthScript(form):
     #write-out parameters file
     file = open("%s/%s.par"%(tmpdir,lname),'w+')
     makeParameters(form,file)
+    write_param = open('%s/%s.par'%(tmpdir,lname),'a')
+    write_param.write("RUNGEOFOLD "+runGeoFold)
+    write_param.close()
     #get chain info for html results
     chains = ''
     for value in form:
@@ -578,6 +565,7 @@ def fourthScript(form):
     #print('<html><head><title>%s</title>\n'%(url))
     #print('<meta http-equiv="refresh" content="4;url=%s">\n'%(url))
     #print('</head><body>\n')
+    os.environ["JOBURL"] = url
     print('<h4>Your GeoFold job is in the queue but has not yet started.</h4>\n')
     print('<p>Your input coordinates were uploaded as filename %s chains %s\n'%(form["pdbcode"].value,chains))
     print('<p>Notifications will be sent to %s\n'%(form["email"].value))

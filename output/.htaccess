@@ -1,0 +1,2 @@
+ErrorDocument 404 /walcob/GeoFold/output/404.php
+AddHandler php5-script .php
