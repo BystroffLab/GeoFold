@@ -74,6 +74,8 @@ def makeParameters(form,out):
   out.close()  
   
 def firstScript(form):
+    """
+    #Walcob settings
     #set directories
     basedir = "/bach1/home/walcob"
     urldir = "/bach1/home/walcob/public_html/GeoFold"
@@ -88,7 +90,8 @@ def firstScript(form):
     pid = os.getpid()
     outdir = "output/"
     jobdir = "jobs/"
-    """#Flex settings    
+    """
+    #Flex settings    
     #set directories
     basedir = "/bach1/home/flex"
     urldir = "/bach1/home/flex/public_html/geofold"
@@ -103,7 +106,7 @@ def firstScript(form):
     pid = os.getpid()
     outdir = "output/"
     jobdir = "jobs/"
-    """
+    
     
     #set variables from form data
     email = form["email_address"].value
@@ -264,33 +267,32 @@ def secondScript(form):
     #directories and basic settings
     waitimage = "http://www.bioinfo.rpi.edu/bystrc/pub/mpeg/peptide.gif"
     #set directories
-    basedir = "/bach1/home/walcob"
-    gdir = "%s/GeoFold"%(basedir)
-    urldir = "/bach1/home/walcob/public_html/GeoFold"
-    tmpdir = "%s/tmp"%(gdir)
+    basedir = "/bach1/home/flex"
+    gdir = "%s/server/geofold"%(basedir)
+    urldir = "/bach1/home/flex/public_html/geofold"
+    tmpdir = "%s/server/geofold/tmp"%(basedir)
     #default parameters file
-    paramfile = "%s/GeoFold/parameters"%(basedir)
+    paramfile = "%s/server/geofold/bin/parameters"%(basedir)
     #pdb repository
-    pdbdir = "%s/GeoFold/pdbs/"%(basedir)
-    pdbunit = pdbdir
+    pdbdir = "%s/server/data/pdb"%(basedir)
+    pdbunit = "%s/server/data/pdb1"%(basedir)
     settings= "settings.html"
     pid = os.getpid()
     outdir = "output/"
-    jobdir = "%s/jobs"%(gdir)
+    jobdir = "jobs/"
     #set url name
     try:
       lname = form["lname"].value
     except KeyError:
       lname = "%s.%s"%(form["keyword"].value,form["pdbcode"].value)
     url = "%s/%s%s/%s.html"%(urldir,outdir,lname,lname)
-    #urlwrite = "http://www.bioinfo.rpi.edu/geofold/%s%s/%s.html"%(outdir,lname,lname)
-    urlwrite = "http://bach1.bio.rpi.edu/walcob/GeoFold/%s%s/%s.html"%(outdir,lname,lname)
+    urlwrite = "http://www.bioinfo.rpi.edu/geofold/%s%s/%s.html"%(outdir,lname,lname)
+    #urlwrite = "http://bach1.bio.rpi.edu/walcob/GeoFold/%s%s/%s.html"%(outdir,lname,lname)
     
     #write HTML output
     print('<html><head>')
     print('<meta http-equiv="refresh" content="4;url=%s">'%(urlwrite))
     print('</head><body><h4>Creating GeoFOLD job. Please wait...</h4><br>')
-    os.environ["JOBURL"] = urlwrite
     #print('</body></html>')
     #new URL settings
     """
@@ -331,9 +333,6 @@ def secondScript(form):
     print('to see a guide to GeoFold output.</a>\n')
     print('<p><img src="%s"><br>\n'%(waitimage))
     print('</body></html>')
-    """
-    out.close()
-    """
     #write job file
     job = open("%s/%s.job"%(jobdir,form["lname"].value),'w+')
     job.write('%s %s %s'%(form["pdbcode"].value,chains,form["lname"].value))
@@ -352,15 +351,15 @@ def redo(form):
     #based on firstScript    
     checked = {'1':' checked','0':''} #['',' checked']
     #set directories
-    basedir = '/bach1/home/walcob' #"/bach1/home/flex"
-    urldir = '/bach1/home/walcob/public_html/GeoFold' #"/bach1/home/flex/public_html/geofold"
-    tmpdir = '%s/GeoFold/tmp'%(basedir) #"%s/server/geofold/tmp"%(basedir)
+    basedir = "/bach1/home/flex"
+    urldir = "/bach1/home/flex/public_html/geofold"
+    tmpdir = "%s/server/geofold/tmp"%(basedir)
     dbgfile = "%s/output/debug.out"%(urldir)
     #default parameters file
-    paramfile = '%s/GeoFold/parameters'%(basedir) #"%s/server/geofold/bin/parameters"%(basedir)
+    paramfile = "%s/server/geofold/bin/parameters"%(basedir)
     #pdb repository
-    pdbdir = '%s/GeoFold/pdbs'%(basedir) #"%s/server/data/pdb"%(basedir)
-    pdbunit = pdbdir #"%s/server/data/pdb1"%(basedir)
+    pdbdir = "%s/server/data/pdb"%(basedir)
+    pdbunit = "%s/server/data/pdb1"%(basedir)
     settings= "settings.html"
     pid = os.getpid()
     outdir = "output/"
@@ -515,15 +514,15 @@ def fourthScript(form):
     #directories and basic settings
     waitimage = "http://www.bioinfo.rpi.edu/bystrc/pub/mpeg/peptide.gif"
     #set directories
-    basedir = '/bach1/home/walcob' #"/bach1/home/flex"
-    gdir = '%s/GeoFold'%(basedir) #"%s/server/geofold"%(basedir)
-    urldir = '/bach1/home/walcob/public_html/GeoFold' #"/bach1/home/flex/public_html/geofold"
+    basedir = "/bach1/home/flex"
+    gdir = "%s/server/geofold"%(basedir)
+    urldir = "/bach1/home/flex/public_html/geofold"
     tmpdir = "%s/tmp"%(gdir)
     #default parameters file
-    paramfile = '%s/parameters'%(gdir) #"%s/server/geofold/bin/parameters"%(basedir)
+    paramfile = "%s/server/geofold/bin/parameters"%(basedir)
     #pdb repository
-    pdbdir = '%s/pdbs'%(gdir) #"%s/server/data/pdb/"%(basedir)
-    pdbunit = pdbdir #"%s/server/data/pdb1/"%(basedir)
+    pdbdir = "%s/server/data/pdb/"%(basedir)
+    pdbunit = "%s/server/data/pdb1/"%(basedir)
     settings= "settings.html"
     pid = os.getpid()
     outdir = "output/"
@@ -535,18 +534,14 @@ def fourthScript(form):
       lname = "%s.%s"%(form["keyword"].value,form["pdbcode"].value)
     url = "%s/%s%s/%s.html"%(urldir,outdir,lname,lname)
     
-    #urlwrite = "http://www.bioinfo.rpi.edu/geofold/%s%s/%s.html"%(outdir,lname,lname)
-    urlwrite = 'http://bach1.bio.rpi.edu/walcob/GeoFold/%s%s/%s.html'%(outdir,lname,lname)
+    urlwrite = "http://www.bioinfo.rpi.edu/geofold/%s%s/%s.html"%(outdir,lname,lname)
     
     #write HTML output
-    #print('<html><head>')
     os.environ["JOBURL"] = urlwrite
     print('<meta http-equiv="refresh" content="4;url=%s">'%(urlwrite))
     print('</head><body><h4>Creating GeoFOLD job. Please wait...</h4><br>')
-    #print('</body></html>')
     
     #new URL settings
-    #out = open(url,'w+')
     #reset url name
     url = "%s/%s.html"%(lname,lname)
     #write-out parameters file
@@ -563,10 +558,6 @@ def fourthScript(form):
       else:
         chains = '.'
     #Write out initial HTML results page
-    #print('<html><head><title>%s</title>\n'%(url))
-    #print('<meta http-equiv="refresh" content="4;url=%s">\n'%(url))
-    #print('</head><body>\n')
-    os.environ["JOBURL"] = url
     print('<h4>Your GeoFold job is in the queue but has not yet started.</h4>\n')
     print('<p>Your input coordinates were uploaded as filename %s chains %s\n'%(form["pdbcode"].value,chains))
     print('<p>Notifications will be sent to %s\n'%(form["email"].value))
