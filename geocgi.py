@@ -151,9 +151,7 @@ def firstScript(form):
         url = "http://pdb.org/pdb/files/%s.pdb"%(pdbid.upper()[0:4])
         urllib.urlretrieve(url,"%s/%s.pdb"%(tmpdir,pid))
     else:
-      print("moving file")
       status,output = commands.getstatusoutput("cp %s/%s.pdb %s/%s.pdb"%(tmpdir,pdbcode,tmpdir,pid))
-      print("file moved")
       if status !=0: print("%s: %s"%(status,output))
     #extract chains from pdb file
     status,output = commands.getstatusoutput("cp %s/%s.pdb %s/%s.pdb"%(tmpdir,pid,pdbdir,pid))
@@ -180,14 +178,14 @@ def firstScript(form):
     #PDBCODE##
     print('<input type="hidden" name="pdbcode" value="%s">'%(pid))
     #OMEGA##
-    print('<input type="hidden" name="omega" value="5.">')
+    print('<input type="hidden" name="omega" value="1.">')
     #INTERMEDIATE##
     print('<input type="hidden" name="intermediate" value="0">')
     #BARRELMOVES##
     print('<input type="hidden" name="barrelmoves" value="1">')
     print('<br>mouseover for more info')
     #ORANGE
-    print('<br><span title="Enter a range of surface tension values (space-separated with decimal points ie. 5. 10. 20.)">&omega; range</span><input type="text" name="orange" placeholder="ex: 5. 10. 20." value="" size=40>')
+    print('<br><span title="Enter a range of surface tension values or temperatures if denaturing thermally (space-separated with decimal points ie. 5. 10. 20.)">&omega; range</span><input type="text" name="orange" placeholder="ex: 5. 10. 20." value="" size=40>')
     #checkboxes
     #FOLDING checkbox
     print('<br><input type="checkbox" name="fing" value="1">Folding simulation')
@@ -200,8 +198,10 @@ def firstScript(form):
     print('<br><input type="checkbox" name="reducing" value="1">Reduce cysteine disulfides')
     #MOLSCRIPT checkbox
     print('<br><input type="checkbox" name="molscript" value="1" checked>Create gif of protein')
+    #thermal
+    print('<br><input type="checkbox" name="thermal" value="1">Use thermal denaturation')
     #Show debug info?
-    print('<br><input type="checkbox" name="debug" value="1"> Show detailed output while running')
+    print('<br><input type="checkbox" name="debug" value="1">Show detailed output while running')
     #Advanced options
     print('<br><strong>Advanced Options</strong>')
     collapseHead()
@@ -240,7 +240,7 @@ def firstScript(form):
     print('<br><span title="Optional additional barrier for pivot moves.">Pivot barrier</span>:<br><input type="text" name="pivotbarrier" value="0." size=15>')
     print('</td><td>')
     #WATER# 30.
-    print('<br><span title="Virtual denaturant level equivalent to water.  kJ/mol/&Aring;&sup2;">Water &omega;</span>:<br><input type="text" name="water" value="1." size=15>')
+    print('<br><span title="Virtual denaturant level equivalent to water.  kJ/mol/&Aring;&sup2; If using thermal denaturation, this will be the temperature to which unfolding rates will be extrapolated.">Water &omega;</span>:<br><input type="text" name="water" value="1." size=15>')
     #MAXSPLIT# 4
     print('<br><span title="Maximum number of elemental unfolding steps applied to one intermediate. Optional values are 2,4,8,16, and 32. Speed is effected by higher settings.">Max split</span>:<br><input type="text" name="maxsplit" value="4" size=15>')
     #MAXTIME# 10.
@@ -252,11 +252,11 @@ def firstScript(form):
     print('</td></tr></table>')
     #FLORY# 1
     print('<br>Flory effect Modeling:')
-    print('<br><input type="radio" name="FLORY" value="0">Don\'t model')
-    print('<br><input type="radio" name="FLORY" value="1" checked>Take lowest path')
-    print('<br><input type="radio" name="FLORY" value="2">Take highest path')
-    print('<br><input type="radio" name="FLORY" value="3">Take lowest weighted avg path')
-    print('<br><span title="weight to be used for non-covalent contacts.">Non-covalent weight</span>:<br><input type="text" name="FLORYW" value="8." size=15>')
+    print('<br><input type="radio" name="flory" value="0">Don\'t model')
+    print('<br><input type="radio" name="flory" value="1" checked>Take lowest path')
+    print('<br><input type="radio" name="flory" value="2">Take highest path')
+    print('<br><input type="radio" name="flory" value="3">Take lowest weighted avg path')
+    print('<br><span title="weight to be used for non-covalent contacts.">Non-covalent weight</span>:<br><input type="text" name="floryw" value="8." size=15>')
     print('</div></div>')
     #submit button
     print('<br><input type="submit" name = "submit" value="submit"></form>')
@@ -413,7 +413,7 @@ def redo(form):
     print('<input type="hidden" name="oldParameters" value="%s">'%(oldParameterFile))
     print('<br>mouseover for more info')
     #ORANGE
-    print('<br><span title="Enter a range of solvation weights (space-separated with decimal points ie. 5. 10. 20.)">&omega; range</span><input type="text" name="orange" value="%s" size=40>'%(oldParameters['ORANGE']))
+    print('<br><span title="Enter a range of solvation weights or temperatures (space-separated with decimal points ie. 5. 10. 20.)">&omega; range</span><input type="text" name="orange" value="%s" size=40>'%(oldParameters['ORANGE']))
     #Folding
     print('<br><input type="checkbox" name="fing" value="1"%s>Folding simulation'%(checked[oldParameters['FING']]))
     #Half-life
@@ -422,6 +422,8 @@ def redo(form):
     print('<br><input type="checkbox" name="reducing" value="1"%s>Reduce cysteine disulfides'%(checked[oldParameters['REDUCING']]))
     #molscript
     print('<br><input type="checkbox" name="molscript" value="1"%s>Create gif of protein'%(checked[oldParameters['MOLSCRIPT']]))
+    #thermal
+    print('<br><input type="checkbox" name="thermal" value="1"%s>Thermal Denaturaton'%(checked[oldParameters["THERMAL"]]))
     #debug
     try:
     	print('<br><input type="checkbox" name="debug" value="1"%s>Show detailed output while running'%(checked[oldParameters["DEBUG"]]))
@@ -465,7 +467,7 @@ def redo(form):
     print('<br><span title="Optional additional barrier for pivot moves.">Pivot barrier</span>:<br><input type="text" name="pivotbarrier" value="%s" size=15>'%(oldParameters["PIVOTBARRIER"]))
     print('</td><td>')    
     #water
-    print('<br><span title="Virtual denaturant level equivalent to water.  kJ/mol/&Aring;&sup2;">Water &omega;</span>:<br><input type="text" name="water" value="%s" size=15>'%(oldParameters["WATER"]))
+    print('<br><span title="Virtual denaturant level equivalent to water.  kJ/mol/&Aring;&sup2;.  If using thermal denaturation, this will be the temperature to which unfolding rates will be extrapolated.">Water &omega;</span>:<br><input type="text" name="water" value="%s" size=15>'%(oldParameters["WATER"]))
     #maxsplit
     print('<br><span title="Maximum number of elemental unfolding steps applied to one intermediate. Optional values are 2,4,8,16, and 32. Speed is effected by higher settings.">Max split</span>:<br><input type="text" name="maxsplit" value="%s" size=15>'%(oldParameters["MAXSPLIT"]))
     #maxtime
