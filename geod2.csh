@@ -6,18 +6,18 @@ echo "Running on `hostname` `date` in `pwd`" > Running
 ## /home/bystrc/server/geofold
 ## NOTE: server/geofold is located on brahms
 ############ change SHOME to the directory geofold is installed in ##########
-setenv SHOME /bach1/home/walcob
-setenv LHOME /home/walcob
-setenv GDIR $SHOME/GeoFold
+setenv SHOME /bach1/home/flex
+setenv LHOME /home/flex
+setenv GDIR $SHOME/server/geofold
 setenv BDIR $GDIR
 setenv PYTHON /usr/bin/python
 echo "Jobs currently running on `hostname` 0" > Load
 echo "Running in $GDIR" >> Running
-setenv PDBDIR $GDIR/pdbs
-if !(-e $PDBDIR ) setenv PDBDIR $LHOME/GeoFold/pdbs
+setenv PDBDIR $SHOME/server/data/pdb
+if !(-e $PDBDIR ) setenv PDBDIR $LHOME/server/data/pdb
 setenv LOGDIR $GDIR/log
 setenv BIOLUNIT $PDBDIR
-if !(-e $BIOLUNIT ) setenv BIOLUNIT $PDBDIR
+if !(-e $BIOLUNIT ) setenv BIOLUNIT $SHOME/server/data/pdb1
 setenv GETCHAIN $GDIR/xgetchain
 setenv STMP $GDIR/tmp
 setenv SJOB $GDIR/jobs
@@ -118,7 +118,7 @@ while ( 1 )
           mv -fv $CFILE ${CFILE}.x
           # if ($CHAIN == "" ) setenv CHAIN  _
           ## mv ${GDIR}/${SJOB}/${LNAME}.par $STMP/
-          $PYTHON $GDIR/rungeofold.py ${STMP}/$PARFILE walcob > $LOGDIR/${LNAME}.log
+          $PYTHON $GDIR/rungeofold.py ${STMP}/$PARFILE > $LOGDIR/${LNAME}.log
           # chmod +x $GDIR/tmp/${LNAME}.csh
           ############ NEXT LINE SHOULD BE A JOB SUBMISSION -- MACHINE DEPENDENT
           ## qsub -b n -j y -cwd -o $LOGDIR/${LNAME}.log tmp/${LNAME}.csh $PDBCODE $CHAIN ${LNAME}  ${ONAME}

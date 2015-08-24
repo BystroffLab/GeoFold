@@ -51,7 +51,7 @@ def createForm(out,parfile):
   """write the output for the final form for do-over submission"""
   global parameters
   print parameters
-  out.write('<FORM METHOD="POST" ACTION="http://bach1.bio.rpi.edu/walcob/GeoFold/geocgi.cgi" >\n')
+  out.write('<FORM METHOD="POST" ACTION="../../geocgi.cgi" >\n')
   out.write('<input type="hidden" name="script" value=3>\n')
   ##New name for job
   out.write('<br><input type="text" name="keyword" value="" placeholder="Enter a new unique id for this job (avoid the words \'error\' and \'bug\')" size=80>\n')
@@ -1329,7 +1329,7 @@ else:
   permWrite.write('<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">\n')
   permWrite.write('<html>\n<head><title>GeoFold Server</title>\n')
   permWrite.write('<link rev=made href="mailto:bystrc@rpi.edu">\n</head>\n')
-  permWrite.write('<body>\n<img src="../banner.gif">\n')
+  permWrite.write('<body>\n<img src="../../banner.gif">\n')
   #table
   permWrite.write('<table width = "80%">\n<tr><td colspan="2">\n')
   #molscript gif
@@ -1548,7 +1548,7 @@ else:
   ######Create "do over" button
   createForm(permWrite,paramFilename)
   #####BACK button
-  permWrite.write('<h3><a href="../geofold.php">Back to GeoFold server</a></h3><br>\n')
+  permWrite.write('<h3><a href="../../geofold.php">Back to GeoFold server</a></h3><br>\n')
   permWrite.write('</body></html>\n')
   permWrite.close()
   #generate molscript

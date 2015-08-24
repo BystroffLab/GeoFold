@@ -129,8 +129,10 @@ def firstScript(form):
     lname="%s.%s"%(keyword,pid)
     #check if pdb is from code or from file-upload
     if not code:
-      if pdbid == "": file = True
-      else: file = False
+      if pdbid == "": 
+        file = True
+      else: 
+        file = False
       #create uploaded pdbfile
       if file:
         if pdbfile != "" :
@@ -151,8 +153,9 @@ def firstScript(form):
         url = "http://pdb.org/pdb/files/%s.pdb"%(pdbid.upper()[0:4])
         urllib.urlretrieve(url,"%s/%s.pdb"%(tmpdir,pid))
     else:
-      status,output = commands.getstatusoutput("cp %s/%s.pdb %s/%s.pdb"%(tmpdir,pdbcode,tmpdir,pid))
+      status,output = commands.getstatusoutput("cp -v %s/%s.pdb %s/%s.pdb"%(tmpdir,pdbcode,tmpdir,pid))
       if status !=0: print("%s: %s"%(status,output))
+      print("%s: %s"%(status,output))
     #extract chains from pdb file
     status,output = commands.getstatusoutput("cp %s/%s.pdb %s/%s.pdb"%(tmpdir,pid,pdbdir,pid))
     if status != 0:
@@ -242,7 +245,7 @@ def firstScript(form):
     #WATER# 30.
     print('<br><span title="Virtual denaturant level equivalent to water.  kJ/mol/&Aring;&sup2; If using thermal denaturation, this will be the temperature to which unfolding rates will be extrapolated.">Water &omega;</span>:<br><input type="text" name="water" value="1." size=15>')
     #MAXSPLIT# 4
-    print('<br><span title="Maximum number of elemental unfolding steps applied to one intermediate. Optional values are 2,4,8,16, and 32. Speed is effected by higher settings.">Max split</span>:<br><input type="text" name="maxsplit" value="4" size=15>')
+    print('<br><span title="Maximum number of elemental unfolding steps applied to one intermediate. Optional values lp5.7310_nos.htmlare 2,4,8,16, and 32. Speed is effected by higher settings.">Max split</span>:<br><input type="text" name="maxsplit" value="4" size=15>')
     #MAXTIME# 10.
     print('<br><span title="Maximum time to run simulation (s)">Max time</span>:<br><input type="text" name="maxtime" value="10." size=15>')
     #MINSEG# 4
@@ -279,7 +282,7 @@ def secondScript(form):
     settings= "settings.html"
     pid = os.getpid()
     outdir = "output/"
-    jobdir = "jobs/"
+    jobdir = "%s/jobs"%(gdir)
     #set url name
     try:
       lname = form["lname"].value
@@ -291,7 +294,7 @@ def secondScript(form):
     
     #write HTML output
     print('<html><head>')
-    print('<meta http-equiv="refresh" content="4;url=%s">'%(urlwrite))
+    print('<meta http-equiv="refresh" content="30;url=%s">'%(urlwrite))
     print('</head><body><h4>Creating GeoFOLD job. Please wait...</h4><br>')
     #print('</body></html>')
     #new URL settings
@@ -307,6 +310,7 @@ def secondScript(form):
     #write-out parameters file
     file = open("%s/%s.par"%(tmpdir,lname),'w+')
     makeParameters(form,file)
+    print 'parameters made in %s/%s.par'%(tmpdir,lname)
     #get chain info for html results
     chains = ''
     for value in form:
@@ -334,6 +338,7 @@ def secondScript(form):
     print('<p><img src="%s"><br>\n'%(waitimage))
     print('</body></html>')
     #write job file
+    print 'attempting to write job to %s/%s.job'%(jobdir,form['lname'].value)
     job = open("%s/%s.job"%(jobdir,form["lname"].value),'w+')
     job.write('%s %s %s'%(form["pdbcode"].value,chains,form["lname"].value))
     try:
@@ -342,6 +347,7 @@ def secondScript(form):
       oname = ''
     job.write(' %s'%(oname))
     job.close()
+    print 'job written to %s/%s.job'%(jobdir,form['lname'].value)
     #deprotect files
     commands.getstatusoutput('chmod 0777 %s/%s'%(outdir,url))
     commands.getstatusoutput('chmod 0777 %s/%s.job'%(jobdir,form["lname"].value))
@@ -423,7 +429,10 @@ def redo(form):
     #molscript
     print('<br><input type="checkbox" name="molscript" value="1"%s>Create gif of protein'%(checked[oldParameters['MOLSCRIPT']]))
     #thermal
-    print('<br><input type="checkbox" name="thermal" value="1"%s>Thermal Denaturaton'%(checked[oldParameters["THERMAL"]]))
+    try:
+    	print('<br><input type="checkbox" name="thermal" value="1"%s>Thermal Denaturaton'%(checked[oldParameters["THERMAL"]]))
+    except:
+        print('<br><input type="checkbox" name="thermal" value="1">Thermal Denaturaton')
     #debug
     try:
     	print('<br><input type="checkbox" name="debug" value="1"%s>Show detailed output while running'%(checked[oldParameters["DEBUG"]]))
@@ -613,10 +622,10 @@ elif query == 3:
 elif query == 4:
     fourthScript(form)
 else:
-     print("</head><body>Invalid query: %s"%(query))
+     print("</head><body><pre>Invalid query: %s"%(query))
      for entry in form:
        print entry
        print form[entry].value
        print
-     print "</body></html>"
+     print "</pre></body></html>"
        
