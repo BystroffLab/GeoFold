@@ -15,8 +15,8 @@ def toggle(name,checked,msg):
         check = " checked"
     else:
         check = ""
-    print('<br><div class="onoffswitch">')
-    print('%s<input type="checkbox" name="%s" class="onoffswitch-checkbox" id="%s"%s>'%(msg,name,name,check))
+    print('<br>%s<div class="onoffswitch">'%(msg))
+    print('<input type="checkbox" name="%s" class="onoffswitch-checkbox" id="%s"%s>'%(name,name,check))
     print('<label class="onoffswitch-label" for="%s">'%(name))
     print('<span class="onoffswitch-inner"></span>')
     print('<span class="onoffswitch-switch"></span>')
