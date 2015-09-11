@@ -76,8 +76,12 @@ def makeParameters(form,out):
       except KeyError:
         out.write("%s 0\n"%(value.upper()))
   for value in checkboxes:
-    try:
-      out.write("%s %s\n"%(value.upper(),form[value].value))
+    try:      
+      if form[value].value == 'on':
+          out.write('%s 1\n'%(value.upper()))
+      else:
+          out.write("%s 0\n"%(value.upper())
+      #out.write("%s %s\n"%(value.upper(),form[value].value))
     except KeyError:
       out.write("%s 0\n"%(value.upper()))
   if not chainset:
@@ -643,9 +647,6 @@ query = int(form['script'].value)
 if query == 1:
     firstScript(form)
 elif query == 2:
-    print('</head><body><pre>')
-    print(form)
-    print('</pre></body></html>')
     secondScript(form)
 elif query == 3:
     redo(form)
