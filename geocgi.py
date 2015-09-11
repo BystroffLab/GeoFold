@@ -643,6 +643,9 @@ query = int(form['script'].value)
 if query == 1:
     firstScript(form)
 elif query == 2:
+    print('</head><body><pre>')
+    print(form)
+    print('</pre></body></html>')
     secondScript(form)
 elif query == 3:
     redo(form)
