@@ -10,13 +10,13 @@ import cgi
 import cgitb
 cgitb.enable
 
-def toggle(name,checked):
+def toggle(name,checked,msg):
     if checked:
         check = " checked"
     else:
         check = ""
     print('<br><div class="onoffswitch">')
-    print('<input type="checkbox" name="%s" class="onoffswitch-checkbox" id="%s"%s>'%(name,name,check))
+    print('%s<input type="checkbox" name="%s" class="onoffswitch-checkbox" id="%s"%s>'%(msg,name,name,check))
     print('<label class="onoffswitch-label" for="%s">'%(name))
     print('<span class="onoffswitch-inner"></span>')
     print('<span class="onoffswitch-switch"></span>')
@@ -204,31 +204,25 @@ def firstScript(form):
     #checkboxes/toggles
     #FOLDING checkbox
     #print('<br><input type="checkbox" name="fing" value="1">Folding simulation')
-    toggle('fing',False)
-    print('Folding Simulation')
+    toggle('fing',False,'Folding Simulation')
     #HALFLIFE checkbox
     #print('<br><input type="checkbox" name="hlfe" value="1">Run until half folded/unfolded')
-    toggle('hlfe',False)
-    print('Run until half folded/unfolded')
+    toggle('hlfe',False,'Run until half folded/unfolded')
     #RUNGEOFOLD checkbox hidden
     #print('<br><input type="checkbox" name="rungeofold" value="1" checked> Run Geofold (only uncheck if you are re-running a job)')
     print('<input type="hidden" name="rungeofold" value="1">')
     #REDUCING checkbox
     #print('<br><input type="checkbox" name="reducing" value="1">Reduce cysteine disulfides')
-    toggle('reducing',False)
-    print('Reduce cysteine disulfides')
+    toggle('reducing',False,'Reduce cysteine disulfides')
     #MOLSCRIPT checkbox
     #print('<br><input type="checkbox" name="molscript" value="1" checked>Create gif of protein')
-    toggle('molscript',True)
-    print('Create GIF of protein')
+    toggle('molscript',True,'Create GIF of protein')
     #thermal
    # print('<br><input type="checkbox" name="thermal" value="1">Use thermal denaturation')
-    toggle('thermal',False)
-    print('Use thermal denaturation')
+    toggle('thermal',False,'Use thermal denaturation')
     #Show debug info?
     #print('<br><input type="checkbox" name="debug" value="1">Show detailed output while running')
-    toggle('debug',False)
-    print('Show detailed output while running')
+    toggle('debug',False,'Show detailed output while running')
     #Advanced options
     print('<br><strong>Advanced Options</strong>')
     collapseHead()
@@ -445,23 +439,31 @@ def redo(form):
     #ORANGE
     print('<br><span title="Enter a range of solvation weights or temperatures (space-separated with decimal points ie. 5. 10. 20.)">&omega; range</span><input type="text" name="orange" value="%s" size=40>'%(oldParameters['ORANGE']))
     #Folding
-    print('<br><input type="checkbox" name="fing" value="1"%s>Folding simulation'%(checked[oldParameters['FING']]))
+    #print('<br><input type="checkbox" name="fing" value="1"%s>Folding simulation'%(checked[oldParameters['FING']]))
+    toggle('fing',oldParameters['FING']==1,'Folding simulation')
     #Half-life
-    print('<br><input type="checkbox" name="hlfe" value="1"%s>Run until half folded/unfolded'%(checked[oldParameters['HLFE']]))
+    #print('<br><input type="checkbox" name="hlfe" value="1"%s>Run until half folded/unfolded'%(checked[oldParameters['HLFE']]))
+    toggle('hlfe',oldParameters['HLFE']==1,'Run until half folded/unfolded')    
     #reducing
-    print('<br><input type="checkbox" name="reducing" value="1"%s>Reduce cysteine disulfides'%(checked[oldParameters['REDUCING']]))
+    #print('<br><input type="checkbox" name="reducing" value="1"%s>Reduce cysteine disulfides'%(checked[oldParameters['REDUCING']]))
+    toggle('reducing',oldParameters['REDUCING']==1,'Reduce cysteine disulfides')    
     #molscript
-    print('<br><input type="checkbox" name="molscript" value="1"%s>Create gif of protein'%(checked[oldParameters['MOLSCRIPT']]))
+    #print('<br><input type="checkbox" name="molscript" value="1"%s>Create gif of protein'%(checked[oldParameters['MOLSCRIPT']]))
+    toggle('molscript',oldParameters['MOLSCRIPT']==1,'Create GIF of protein')
     #thermal
     try:
-    	print('<br><input type="checkbox" name="thermal" value="1"%s>Thermal Denaturaton'%(checked[oldParameters["THERMAL"]]))
+    	#print('<br><input type="checkbox" name="thermal" value="1"%s>Thermal Denaturaton'%(checked[oldParameters["THERMAL"]]))
+      toggle('thermal',oldParameters['THERMAL']==1,'Thermal Denaturation')
     except:
-        print('<br><input type="checkbox" name="thermal" value="1">Thermal Denaturaton')
+        #print('<br><input type="checkbox" name="thermal" value="1">Thermal Denaturaton')
+        toggle('thermal',False,'Thermal Denaturation')
     #debug
     try:
-    	print('<br><input type="checkbox" name="debug" value="1"%s>Show detailed output while running'%(checked[oldParameters["DEBUG"]]))
+    	#print('<br><input type="checkbox" name="debug" value="1"%s>Show detailed output while running'%(checked[oldParameters["DEBUG"]]))
+      toggle('debug',oldParameters['DEBUG']==1,'Show detailed output while running')
     except:
-      print('<br><input type="checkbox" name="debug" value="1">Show detailed output while running')
+      #print('<br><input type="checkbox" name="debug" value="1">Show detailed output while running')
+      toggle('debug',False,'Show detailed output while running')
     #Advanced options
     print('<br><strong>Advanced Options</strong>')
     collapseHead()
