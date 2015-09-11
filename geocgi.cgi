@@ -71,10 +71,11 @@ def makeParameters(form,out):
       chains = "%s%s"%(chains,form[value].value)
       chainset = True
     else:
-      try:
-        out.write("%s %s\n"%(value.upper(),form[value].value))
-      except KeyError:
-        out.write("%s 0\n"%(value.upper()))
+      if value not in checkboxes:
+          try:
+            out.write("%s %s\n"%(value.upper(),form[value].value))
+          except KeyError:
+            out.write("%s 0\n"%(value.upper()))
   for value in checkboxes:
     try:      
       if form[value].value == 'on':
