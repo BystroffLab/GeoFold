@@ -80,7 +80,7 @@ def makeParameters(form,out):
       if form[value].value == 'on':
           out.write('%s 1\n'%(value.upper()))
       else:
-          out.write("%s 0\n"%(value.upper())
+          out.write("%s 0\n"%(value.upper()))
       #out.write("%s %s\n"%(value.upper(),form[value].value))
     except KeyError:
       out.write("%s 0\n"%(value.upper()))
