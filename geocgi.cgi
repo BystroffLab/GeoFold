@@ -10,6 +10,18 @@ import cgi
 import cgitb
 cgitb.enable
 
+def toggle(name,checked):
+    if checked:
+        check = " checked"
+    else:
+        check = ""
+    print('<br><div class="onoffswitch">')
+    print('<input type="checkbox" name="%s" class="onoffswitch-checkbox" id="%s"%s>'%(name,name,check))
+    print('<label class="onoffswitch-label" for="%s">'%(name))
+    print('<span class="onoffswitch-inner"></span>')
+    print('<span class="onoffswitch-switch"></span>')
+    print('</label></div>')
+
 def getchains(pdbfile):
   """Extracts chain information from PDB file
   returns a list of the chain characters"""
@@ -189,22 +201,34 @@ def firstScript(form):
     print('<br>mouseover for more info')
     #ORANGE
     print('<br><span title="Enter a range of surface tension values or temperatures if denaturing thermally (space-separated with decimal points ie. 5. 10. 20.)">&omega; range</span><input type="text" name="orange" placeholder="ex: 5. 10. 20." value="" size=40>')
-    #checkboxes
+    #checkboxes/toggles
     #FOLDING checkbox
-    print('<br><input type="checkbox" name="fing" value="1">Folding simulation')
+    #print('<br><input type="checkbox" name="fing" value="1">Folding simulation')
+    toggle('fing',False)
+    print('Folding Simulation')
     #HALFLIFE checkbox
-    print('<br><input type="checkbox" name="hlfe" value="1">Run until half folded/unfolded')
+    #print('<br><input type="checkbox" name="hlfe" value="1">Run until half folded/unfolded')
+    toggle('hlfe',False)
+    print('Run until half folded/unfolded')
     #RUNGEOFOLD checkbox hidden
     #print('<br><input type="checkbox" name="rungeofold" value="1" checked> Run Geofold (only uncheck if you are re-running a job)')
     print('<input type="hidden" name="rungeofold" value="1">')
     #REDUCING checkbox
-    print('<br><input type="checkbox" name="reducing" value="1">Reduce cysteine disulfides')
+    #print('<br><input type="checkbox" name="reducing" value="1">Reduce cysteine disulfides')
+    toggle('reducing',False)
+    print('Reduce cysteine disulfides')
     #MOLSCRIPT checkbox
-    print('<br><input type="checkbox" name="molscript" value="1" checked>Create gif of protein')
+    #print('<br><input type="checkbox" name="molscript" value="1" checked>Create gif of protein')
+    toggle('molscript',True)
+    print('Create GIF of protein')
     #thermal
-    print('<br><input type="checkbox" name="thermal" value="1">Use thermal denaturation')
+   # print('<br><input type="checkbox" name="thermal" value="1">Use thermal denaturation')
+    toggle('thermal',False)
+    print('Use thermal denaturation')
     #Show debug info?
-    print('<br><input type="checkbox" name="debug" value="1">Show detailed output while running')
+    #print('<br><input type="checkbox" name="debug" value="1">Show detailed output while running')
+    toggle('debug',False)
+    print('Show detailed output while running')
     #Advanced options
     print('<br><strong>Advanced Options</strong>')
     collapseHead()
@@ -608,6 +632,7 @@ def fourthScript(form):
 print "Content-Type: text/html;charset=utf-8\n\n"
 #Test statement
 print("<html><head>")
+print('<link type="text/css" rel="stylesheet" href="toggle.css"/>')
 printStyle()
 
 #print("</head><body>")
