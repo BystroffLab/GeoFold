@@ -33,11 +33,10 @@ def getchains(pdbfile):
   else:
     result = []
     for line in read:
-      line = line.split()
-      if line[0]=='ATOM':
-        if line[4] not in result and line[4].isalnum():
-          result.append(line[4])
-        elif "_" not in result and not line[4].isalnum():
+      if line[0:4]=='ATOM':
+        if line[21] not in result and line[21].isalnum():
+          result.append(line[21])
+        elif "_" not in result and not line[21].isalnum():
           result.append("_")
     read.close()
     return result
