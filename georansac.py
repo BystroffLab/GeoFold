@@ -34,7 +34,7 @@ def fit(plotfile,outfile):
   input_columns = [0]
   output_columns = [1]
   model = ransac.LinearLeastSquaresModel(input_columns,output_columns,debug=debug)
-  ransac_fit, ransac_data = ransac.ransac(data,model,n,k,t,d,debug=True,return_all=True)
+  ransac_fit, ransac_data = ransac.ransac(data,model,n,k,t,d,debug=False,return_all=True)
   inx = ransac_data['inliers']
   first = True
   for i in inx:

@@ -47,18 +47,21 @@ def writeOut(x):
   wout.write(x)
   wout.close()
 
-def createForm(out):
+def createForm(out,parfile):
   """write the output for the final form for do-over submission"""
   global parameters
   print parameters
-  out.write('<FORM METHOD="POST" ACTION="http://www.bioinfo.rpi.edu/geofold/geofold1cgi.py" >\n')
+  out.write('<FORM METHOD="POST" ACTION="../../geocgi.cgi" >\n')
+  out.write('<input type="hidden" name="script" value=3>\n')
   ##New name for job
   out.write('<br><input type="text" name="keyword" value="" placeholder="Enter a new unique id for this job (avoid the words \'error\' and \'bug\')" size=80>\n')
   ##hidden parameters
   #Keep same pdb file
-  out.write('<input type="hidden" name="pdbcode" value="%s">\n'%(parameters["PDBCODE"]))
+  #link to old parameters file to parsed by script
+  out.write('<input type="hidden" name="oldParameters" value="%s">\n'%(parfile))
+  #out.write('<input type="hidden" name="pdbcode" value="%s">\n'%(parameters["PDBCODE"]))
   #Keep same email
-  out.write('<input type="hidden" name="email_address" value="%s">\n'%(parameters["EMAIL"]))
+  #out.write('<input type="hidden" name="email_address" value="%s">\n'%(parameters["EMAIL"]))
   #submit button
   out.write('<br><input type="submit" name = "submit" value="submit"></form>')
 
@@ -66,6 +69,7 @@ def createForm(out):
 #new energy profile function
 def writeEnergyProfile(tmpDir,htmlDir,LName,nn):
   gnuplot = "/bach1/home/walcob/usr/bin/gnuplot"
+  #gnuplot = "gnuplot"
   #list of colors to use
   colors = ['black','red','orange','yellow','green','blue','violet','cyan','magenta','pink','gold']
   plot = [[]]
@@ -767,8 +771,48 @@ else:
   if status != 0:
     barrels = True
 
-
-
+  #job directory setup
+  tmpDir = "%s/%s"%(tmpDir,LName)
+  htmlDir = "%s/%s"%(htmlDir,LName)
+  try:
+    os.makedirs(tmpDir,0755)
+    os.makedirs(htmlDir,0755)
+  except OSError as e:
+    pass
+  #dagDir setup
+  #htmlDirs = htmlDir.split('/')
+  #gDirs = gDir.split('/')
+  #dagDir = '/'.join(htmlDirs[len(gDirs)+1:len(htmlDirs)])
+  os.environ["dagDir"] = htmlDir
+  cp = "cp -p %s/isegment.cgi %s/isegment.cgi"%(gDir,htmlDir)
+  commands.getstatusoutput(cp)
+  
+  #Added for do-over script interface
+  status,redo = findParam(paramFile,"REDO")
+  if status == 0 and len(redo) != 0:
+    print tmpDir
+    cmd = "cp -v %s%s/* %s/"%(tmpDir.split(LName)[0],redo,tmpDir)
+    status,output = commands.getstatusoutput(cmd)
+    print cmd
+    print status
+    print output
+    cmd = "find %s -name %s* -print"%(tmpDir,redo)
+    status,output = commands.getstatusoutput(cmd)
+    print cmd
+    print status
+    print output
+    print "line parsing"
+    output = output.split('\n')
+    print output
+    for line in output:
+      line = line.split(redo)
+      if len(line) > 1:
+        print line
+        cmd = "mv -v %s/%s%s %s/%s%s"%(tmpDir,redo,line[1],tmpDir,LName,line[1])
+        print cmd
+        status,output = commands.getstatusoutput(cmd)
+        print status
+        print output
 
 
   #### FILES ####
@@ -846,11 +890,11 @@ else:
     maxSplit = 4
   status, doIt = findParam (paramFile, "RUNGEOFOLD")
   if status != 0:
-    doIt = True
-  doIt = bool(int(doIt))
+    doIt = 1
+  doIt = int(doIt)
   print("doIt: %s"%(doIt))
   os.environ['LNAME'] = LName
-  if doIt :
+  if doIt == 1 :
     print "Running  GEOFOLD"
   else:
     print "Skipping GEOFOLD"
@@ -875,7 +919,7 @@ else:
       sys.exit()
     cp = "cp %s/%s.dag %s/%s.dag" %(tmpDir,OName,tmpDir,LName)
     commands.getstatusoutput(cp)
-  if doIt :
+  if doIt == 1 :
     print("============= PARAMETERS =============")
     tmpWrite.write("============= PARAMETERS =============<br>")
     writeOut("============= PARAMETERS =============\n")
@@ -1148,59 +1192,62 @@ else:
   outWrite.close()
   ##SKIPGEOFOLD
   LNamePDB = "%s/%s.pdb" %(tmpDir,LName)
-  print("============= UNFOLDSIM =============")
-  tmpWrite.write("Unfolding %s%s<br>" %(pdbCode,chain))
-  tmpWrite.write("============= UNFOLDSIM =============<br>")
-  writeOut("============= UNFOLDSIM =============\n")
-  nn = 0
-  for value in omegaRange:
-    nn += 1
-    cp = "cp %s/%s.dag %s/%s_%s.dag" %(tmpDir,LName,tmpDir,LName,nn)
-    commands.getstatusoutput(cp)
-    if not thermal:
-      sed = "sed -e \"s/^OMEGA .*/OMEGA %s/\" %s > %s.1" %(value,paramFilename,paramFilename)
-    else:
-      sed = "sed -e \"s/^TEMPERATURE .*/TEMPERATURE %s/\" %s > %s.1"%(value, paramFilename,paramFilename)
-    status,output=commands.getstatusoutput(sed)
-    logFile = "%s/%s_%s.log" %(tmpDir,LName,nn)
-    if not thermal:
-      print("============= run %s omega = %s =============" %(nn,value))
-      tmpWrite.write("============= run %s omega = %s =============<br>" %(nn,value))
-      writeOut("============= run %s omega = %s =============\n" %(nn,value))
-    else:
-      print("============= run %s temp = %s K =============" %(nn,value))
-      tmpWrite.write("============= run %s temp = %s K =============<br>" %(nn,value))
-      writeOut("============= run %s temp = %s K =============\n" %(nn,value))
-    writeTime = "Time before running UNFOLDSIM "+time.strftime("%c") +'<br>'
-    tmpWrite.write(writeTime)
-    writeOut(writeTime)
-    unfoldsim = "%s/xunfoldsim %s/%s_%s.dag %s.1 > %s" %(gDir,tmpDir,LName,nn,paramFilename,logFile)
-    tmpWrite.write(unfoldsim+'<br>')
-    runProgram(unfoldsim)
-    writeTime = "Time after running UNFOLDSIM "+time.strftime("%c")+'<br>'
-    tmpWrite.write(writeTime)
-    writeOut(writeTime)
-    tmpWrite.write("<p><pre><br>")
-    # grep = "grep ^\"TIMECOURSE\" %s | tail -1 >> %s" %(logFile,htmlTmp)
-    log = open(logFile,'r')
-    lines = []
-    for line in log:
-      linesplit = line.split()
-      if len(linesplit) != 0 and linesplit[0]=='TIMECOURSE':
-        lines.append(line)
-    if len(lines)==0:
-      sys.stderr.write("No timecourse data\n")
-      tmpWrite.write("No timecourse data\n")
-      runProgram("error")
-    tmpWrite.write(lines[len(lines)-1])
-    log.close()
-    if debug:
-      tmpWrite.close()
-      makeCopy(htmlTmp,htmlOut)
-      tmpWrite = open(htmlTmp,'a')
-      outWrite = open(htmlOut,'a')
-      outWrite.write('</pre></body></html>\n')
-      outWrite.close()
+  if doIt != 3:
+      print(doIt == 3)
+      print(doIt)
+      print("============= UNFOLDSIM =============")
+      tmpWrite.write("Unfolding %s%s<br>" %(pdbCode,chain))
+      tmpWrite.write("============= UNFOLDSIM =============<br>")
+      writeOut("============= UNFOLDSIM =============\n")
+      nn = 0
+      for value in omegaRange:
+        nn += 1
+        cp = "cp %s/%s.dag %s/%s_%s.dag" %(tmpDir,LName,tmpDir,LName,nn)
+        commands.getstatusoutput(cp)
+        if not thermal:
+          sed = "sed -e \"s/^OMEGA .*/OMEGA %s/\" %s > %s.1" %(value,paramFilename,paramFilename)
+        else:
+          sed = "sed -e \"s/^TEMPERATURE .*/TEMPERATURE %s/\" %s > %s.1"%(value, paramFilename,paramFilename)
+        status,output=commands.getstatusoutput(sed)
+        logFile = "%s/%s_%s.log" %(tmpDir,LName,nn)
+        if not thermal:
+          print("============= run %s omega = %s =============" %(nn,value))
+          tmpWrite.write("============= run %s omega = %s =============<br>" %(nn,value))
+          writeOut("============= run %s omega = %s =============\n" %(nn,value))
+        else:
+          print("============= run %s temp = %s K =============" %(nn,value))
+          tmpWrite.write("============= run %s temp = %s K =============<br>" %(nn,value))
+          writeOut("============= run %s temp = %s K =============\n" %(nn,value))
+        writeTime = "Time before running UNFOLDSIM "+time.strftime("%c") +'<br>'
+        tmpWrite.write(writeTime)
+        writeOut(writeTime)
+        unfoldsim = "%s/xunfoldsim %s/%s_%s.dag %s.1 > %s" %(gDir,tmpDir,LName,nn,paramFilename,logFile)
+        tmpWrite.write(unfoldsim+'<br>')
+        runProgram(unfoldsim)
+        writeTime = "Time after running UNFOLDSIM "+time.strftime("%c")+'<br>'
+        tmpWrite.write(writeTime)
+        writeOut(writeTime)
+        tmpWrite.write("<p><pre><br>")
+        # grep = "grep ^\"TIMECOURSE\" %s | tail -1 >> %s" %(logFile,htmlTmp)
+        log = open(logFile,'r')
+        lines = []
+        for line in log:
+          linesplit = line.split()
+          if len(linesplit) != 0 and linesplit[0]=='TIMECOURSE':
+            lines.append(line)
+        if len(lines)==0:
+          sys.stderr.write("No timecourse data\n")
+          tmpWrite.write("No timecourse data\n")
+          runProgram("error")
+        tmpWrite.write(lines[len(lines)-1])
+        log.close()
+        if debug:
+          tmpWrite.close()
+          makeCopy(htmlTmp,htmlOut)
+          tmpWrite = open(htmlTmp,'a')
+          outWrite = open(htmlOut,'a')
+          outWrite.write('</pre></body></html>\n')
+          outWrite.close()
   print("============= PATHWAY2PS =============")
   tmpWrite.write("============= PATHWAY2PS =============<br>")
   writeOut("============= PATHWAY2PS =============\n")
@@ -1282,7 +1329,7 @@ else:
   permWrite.write('<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">\n')
   permWrite.write('<html>\n<head><title>GeoFold Server</title>\n')
   permWrite.write('<link rev=made href="mailto:bystrc@rpi.edu">\n</head>\n')
-  permWrite.write('<body>\n<img src="../banner.gif">\n')
+  permWrite.write('<body>\n<img src="../../banner.gif">\n')
   #table
   permWrite.write('<table width = "80%">\n<tr><td colspan="2">\n')
   #molscript gif
@@ -1410,7 +1457,7 @@ else:
       fit("%s/%s.plot"%(tmpDir,LName),"%s/%s_fit.plot"%(tmpDir,LName))
     else:
       commands.getstatusoutput("cp %s/%s.plot %s/%s_fit.plot"%(tmpDir,LName,tmpDir,LName))
-  except ValueError:
+  except Exception:
     commands.getstatusoutput("cp %s/%s.plot %s/%s_fit.plot"%(tmpDir,LName,tmpDir,LName))
   fit_poly = "%s/xfit_poly %s/%s_fit.plot 1 %s/%s.fit >> %s" %(gDir,tmpDir,LName,tmpDir,LName,htmlTmp)
   runProgram(fit_poly)
@@ -1419,6 +1466,8 @@ else:
   line = fitFile.readline()
   lines = []
   lsq = False
+  sl = 1
+  ic = 0
   while not lsq:
     line = fitFile.readline()
     if "Least-squares" in line:
@@ -1426,6 +1475,7 @@ else:
       lines.append(fitFile.readline())
       lines.append(fitFile.readline())
       lines.append(fitFile.readline())
+      print lines
       ic = lines[1]
       sl = lines[2]
       ic = ic.split()
@@ -1496,9 +1546,9 @@ else:
     runConvert = "%s %s/%s.gp_thumb.png %s/%s.gp_thumb.png" %(convert,tmpDir,LName,htmlDir,LName)
     runProgram(runConvert)
   ######Create "do over" button
-  createForm(permWrite)
+  createForm(permWrite,paramFilename)
   #####BACK button
-  permWrite.write('<h3><a href="../geofold.php">Back to GeoFold server</a></h3><br>\n')
+  permWrite.write('<h3><a href="../../geofold.php">Back to GeoFold server</a></h3><br>\n')
   permWrite.write('</body></html>\n')
   permWrite.close()
   #generate molscript
@@ -1518,8 +1568,6 @@ else:
   for value in omegaRange:
     nn+=1
     commands.getstatusoutput("cp %s/%s_%s.dag.out %s/%s_%s.dag.out"%(tmpDir,LName,nn,htmlDir,LName,nn))
-    commands.getstatusoutput("cp %s/%s_%s.dag.out %s/../%s_%s.dag.out"%(tmpDir,LName,nn,htmlDir,LName,nn))
-    commands.getstatusoutput("cp %s/%s_%s.dag.out %s/%s_%s.dag.out"%(tmpDir,LName,nn,baseDir,LName,nn))
     commands.getstatusoutput("cp %s/%s_%s.log %s/%s_%s.log" %(tmpDir,LName,nn,htmlDir,LName,nn))
 
 
