@@ -105,9 +105,11 @@ MODULE geofold_hbonds
               if (geofold_pivots_queryinseam(f,ires,kres)) cycle
               if (u1flag(ires) /= ".") then
                 if(u2flag(kres) /= ".") n = n-1
+                write (*,'("Bond removed", 2i5)') ires, kres
               endif
               if(u1flag(kres) /= ".") then
                 if(u2flag(ires) /= ".") n = n-1
+                write (*,'("Bond removed", 2i5)') ires, kres
               endif
             enddo
           enddo
