@@ -65,53 +65,55 @@ MODULE geofold_hbonds
     type(intermediate), POINTER :: f
     integer,intent(out) :: hbonds
     character,intent(in),optional :: seamchar
-    integer :: n,ires,jres,da,h,kres,seam_num,barrel_num,i,seam
+    integer :: n,ires,jres,da,h,kres,bar_itr,seam_itr
+    character, dimension(maxres) :: u1flag, u2flag
     n = 0
-    if(f%state == seamflag) then
-      allocate(seam)
-      do i = 1, maxbarrel
-        if (f%barrel(i)/=0) then
-          barrel_num = i
-          seam_num = f%barrel(i)
-          exit
-        endif
-      enddo
-      do i = 1, size(seams)
-        if(seams(i)%id==seam_num) then
-          seam = i
-          exit
-        endif
-      enddo
     ILOOP: do ires=1,geofold_nres
-      if(f%state /= seamflag) then
-        if (f%iflag(ires)==".") cycle ILOOP
-        do da=1,2
-          do h = 1, size(geofold_hb, 2)
-            jres = geofold_hb(da,h)
-            if (jres/=ires) cycle
-            kres = geofold_hb((2/da),h) !kres is the acceptor/donor residue where ires is the donor/acceptor
-            if (f%iflag(kres)==".") cycle
-            if (geofold_pivots_queryinseam(f, ires,kres)) cycle
-            n = n + 1
-          enddo
+      if (f%iflag(ires)==".") cycle ILOOP
+      do da=1,2
+        do h = 1, size(geofold_hb, 2)
+          jres = geofold_hb(da,h)
+          if (jres/=ires) cycle
+          kres = geofold_hb((2/da),h) !kres is the acceptor/donor residue where ires is the donor/acceptor
+          if (f%iflag(kres)==".") cycle
+          if (geofold_pivots_queryinseam(f, ires,kres)) cycle
+          n = n + 1
         enddo
-      else
-        if(f%iflag(ires)==".") cycle ILOOP
-        do da = 1,2
-          do h = 1, size(geofold_hb, 2)
-            jres = geofold_hb(da,h)
-            if(jres /= ires) cycle
-            kres = geofold_hb((2/da),h)
-            if(f%iflag(kres)==".") cycle
-            if(seams(seam)%u1flag(ires)/=".") cycle
-            if(seams(seam)%u2flag(ires)/=".") cycle
-            if(seams(seam)%u1flag(kres)/=".") cycle
-            if(seams(seam)%u2flag(kres)/=".") cycle
-            n = n + 1
-          enddo
-        enddo
-      endif
+      enddo
     enddo ILOOP
+    !Account for H-bonds broken by a seam move
+    !for each barrel in f%barrel
+    do bar_itr = 1, MAXBARREL
+      !check if barrel /= 0 --> open seam
+      if(f%barrel(bar_itr) == 0) cycle      
+      !if /= 0, find and remove bonds broken by seam
+      !iterate through seams to find the one with the proper id
+      do seam_itr = 1, size(barrels_array(bar_itr)%nSeams)
+        if(barrels_array(bar_itr)%seams(seam_itr)%id /= f%barrel(bar_itr)) cycle
+        !set u1flag and u2flag
+        u1flag = barrels_array(bar_itr)%seams(seam_itr)%u1flag
+        u2flag = barrels_array(bar_itr)%seams(seam_itr)%u2flag
+        !iterate through every residue
+        SLOOP: do ires = 1, geofold_nres
+          if(f%iflag(ires)==".") cycle SLOOP
+          !a contact is broken if both residues are in opposite flags
+          do da = 1,2
+            do h = 1, size(geofold_hb, 2)
+              if(geofold_hb(da,h) /= ires) cycle
+              kres = geofold_hb((2/da),h)
+              if (f%iflag(kres)==".") cycle
+              if (geofold_pivots_queryinseam(f,ires,kres)) cycle
+              if (u1flag(ires) /= ".") then
+                if(u2flag(kres) /= ".") n = n-1
+              endif
+              if(u1flag(kres) /= ".") then
+                if(u2flag(ires) /= ".") n = n-1
+              endif
+            enddo
+          enddo
+        enddo SLOOP
+      enddo
+    enddo
     hbonds = n/2   ! because every H-bond is counted twice !
   end subroutine geofold_hbonds_getwithin
 
