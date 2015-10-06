@@ -88,7 +88,7 @@ MODULE geofold_hbonds
       if(f%barrel(bar_itr) == 0) cycle      
       !if /= 0, find and remove bonds broken by seam
       !iterate through seams to find the one with the proper id
-      do seam_itr = 1, size(barrels_array(bar_itr)%nSeams)
+      do seam_itr = 1, barrels_array(bar_itr)%nSeams
         if(barrels_array(bar_itr)%seams(seam_itr)%id /= f%barrel(bar_itr)) cycle
         !set u1flag and u2flag
         u1flag = barrels_array(bar_itr)%seams(seam_itr)%u1flag
