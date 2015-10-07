@@ -81,41 +81,42 @@ MODULE geofold_hbonds
         enddo
       enddo
     enddo ILOOP
-    !Account for H-bonds broken by a seam move
-    !for each barrel in f%barrel
-    do bar_itr = 1, MAXBARREL
-      !check if barrel /= 0 --> open seam
-      if(f%barrel(bar_itr) == 0) cycle      
-      !if /= 0, find and remove bonds broken by seam
-      !iterate through seams to find the one with the proper id
-      do seam_itr = 1, barrels_array(bar_itr)%nSeams
-        if(barrels_array(bar_itr)%seams(seam_itr)%id /= f%barrel(bar_itr)) cycle
-        !set u1flag and u2flag
-        u1flag = barrels_array(bar_itr)%seams(seam_itr)%u1flag
-        u2flag = barrels_array(bar_itr)%seams(seam_itr)%u2flag
-        !iterate through every residue
-        SLOOP: do ires = 1, geofold_nres
-          if(f%iflag(ires)==".") cycle SLOOP
-          !a contact is broken if both residues are in opposite flags
-          do da = 1,2
-            do h = 1, size(geofold_hb, 2)
-              if(geofold_hb(da,h) /= ires) cycle
-              kres = geofold_hb((2/da),h)
-              if (f%iflag(kres)==".") cycle
-              if (geofold_pivots_queryinseam(f,ires,kres)) cycle
-              if (u1flag(ires) /= ".") then
-                if(u2flag(kres) /= ".") n = n-1
-                write (*,'("Bond removed", 2i5)') ires, kres
-              endif
-              if(u1flag(kres) /= ".") then
-                if(u2flag(ires) /= ".") n = n-1
-                write (*,'("Bond removed", 2i5)') ires, kres
-              endif
-            enddo
-          enddo
-        enddo SLOOP
-      enddo
-    enddo
+!    
+!    !Account for H-bonds broken by a seam move
+!    !for each barrel in f%barrel
+!    do bar_itr = 1, MAXBARREL
+!      !check if barrel /= 0 --> open seam
+!      if(f%barrel(bar_itr) == 0) cycle      
+!      !if /= 0, find and remove bonds broken by seam
+!      !iterate through seams to find the one with the proper id
+!      do seam_itr = 1, barrels_array(bar_itr)%nSeams
+!        if(barrels_array(bar_itr)%seams(seam_itr)%id /= f%barrel(bar_itr)) cycle
+!        !set u1flag and u2flag
+!        u1flag = barrels_array(bar_itr)%seams(seam_itr)%u1flag
+!        u2flag = barrels_array(bar_itr)%seams(seam_itr)%u2flag
+!        !iterate through every residue
+!        SLOOP: do ires = 1, geofold_nres
+!          if(f%iflag(ires)==".") cycle SLOOP
+!          !a contact is broken if both residues are in opposite flags
+!          do da = 1,2
+!            do h = 1, size(geofold_hb, 2)
+!              if(geofold_hb(da,h) /= ires) cycle
+!              kres = geofold_hb((2/da),h)
+!              if (f%iflag(kres)==".") cycle
+!              if (geofold_pivots_queryinseam(f,ires,kres)) cycle
+!              if (u1flag(ires) /= ".") then
+!                if(u2flag(kres) /= ".") n = n-1
+!                write (*,'("Bond removed", 2i5)') ires, kres
+!              endif
+!              if(u1flag(kres) /= ".") then
+!                if(u2flag(ires) /= ".") n = n-1
+!                write (*,'("Bond removed", 2i5)') ires, kres
+!              endif
+!            enddo
+!          enddo
+!        enddo SLOOP
+!      enddo
+!    enddo
     hbonds = n/2   ! because every H-bond is counted twice !
   end subroutine geofold_hbonds_getwithin
 

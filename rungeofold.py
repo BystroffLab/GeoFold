@@ -46,7 +46,8 @@ def readConf(confFile):
       line = line.split()
       if len(line) > 2:
         line[1] = " ".join(line[1:])
-      output[line[0]] = line[1]
+      if len(line) == 2:
+        output[line[0]] = line[1]
   conf.close()
   return output
 
@@ -630,7 +631,7 @@ global debug
 debug = False
 parameters = {}
 
-Username = "flex"
+conf = "default.conf"
 
 ########################## DIRECTORIES #############################
 ### SET THESE DIRECTORIES AS FOLLOWS:
@@ -645,8 +646,24 @@ Username = "flex"
 # (not used in this script except to clean up)
 # thisDir is the directory where you are running this script.
 if len(sys.argv) == 3:
-  Username = sys.argv[2]
+  conf = sys.argv[2]
 
+configuration = readConf(conf)
+thisDir = os.getcwd()
+baseDir = configuration['baseDir']
+gDir = configuration['gDir']
+bDir = configuration['bDir']
+maskerDir = configuration['maskerDir']
+tmpDir = configuration['tmpDir']
+pdbDir = configuration['pdbDir']
+logDir = configuration['logDir']
+htmlDir = configuration['htmlDir']
+jobDir = configuration['jobDir']
+paramTemplate = configuration['paramTemplate']
+baseURL = configuration['baseURL']
+outputURL = configuration['outputURL']
+
+'''
 #Directory settings for server
 if Username == "bystrc":
   thisDir = os.getcwd()
@@ -715,6 +732,7 @@ if Username == 'public':
   paramTemplate=gDir+'/parameters'
   baseURL='http://www.bioinfo.rpi.edu/bystrc/geofold'
   outputURL='output'
+'''
 
 if len(sys.argv) < 2 or len(sys.argv) > 4:
   #### JOB level variable from parameter file ####
@@ -723,7 +741,7 @@ if len(sys.argv) < 2 or len(sys.argv) > 4:
   # LName is a unique name for this job or the process ID
   # OName is a unique name for a previous job, to be used to skip GEOFOLD.
   # UName is a unique name for the current job (or username?)
-  print("USAGE: rungeofold.py parametersFile [username]")
+  print("USAGE: rungeofold.py parametersFile [configuration.conf]")
   sys.exit()
 else:
   #Read parameters from the parameters file
