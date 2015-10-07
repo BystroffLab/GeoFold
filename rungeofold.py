@@ -38,6 +38,19 @@ import time
 import math
 from georansac import fit
 
+def readConf(confFile):
+  output = {}
+  conf = open(confFile,'r')
+  for line in conf:
+    if line[0] != "#":
+      line = line.split()
+      if len(line) > 2:
+        line[1] = " ".join(line[1:])
+      output[line[0]] = line[1]
+  conf.close()
+  return output
+
+
 def writeOut(x):
   global htmlOut
   try:
