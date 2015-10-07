@@ -5,6 +5,7 @@
 #include<vector>
 #include<string>
 #include<map>
+#include<cstdlib>
 
 using namespace std;
 
@@ -144,6 +145,7 @@ function below
 */
 void Graph::print_tree(Node * root, char * dagfile) { 
   char * nodenum;
+  char * LName = getenv("LNAME");
   root->visit = true; //mark the node as being visited
   if (DEBUG == true) { 
     cout << "______________________" << endl;
@@ -176,7 +178,7 @@ void Graph::print_tree(Node * root, char * dagfile) {
 	      else if (root->node_name[1] == 's') { cout << "blue"; }
 	      else                                { cout << "grey"; }
           cout << "\", style=\"bold, filled\", shape=diamond, height=1.2, width=1.2, ";
-	      cout << "fontsize=20, URL=\"../isegment.cgi?iseg=" << root->node_name << "&dag=" << dagfile << "&\"];" << endl;
+	      cout << "fontsize=20, URL=\"../isegment.cgi?iseg=" << root->node_name << "&dag="<<LName<<"/"<<dagfile << "&\"];" << endl;
 	    }
 	    else { 
           // Modified Tue Sep 29 06:11:30 EDT 2009 CB. Add node number to highlighted ISEGM
@@ -185,7 +187,7 @@ void Graph::print_tree(Node * root, char * dagfile) {
 	      // cout << " [fillcolor=\"orange\", style=\"bold, filled\", label=\"\", shape=circle, height=1.3, ";
 	      cout << " [label=\"" << nodenum << "\"," ;
           cout << " fillcolor=\"orange\", style=\"bold, filled\",  shape=circle, height=1.3, ";
-	      cout << "fontsize=50, URL=\"../isegment.cgi?iseg=" << root->node_name << "&dag=" << dagfile << "&\"];" << endl;
+	      cout << "fontsize=50, URL=\"../isegment.cgi?iseg=" << root->node_name << "&dag="<<LName<<"/"<<dagfile << "&\"];" << endl;
 	    }
       } //end if max_highlight is true
       else { 
@@ -198,12 +200,12 @@ void Graph::print_tree(Node * root, char * dagfile) {
 	      else if (root->node_name[1] == 's') { cout << "#3333AA"; }
 	      else                                { cout << "0.0 0.1 0.1"; }
           cout << "\",  shape=diamond, style=\"bold, filled\", " << endl;
-	      cout << " URL=\"../isegment.cgi?iseg=" << root->node_name << "&dag=" << dagfile << "&\"];" << endl;
+	      cout << " URL=\"../isegment.cgi?iseg=" << root->node_name << "&dag="<<LName<<"/"<<dagfile << "&\"];" << endl;
 	    }
 	    else {
 	      cout << root->node_name;
 	      cout << " [label=\"\", fillcolor=\".1 .5 1.0\",  shape=circle, style=\"bold, filled\", " << endl;
-	      cout << " URL=\"../isegment.cgi?iseg=" << root->node_name << "&dag=" << dagfile << "&\"];" << endl;
+	      cout << " URL=\"../isegment.cgi?iseg=" << root->node_name << "&dag="<<LName<<"/"<<dagfile << "&\"];" << endl;
 	    }
       } //end else if max_highlight is not true
       if ( (root->children[i])->max_highlight == true ) {
@@ -211,13 +213,13 @@ void Graph::print_tree(Node * root, char * dagfile) {
 	  cout << (root->children[i])->node_name;
 	  // cout << " [fillcolor=\"red\", style=\"bold, filled\", label=\"\", shape=diamond, height=1.2, width=1.2, ";
 	  cout << " [label=\"\", fillcolor=\"red\", style=\"bold, filled\",  shape=diamond, height=1.2, width=1.2, ";
-	  cout << "fontsize=20, URL=\"../isegment.cgi?iseg=" << (root->children[i])->node_name << "&dag=" << dagfile << "&\"];" << endl;
+	  cout << "fontsize=20, URL=\"../isegment.cgi?iseg=" << (root->children[i])->node_name << "&dag="<<LName<<"/"<<dagfile << "&\"];" << endl;
 	}
 	else { 
 	  cout << (root->children[i])->node_name;
 	  // cout << " [fillcolor=\"orange\", style=\"bold, filled\", label=\"\", shape=circle, height=1.3, ";
 	  cout << " [label=\"\", fillcolor=\"orange\", style=\"bold, filled\",  shape=circle, height=1.3, ";
-	  cout << "fontsize=20, URL=\"../isegment.cgi?iseg=" << (root->children[i])->node_name << "&dag=" << dagfile << "&\"];" << endl;
+	  cout << "fontsize=20, URL=\"../isegment.cgi?iseg=" << (root->children[i])->node_name << "&dag="<<LName<<"/"<<dagfile << "&\"];" << endl;
 	}
 	cout << root->node_name << " -> " << (root->children[i])->node_name;
 	if (root->max_highlight == true) {
@@ -231,12 +233,12 @@ void Graph::print_tree(Node * root, char * dagfile) {
 	if ( (root->children[i])->node_name[0] == 't') { // if its a transition state
 	  cout << (root->children[i])->node_name;
 	  cout << " [label=\"\", fillcolor=\".0 .5 1.0\",  shape=diamond, style=\"bold, filled\", " << endl;
-	  cout << " URL=\"../isegment.cgi?iseg=" << (root->children[i])->node_name << "&dag=" << dagfile << "&\"];" << endl;
+	  cout << " URL=\"../isegment.cgi?iseg=" << (root->children[i])->node_name << "&dag="<<LName<<"/"<<dagfile << "&\"];" << endl;
 	}
 	else { //if it's an intermediate state
 	  cout << (root->children[i])->node_name;
 	  cout << " [label=\"\", fillcolor=\".1 .5 1.0\",  shape=circle, style=\"bold, filled\", " << endl;
-	  cout << " URL=\"../isegment.cgi?iseg=" << (root->children[i])->node_name << "&dag=" << dagfile << "&\"];" << endl;
+	  cout << " URL=\"../isegment.cgi?iseg=" << (root->children[i])->node_name << "&dag="<<LName<<"/"<<dagfile << "&\"];" << endl;
 	}
 	cout << root->node_name << " -> " << (root->children[i])->node_name << endl;
 	cout << "[style=\"setlinewidth(3)\", color=gray, weight=\"10\"];" << endl;

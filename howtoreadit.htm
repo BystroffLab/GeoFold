@@ -1,0 +1,633 @@
+<html xmlns:v="urn:schemas-microsoft-com:vml"
+xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta name=Title content="HOW TO READ GEOFOLD OUTPUT">
+<meta name=Keywords content="">
+<meta http-equiv=Content-Type content="text/html; charset=macintosh">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 11">
+<meta name=Originator content="Microsoft Word 11">
+<link rel=File-List href="howtoreadit_files/filelist.xml">
+<link rel=Edit-Time-Data href="howtoreadit_files/editdata.mso">
+<!--[if !mso]>
+<style>
+v\:* {behavior:url(#default#VML);}
+o\:* {behavior:url(#default#VML);}
+w\:* {behavior:url(#default#VML);}
+.shape {behavior:url(#default#VML);}
+</style>
+<![endif]-->
+<title>HOW TO READ GEOFOLD OUTPUT</title>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>Chris Bystroff</o:Author>
+  <o:Template>Normal</o:Template>
+  <o:LastAuthor>Chris Bystroff</o:LastAuthor>
+  <o:Revision>3</o:Revision>
+  <o:Created>2009-12-31T20:06:00Z</o:Created>
+  <o:LastSaved>2009-12-31T20:19:00Z</o:LastSaved>
+  <o:Pages>2</o:Pages>
+  <o:Words>1372</o:Words>
+  <o:Characters>7826</o:Characters>
+  <o:Company>RPI</o:Company>
+  <o:Lines>65</o:Lines>
+  <o:Paragraphs>15</o:Paragraphs>
+  <o:CharactersWithSpaces>9610</o:CharactersWithSpaces>
+  <o:Version>11.1280</o:Version>
+ </o:DocumentProperties>
+ <o:OfficeDocumentSettings>
+  <o:TargetScreenSize>544x376</o:TargetScreenSize>
+ </o:OfficeDocumentSettings>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:Zoom>125</w:Zoom>
+  <w:DoNotShowRevisions/>
+  <w:DoNotPrintRevisions/>
+  <w:DrawingGridHorizontalSpacing>0 pt</w:DrawingGridHorizontalSpacing>
+  <w:DrawingGridVerticalSpacing>0 pt</w:DrawingGridVerticalSpacing>
+  <w:DisplayHorizontalDrawingGridEvery>0</w:DisplayHorizontalDrawingGridEvery>
+  <w:DisplayVerticalDrawingGridEvery>0</w:DisplayVerticalDrawingGridEvery>
+  <w:UseMarginsForDrawingGridOrigin/>
+  <w:DrawingGridHorizontalOrigin>0 pt</w:DrawingGridHorizontalOrigin>
+  <w:DrawingGridVerticalOrigin>0 pt</w:DrawingGridVerticalOrigin>
+  <w:DoNotShadeFormData/>
+  <w:Compatibility>
+   <w:SpaceForUL/>
+   <w:BalanceSingleByteDoubleByteWidth/>
+   <w:DoNotLeaveBackslashAlone/>
+   <w:ULTrailSpace/>
+   <w:DoNotExpandShiftReturn/>
+   <w:AdjustLineHeightInTable/>
+  </w:Compatibility>
+ </w:WordDocument>
+</xml><![endif]-->
+<style>
+<!--
+ /* Font Definitions */
+@font-face
+	{font-family:"Times New Roman";
+	panose-1:0 2 2 6 3 5 4 5 2 3;
+	mso-font-charset:0;
+	mso-generic-font-family:auto;
+	mso-font-pitch:variable;
+	mso-font-signature:50331648 0 0 0 1 0;}
+@font-face
+	{font-family:"Lucida Grande";
+	panose-1:0 2 11 6 0 4 5 2 2 2;
+	mso-font-charset:0;
+	mso-generic-font-family:auto;
+	mso-font-pitch:variable;
+	mso-font-signature:50331648 0 0 0 1 0;}
+@font-face
+	{font-family:"\30D2\30E9\30AE\30CE\89D2\30B4 Pro W3";
+	mso-font-charset:0;
+	mso-generic-font-family:roman;
+	mso-font-pitch:auto;
+	mso-font-signature:0 0 0 0 0 0;}
+ /* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+table.MsoNormalTable
+	{mso-style-parent:"";
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+p.FreeForm, li.FreeForm, div.FreeForm
+	{mso-style-name:"Free Form";
+	mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	color:black;}
+p.Normal, li.Normal, div.Normal
+	{mso-style-name:"Normal\,Normal2";
+	mso-style-parent:"";
+	margin-top:3.0pt;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:0in;
+	margin-bottom:.0001pt;
+	text-indent:23.75pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	color:black;}
+ /* Page Definitions */
+@page
+	{mso-page-border-surround-header:no;
+	mso-page-border-surround-footer:no;
+	mso-facing-pages:yes;
+	mso-endnote-numbering-style:arabic;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-even-header:url(":howtoreadit_files:header.htm") eh1;
+	mso-header:url(":howtoreadit_files:header.htm") h1;
+	mso-even-footer:url(":howtoreadit_files:header.htm") ef1;
+	mso-footer:url(":howtoreadit_files:header.htm") f1;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+<!--[if gte mso 9]><xml>
+ <o:shapedefaults v:ext="edit" spidmax="2050"/>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <o:shapelayout v:ext="edit">
+  <o:idmap v:ext="edit" data="1"/>
+  <o:regrouptable v:ext="edit">
+   <o:entry new="1" old="0"/>
+  </o:regrouptable>
+ </o:shapelayout></xml><![endif]-->
+</head>
+
+<body bgcolor=white lang=EN-US style='tab-interval:.5in'>
+
+<div class=Section1>
+
+<p class=Normal><span style='font-size:20.0pt'>HOW TO READ GEOFOLD OUTPUT<o:p></o:p></span></p>
+
+<p class=Normal><span style='font-size:9.0pt'>by</span><span style='font-size:
+20.0pt'> </span><span style='font-size:9.0pt'>Chris Bystroff, RPI Biology</span><span
+style='font-size:1.0pt'><o:p></o:p></span></p>
+
+<p class=Normal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=Normal><!--[if gte vml 1]><v:shape id="_x0000_s1026" style='position:absolute;
+ margin-left:4.65pt;margin-top:19.75pt;width:279pt;height:201.4pt;z-index:1;
+ mso-wrap-distance-left:4.5pt;mso-wrap-distance-top:4.5pt;
+ mso-wrap-distance-right:4.5pt;mso-wrap-distance-bottom:4.5pt;
+ mso-position-horizontal:absolute;mso-position-horizontal-relative:page;
+ mso-position-vertical:absolute;mso-position-vertical-relative:page'
+ coordsize="21600,21600">
+ <v:stroke joinstyle="round"/>
+ <v:imagedata src="howtoreadit_files/image001.gif" o:althref="howtoreadit_files/image002.pct"
+  o:title=""/>
+ <w:wrap type="square" anchorx="page" anchory="page"/>
+</v:shape><![endif]--><![if !vml]><img width=279 height=201
+src="howtoreadit_files/image003.gif" align=left hspace=5 vspace=5 v:shapes="_x0000_s1026"><![endif]><span
+style='font-size:16.0pt'>Timecourse<o:p></o:p></span></p>
+
+<p class=Normal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=Normal style='text-align:justify'>GeoFOLD does its thing with your
+protein, producing a directed acyclic graph (DAG) of all topologically
+possibleintermediates of unfolding, each with calculated transition state
+energies. Starting with the DAG, UnfoldSim calculates the timecourse of
+unfolding. The native state concentration is initialized to the value
+CONCENTRATION in the parameters file. All other nodes are initialized to zero
+concentration. At each time step in the time course, the concentration of each
+node is updated based on the concentrations of all nodes connected to it.<span
+style="mso-spacerun: yes">&nbsp; </span>We plot in &quot;F&quot; the native
+state and any states that have at least 90% of the buried surface area of hte
+native state. In &quot;U&quot; we sum the concentration of all states that have
+less than 1000 &Aring; of buried surface area, equivalent to a typical 10 residue
+segment.<span style="mso-spacerun: yes">&nbsp; </span>In &quot;I&quot; we plot
+the summed concentrations of all other, intermediate, states, not F and not U.<span
+style="mso-spacerun: yes">&nbsp; </span>The simulation ends when the protein is
+half unfolded (if HALFLIFE is set to 1), or when there are no further changes
+in concentration (HALFLIFE set to 0). If FOLDIING is set to 1, then the
+simulation is initialized with the unfolded state having non-zero
+concentration, and all other states including the native state set to zero
+concentration.</p>
+
+<p class=Normal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=Normal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=Normal><!--[if gte vml 1]><v:shape id="_x0000_s1027" style='position:absolute;
+ margin-left:5.05pt;margin-top:22.5pt;width:208.65pt;height:208.65pt;z-index:2;
+ mso-wrap-distance-left:4.5pt;mso-wrap-distance-top:4.5pt;
+ mso-wrap-distance-right:4.5pt;mso-wrap-distance-bottom:4.5pt;
+ mso-position-horizontal:absolute;mso-position-horizontal-relative:page;
+ mso-position-vertical:absolute;mso-position-vertical-relative:page'
+ coordsize="21600,21600">
+ <v:stroke joinstyle="round"/>
+ <v:imagedata src="howtoreadit_files/image004.gif" o:althref="howtoreadit_files/image005.pct"
+  o:title=""/>
+ <w:wrap type="square" anchorx="page" anchory="page"/>
+</v:shape><![endif]--><![if !vml]><img width=209 height=208
+src="howtoreadit_files/image006.gif" align=left hspace=5 vspace=5 v:shapes="_x0000_s1027"><![endif]><span
+style='font-size:18.0pt'>Age Plot<o:p></o:p></span></p>
+
+<p class=Normal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=Normal>This image is a contact map of the protein, colored by the
+order in which contacts are broken in the unfolding pathway. Red are contacts
+broken early in unfolding, then yellow, green, cyan, and finally blue are
+contacts that are broken late in unfolding. The contacts are ordered by
+&quot;age&quot; which is defined as the sum of the concentrations of all states
+that contain the contact in question. Age is higher if the total concentration
+of states having that contact is higher. The Age Plot is calculated at the
+point where the concentration of unfolded (U in the Timecourse) first passes
+50% (first drops blow 50% if FOLDING = 1). The Age Plot can be used to identify
+early folding intermediates (blue contacts), and early unfolding segments (red
+contacts), and to identify contacts that have topological dependencies.</p>
+
+<p class=Normal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=Normal>In the case shown here, the C-terminal is the first to unfold.
+Of the three beta hairpin structures in this protein (clusters of contacts
+perpendicular to the diagonal), the third is the most enduring, remaining until
+the end either for topological or energetic reasons.</p>
+
+<p class=Normal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=Normal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=Normal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=Normal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=Normal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=Normal><!--[if gte vml 1]><v:shape id="_x0000_s1028" style='position:absolute;
+ margin-left:3.85pt;margin-top:21.9pt;width:176pt;height:359.35pt;z-index:3;
+ mso-wrap-distance-left:4.5pt;mso-wrap-distance-top:4.5pt;
+ mso-wrap-distance-right:4.5pt;mso-wrap-distance-bottom:4.5pt;
+ mso-position-horizontal:absolute;mso-position-horizontal-relative:page;
+ mso-position-vertical:absolute;mso-position-vertical-relative:page'
+ coordsize="21600,21600">
+ <v:stroke joinstyle="round"/>
+ <v:imagedata src="howtoreadit_files/image007.gif" o:althref="howtoreadit_files/image008.pct"
+  o:title=""/>
+ <w:wrap type="square" anchorx="page" anchory="page"/>
+</v:shape><![endif]--><![if !vml]><img width=176 height=359
+src="howtoreadit_files/image009.gif" align=left hspace=5 vspace=5 v:shapes="_x0000_s1028"><![endif]><span
+style='font-size:18.0pt'>Pathways<o:p></o:p></span></p>
+
+<p class=Normal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=Normal>GeoFOLD pathways depict a subset of the states in the directed
+acyclic graph (DAG), elected according to the flow of traffic through the graph
+in a UnfoldSim simulation. The pathway you see (and all other results for that
+matter) depend on the settings for TEMPERATURE, OMEGA, and all energies,
+entropies and cutoffs. Orange nodes are structural states, with the native
+state at the top. Diamonds are transition states, red for pivots, black for
+hinges and white for breaks. </p>
+
+<p class=Normal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=Normal>Clicking on one of the nodes will give you some specific
+information on the structural state or transition state. For example, clicking
+on an orange circle node give this info:</p>
+
+<p class=Normal><span style='font-size:7.0pt;font-family:Courier'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=Normal style='margin-top:0in;text-indent:0in'><span style='font-size:
+8.0pt;font-family:Courier'>ISEGMT<span style="mso-spacerun:
+yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>2<span style="mso-spacerun:
+yes">&nbsp;&nbsp;&nbsp; </span>2<span style="mso-spacerun:
+yes">&nbsp;&nbsp;&nbsp; </span>0<span style="mso-spacerun:
+yes">&nbsp;&nbsp;&nbsp;&nbsp; </span>6665.21<span style="mso-spacerun:
+yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>98.67<span
+style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0<span
+style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp; </span>35<span
+style="mso-spacerun: yes">&nbsp;&nbsp; </span>0.056048164</span><span
+style='font-size:8.0pt;font-family:Courier'><o:p></o:p></span></p>
+
+<p class=Normal style='text-indent:0in'><span style='font-size:8.0pt;
+font-family:Courier'>BBBBBBBBB..........AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA<span
+style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp; </span>1-<span
+style="mso-spacerun: yes">&nbsp;&nbsp; </span>9,<span style="mso-spacerun:
+yes">&nbsp; </span>20-<span style="mso-spacerun: yes">&nbsp; </span>58</span><span
+style='font-size:8.0pt;font-family:Courier'><o:p></o:p></span></p>
+
+<p class=Normal style='text-indent:0in'><span style='font-size:8.0pt;
+font-family:Courier'><![if !supportEmptyParas]>&nbsp;<![endif]></span><span
+style='font-size:8.0pt;font-family:Courier'><o:p></o:p></span></p>
+
+<p class=Normal style='text-indent:0in'>Columns in the first line (ISEGM) are</p>
+
+<p class=Normal style='text-indent:0in'>2: Segment number</p>
+
+<p class=Normal style='text-indent:0in'>3: Graph depth from native</p>
+
+<p class=Normal style='text-indent:0in'>4: Number of symmetry equivalent
+segments in this protein </p>
+
+<p class=Normal style='text-indent:0in'>5: Buried solvent accessible surface
+area</p>
+
+<p class=Normal style='text-indent:0in'>6. Unexpressed sidechain entropy</p>
+
+<p class=Normal style='text-indent:0in'>7. Number of buried void spaces</p>
+
+<p class=Normal style='text-indent:0in'>8. Number of hydrogen bonds</p>
+
+<p class=Normal style='text-indent:0in'>9. Final concentration (at half-life or
+equilibrium, depending on HALFLIFE setting)</p>
+
+<p class=Normal style='text-indent:0in'>The second line shows the residue
+positions present in this structural state. In this example, residues 1-9 and
+20-58. The string shows that the two contiguous segmetns are being treated
+(internally) as separate chains. This is done because the connecting segment
+(residues 10-19) are already unfolded at this stage of unfolding. </p>
+
+<p class=Normal style='text-indent:0in'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=Normal style='text-indent:0in'><!--[if gte vml 1]><v:shape id="_x0000_s1029"
+ style='position:absolute;margin-left:5pt;margin-top:8.45pt;width:86pt;
+ height:312pt;z-index:4;mso-wrap-distance-left:4.5pt;mso-wrap-distance-top:4.5pt;
+ mso-wrap-distance-right:4.5pt;mso-wrap-distance-bottom:4.5pt;
+ mso-position-horizontal:absolute;mso-position-horizontal-relative:page;
+ mso-position-vertical:absolute;mso-position-vertical-relative:page'
+ coordsize="21600,21600">
+ <v:stroke joinstyle="round"/>
+ <v:imagedata src="howtoreadit_files/image010.gif" o:althref="howtoreadit_files/image011.pct"
+  o:title=""/>
+ <w:wrap type="square" anchorx="page" anchory="page"/>
+</v:shape><![endif]--><![if !vml]><img width=86 height=312
+src="howtoreadit_files/image012.gif" align=left hspace=5 vspace=5 v:shapes="_x0000_s1029"><![endif]>Clicking
+on a diamond node gives:</p>
+
+<p class=Normal style='text-indent:0in'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=Normal style='text-indent:0in'><span style='font-size:9.0pt;
+font-family:Courier'>TSTATE<span style="mso-spacerun:
+yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>70<span style="mso-spacerun:
+yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>1<span style="mso-spacerun:
+yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>2<span style="mso-spacerun:
+yes">&nbsp;&nbsp;&nbsp; </span>105<span style="mso-spacerun:
+yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0.35<span
+style="mso-spacerun: yes">&nbsp;&nbsp; </span>h<span style="mso-spacerun:
+yes">&nbsp;&nbsp; </span>0.7768<o:p></o:p></span></p>
+
+<p class=Normal style='text-indent:0in'><span style='font-size:13.0pt;
+font-family:"Lucida Grande"'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=Normal style='text-indent:0in'>Columns in the TSTATE line are</p>
+
+<p class=Normal style='text-indent:0in'>2: tstate number</p>
+
+<p class=Normal style='text-indent:0in'>3:<span style="mso-spacerun:
+yes">&nbsp; </span>ISEGMT f , number of the incoming structural state </p>
+
+<p class=Normal style='text-indent:0in'>4: ISEGMT u<sub>1,</sub> number of the
+outgoing structural state 1</p>
+
+<p class=Normal style='text-indent:0in'>5: ISEGMT u<sub>2,</sub> number of the
+outgoing structural state 2</p>
+
+<p class=Normal style='text-indent:0in'>6: Entropy of this transition relative
+to the most flexibe transtion of this cut-type</p>
+
+<p class=Normal style='text-indent:0in'>7: Cuttype = b: break, p:pivot or
+h:hinge</p>
+
+<p class=Normal style='text-indent:0in'>8: Traffic through this TSTATE as a
+fraction of all traffic coming from ISEGMT f.</p>
+
+<p class=Normal style='text-indent:0in'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=Normal style='text-indent:0in'>Bold states and thick green lines mark
+the unfolding pathway with the highest traffic. Other pathways with non-zero
+traffic are shown as smaller, dimmer nodes and thin lines. Pathways with near
+zero traffic are not drawn. (Note, that a simulation of <i>unfolding</i><span
+style='font-style:normal'> under </span><i>folding conditions</i><span
+style='font-style:normal'> will show only the folded state! A very boring
+graph.)</span></p>
+
+<p class=Normal style='text-indent:0in'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=Normal style='text-indent:0in'><span style='font-size:14.0pt'><i>Interpretting
+the graph <o:p></o:p></i></span></p>
+
+<p class=Normal style='text-indent:0in'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=Normal style='text-indent:0in'>The overall nature of this graph
+depends on the protein and the conditions of unfolding. A protein with lots of
+topological complexifies or with disulfides will have one or more hinge (black
+diamond) nodes. Multiple chain proteins will have breaks (white diamonds) where
+subunit chains <!--[if gte vml 1]><v:shape id="_x0000_s1030" style='position:absolute;
+ margin-left:-90.95pt;margin-top:4.7pt;width:165.4pt;height:292.6pt;z-index:5;
+ mso-wrap-distance-left:4.5pt;mso-wrap-distance-top:4.5pt;
+ mso-wrap-distance-right:4.5pt;mso-wrap-distance-bottom:4.5pt;
+ mso-position-horizontal:absolute;mso-position-horizontal-relative:page;
+ mso-position-vertical:absolute;mso-position-vertical-relative:page'
+ coordsize="21600,21600">
+ <v:stroke joinstyle="round"/>
+ <v:imagedata src="howtoreadit_files/image013.gif" o:althref="howtoreadit_files/image014.pct"
+  o:title=""/>
+ <w:wrap type="square" anchorx="page" anchory="page"/>
+</v:shape><![endif]--><![if !vml]><img width=165 height=292
+src="howtoreadit_files/image015.gif" align=left hspace=5 vspace=5 v:shapes="_x0000_s1030"><![endif]>(or
+segments sparated by an unfolded segment) are physically separated during
+unfolding. Loosely bound subunits will<span style="mso-spacerun: yes">&nbsp;
+</span>disocciate early in folding, shown by white diamonds at or near the top
+of the graph.</p>
+
+<p class=Normal style='text-indent:0in'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=Normal style='text-indent:0in'>A protein with many alternative
+unfolding pathways will be wide, having many options for unfolding traffic. At
+higher omega (lower virtual urea), closer to the melting point,<span
+style="mso-spacerun: yes">&nbsp; </span>the paths may reduce to one dominant
+pathway. This happens because the higher desolvation energy accentuates the
+differences between pathways.</p>
+
+<p class=Normal style='text-indent:0in'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=Normal style='text-indent:0in'>A tall graph such as the one shown on
+the right, with lots of short branches has a single predominant pathway
+characterized by the &quot;peeling&quot; of short segments from the surface,
+like a ball of string.</p>
+
+<p class=Normal style='text-indent:0in'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=Normal style='text-indent:0in'>Some unfolding pathways, such as the
+one to the right, have multiple long branches. The length of a branch is
+roughly proportional to the size of the state at the branch point. This graph
+splits into two large segments at depth 6, and one of the resulting children
+immediately splits again. </p>
+
+<p class=Normal style='text-indent:0in'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=Normal style='text-indent:0in'>Also note in this image that more than
+one thick green line can end in one ISEGMT node. How can this happen, since a
+given segment can only unfold once? This happens in multimers, because
+symmetry-related segments are assigned the same state.</p>
+
+<p class=Normal><span style='font-size:18.0pt'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=Normal><span style='font-size:18.0pt'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=Normal><span style='font-size:18.0pt'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=Normal><span style='font-size:18.0pt'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=Normal><span style='font-size:18.0pt'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=Normal><span style='font-size:18.0pt'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=Normal><span style='font-size:18.0pt'>Energy Profile<o:p></o:p></span></p>
+
+<p class=Normal><span style='font-size:18.0pt'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=Normal><!--[if gte vml 1]><v:group id="_x0000_s1042" style='position:absolute;
+ margin-left:-.4pt;margin-top:15.45pt;width:188pt;height:423.9pt;z-index:7;
+ mso-position-horizontal-relative:margin;mso-position-vertical-relative:margin'
+ coordorigin="7160,1521" coordsize="3760,8478">
+ <v:shape id="_x0000_s1043" style='position:absolute;left:7160;top:1521;
+  width:3660;height:2680;mso-wrap-edited:f;mso-wrap-distance-left:12pt;
+  mso-wrap-distance-top:12pt;mso-wrap-distance-right:12pt;
+  mso-wrap-distance-bottom:12pt;mso-position-horizontal:absolute;
+  mso-position-horizontal-relative:page;mso-position-vertical:absolute;
+  mso-position-vertical-relative:page' coordsize="21600,21600" wrapcoords="973 0 1504 1930 1062 2413 1062 2775 1504 3861 1062 4826 1062 5188 1504 5792 531 6516 0 7240 -88 8446 0 11825 1062 13273 1504 13515 885 14480 1504 15445 885 16652 1504 17376 885 18824 1150 19186 1770 19427 2036 20513 7524 21237 7524 21479 15491 21479 17350 21237 21600 19910 21600 241 20714 120 1504 0 973 0"
+  strokeweight="1pt">
+  <v:imagedata src="howtoreadit_files/image016.png" o:title=""/>
+ </v:shape><v:shape id="_x0000_s1044" style='position:absolute;left:7180;top:4419;
+  width:3740;height:2740;mso-wrap-edited:f;mso-wrap-distance-left:12pt;
+  mso-wrap-distance-top:12pt;mso-wrap-distance-right:12pt;
+  mso-wrap-distance-bottom:12pt;mso-position-horizontal:absolute;
+  mso-position-horizontal-relative:page;mso-position-vertical:absolute;
+  mso-position-vertical-relative:page' coordsize="21600,21600" wrapcoords="867 0 1040 5665 -86 7081 0 11803 780 13219 1214 18885 1214 19475 7546 21127 7633 21481 15614 21481 16134 21481 20992 20891 20992 20773 21600 19829 21600 236 20732 118 1561 0 867 0"
+  strokeweight="1pt">
+  <v:imagedata src="howtoreadit_files/image017.png" o:title=""/>
+ </v:shape><v:shape id="_x0000_s1045" style='position:absolute;left:7180;top:7259;
+  width:3740;height:2740;mso-wrap-edited:f;mso-wrap-distance-left:12pt;
+  mso-wrap-distance-top:12pt;mso-wrap-distance-right:12pt;
+  mso-wrap-distance-bottom:12pt;mso-position-horizontal:absolute;
+  mso-position-horizontal-relative:page;mso-position-vertical:absolute;
+  mso-position-vertical-relative:page' coordsize="21600,21600" wrapcoords="1040 0 1561 1888 954 2242 954 2478 1561 3777 1127 4249 86 6963 -86 8498 0 11921 1040 13219 1561 13219 954 14636 1214 19475 7546 21127 7633 21481 15614 21481 16134 21481 20992 20891 20992 20773 21600 19829 21600 236 20732 118 1561 0 1040 0"
+  strokeweight="1pt">
+  <v:imagedata src="howtoreadit_files/image018.png" o:title=""/>
+ </v:shape><w:wrap type="square" anchorx="margin" anchory="margin"/>
+</v:group><![endif]--><![if !vml]><img width=188 height=424
+src="howtoreadit_files/image019.gif" align=left v:shapes="_x0000_s1042 _x0000_s1043 _x0000_s1044 _x0000_s1045"><![endif]>With
+some loss of information, we can visualize the folding pathway as a familiar,
+linear reaction coordinate, with unfolded on the left and folded on the right.
+Intermediates along the pathway have coordinates along the reaction coordinate
+(the X axis), represented by the buried surface area, and also in the energy dimension
+(the Y axis). </p>
+
+<p class=Normal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=Normal>In these plots we have projected the unfolding tree of highest
+traffic (maxTraffic tree, shown in green lines in the<span style="mso-spacerun:
+yes">&nbsp; </span>pathway images), onto a single dimension by summing the
+energies of intermediates that have the same number of steps from the folded
+state. Since we are projecting a single pathway tree, and because each
+elemental unfolding step produces non-overlapping substructures, each residue
+is counted exactly once for each intermediate in the 1-dimensional projection.</p>
+
+<p class=Normal>Since the tree is of the bifurcating type, the number of
+intermediates represented goes up by a factor of two for each step in the
+energy profile. Transition state energies are plotted for just one of the
+elemental unfolding steps at each level of the tree, specifically the one with
+the highest barrier. This is generally also the largest chunk. Because
+information is lost in this step, there will sometimes be transition states
+that are plotted below one of the ground states, always the one on the unfolded
+side. Whether the simulation was set to unfold or fold, only the transition
+state energies in the unfolding direction are meaningful.<span
+style="mso-spacerun: yes">&nbsp; </span>(I am still looking for a more clever
+way to project the tree into one dimension. Please send your idea if you have
+one!)</p>
+
+<p class=Normal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=Normal>The "cuttype" (b: break, p:pivot or h:hinge, NOTE: m:melting
+steps are ignored in the energy profile.) is plotted as a single letter above
+each transition state. The node number of the largest chunk at each step is
+plotted below each ground state, and below that number is the size of that
+chunk in residues. You can see that the reaction coordinate (buried surface
+area) roughly correlates with the size of the largest chunk.</p>
+
+<p class=Normal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=FreeForm style='margin-bottom:15.0pt'><span style='font-size:18.0pt;
+font-family:Times;mso-ansi-language:EN-US'><b><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></b></span></p>
+
+<p class=FreeForm style='margin-bottom:15.0pt'><span style='font-size:18.0pt;
+font-family:Times;mso-ansi-language:EN-US'><b><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></b></span></p>
+
+<p class=FreeForm style='margin-bottom:15.0pt'><span style='font-size:18.0pt;
+font-family:Times;mso-ansi-language:EN-US'><b><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></b></span></p>
+
+<p class=FreeForm style='margin-bottom:15.0pt'><span style='font-size:18.0pt;
+font-family:Times;mso-ansi-language:EN-US'><b><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></b></span></p>
+
+<p class=FreeForm style='margin-bottom:15.0pt'><span style='font-size:18.0pt;
+font-family:Times;mso-ansi-language:EN-US'><b><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></b></span></p>
+
+<p class=FreeForm style='margin-bottom:15.0pt'><span style='font-size:18.0pt;
+font-family:Times;mso-ansi-language:EN-US'><b><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></b></span></p>
+
+<p class=FreeForm style='margin-bottom:15.0pt'><span style='font-size:18.0pt;
+font-family:Times;mso-ansi-language:EN-US'><b><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></b></span></p>
+
+<p class=FreeForm style='margin-bottom:15.0pt'><!--[if gte vml 1]><v:shape
+ id="_x0000_s1034" style='position:absolute;margin-left:0;margin-top:.85pt;
+ width:192pt;height:141pt;z-index:-2;mso-wrap-edited:f;
+ mso-wrap-distance-left:12pt;mso-wrap-distance-top:12pt;
+ mso-wrap-distance-right:12pt;mso-wrap-distance-bottom:12pt;
+ mso-position-horizontal:left;mso-position-horizontal-relative:page;
+ mso-position-vertical:absolute;mso-position-vertical-relative:page'
+ coordsize="21600,21600" wrapcoords="1096 0 1012 229 1434 1838 1012 2068 1434 3676 1012 3906 1434 5514 84 6319 -84 6548 -84 13327 1096 14706 1434 14706 1181 17463 1181 19531 1771 20221 1687 20565 7509 21485 10800 21485 11137 21485 15018 21485 21600 20680 21600 229 20756 114 1603 0 1096 0"
+ o:allowoverlap="f" strokeweight="1pt">
+ <v:imagedata src="howtoreadit_files/image020.png" o:title=""/>
+ <w:wrap type="square" side="left" anchorx="page" anchory="page"/>
+ <w:anchorlock/>
+</v:shape><![endif]--><![if !vml]><img width=192 height=141
+src="howtoreadit_files/image021.gif" align=left hspace=12 vspace=12 v:shapes="_x0000_s1034"><![endif]><span
+style='font-size:18.0pt;font-family:Times;mso-ansi-language:EN-US'><b>ln(k<sub>u</sub>)
+vs &#969;<o:p></o:p></b></span></p>
+
+<p class=Normal>The unfolding rate (k<sub>u</sub>) and folding rate (k<sub>f</sub>)
+are expected to be log-linearly related to the surface tension (<span
+style='font-family:Times'><b>&#969;</b></span>), because the height of the
+transition state is dominated by the desolvation free energy, which is equal to
+<span style='font-family:Times'><b>&#969;<span style="mso-spacerun: yes">&nbsp;
+</span></b></span><span style='font-family:Times'>times<b> </b></span>the
+change in buried surface area between the ground state and the transition
+state. For unfolding, the ground state may by the fully folded state or
+possibly a more stable intermediate. The slope of the log(ku) vs <span
+style='font-family:Times'><b>&#969; </b></span><span style='font-family:Times'>is
+called the kinetic m-value, and it is plotted here as a least squares linear fit
+to the data.</span> The line can be extrapolated to the surface tension of
+water (unknown for GeoFold, since we have user-defined parameters, but for the
+defaults we think it is around 50 kJ/mol/Å<sup>2</sup>). Note in this example
+that the data is not log-linear but shows an increasing slope with increasing
+surface tension.<span style="mso-spacerun: yes">&nbsp; </span>Although this
+still may be artifactual, we think it could be due to a shift in the position
+of the transition state with a change in <span style='font-family:Times'><b>&#969;.
+</b></span><span style='font-family:Times'><span style="mso-spacerun:
+yes">&nbsp;</span>It could also be due to low-energy intermediates appearing at
+higher <b>&#969; </b></span><span style='font-family:Times'>values. <o:p></o:p></span></p>
+
+<p class=Normal><span style='font-family:Times'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=Normal><span style='font-family:Times'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=Normal><span style='font-family:Times'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=Normal><span style='font-family:Times'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=Normal><span style='font-family:Times'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=Normal><span style='font-family:Times'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=Normal><span style='font-family:Times'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=Normal><span style='font-family:Times'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=Normal><span style='font-size:10.0pt;color:windowtext'><![if !supportEmptyParas]>&nbsp;<![endif]></span><span
+style='font-size:10.0pt;color:windowtext'><o:p></o:p></span></p>
+
+</div>
+
+</body>
+
+</html>
+
