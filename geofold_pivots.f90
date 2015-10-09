@@ -1184,6 +1184,7 @@ CONTAINS  !! public routines start with geofold_ not geofold_pivot_
           ((aseam%u2flag(ires) /= ".") .and. &
            (aseam%u1flag(jres) /= "."))) then
         inseam = .true.
+      endif
     enddo
     if (present(ib)) ib = fb
     return
