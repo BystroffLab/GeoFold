@@ -1152,15 +1152,16 @@ CONTAINS  !! public routines start with geofold_ not geofold_pivot_
     integer,intent(in) :: ires, jres
     integer,intent(out),optional :: ib
     character,intent(in), optional :: seamchar
-	type (seam_type),pointer    :: aseam
+	  type (seam_type),pointer    :: aseam
     character :: seamch="A"
     integer  :: nb, iseam, fb, i,j
-	nb = size(barrels_array)
+	
+	  nb = size(barrels_array)
     if (present(seamchar)) seamch=seamchar
     inseam= .false.
-	do i=1, nb
+	  do i=1, nb
       fb = f%barrel(i) 
-	  if (fb == 0) cycle !! if fb==0, seam fb is still closed
+	    if (fb == 0) cycle !! if fb==0, seam fb is still closed
       aseam => barrels_array(i)%seams(fb)
       if ( ((aseam%u1flag(ires)==seamch).and. &
             (aseam%u2flag(jres)==seamch) ).or. &
@@ -1168,6 +1169,16 @@ CONTAINS  !! public routines start with geofold_ not geofold_pivot_
             (aseam%u1flag(jres)==seamch) )) then
         inseam = .true.
       endif
+      if ( ((aseam%u1flag(ires) /= '.') .and. &
+          (aseam%u1flag(jres) == '.')) .or. &
+          ((aseam%u1flag(ires) == '.') .and. &
+          (aseam%u1flag(jres) /= '.')) .or. &
+          ((aseam%u2flag(ires) /= '.') .and. &
+          (aseam%u2flag(jres) == '.')) .or. &
+          ((aseam%u2flag(ires) == '.') .and. &
+          (aseam%u2flag(jres) /= '.')) ) then
+          inseam = .true.
+       endif 
     enddo
     if (present(ib)) ib = fb
     return
