@@ -1163,22 +1163,27 @@ CONTAINS  !! public routines start with geofold_ not geofold_pivot_
       fb = f%barrel(i) 
 	    if (fb == 0) cycle !! if fb==0, seam fb is still closed
       aseam => barrels_array(i)%seams(fb)
-      if ( ((aseam%u1flag(ires)==seamch).and. &
-            (aseam%u2flag(jres)==seamch) ).or. &
-           ((aseam%u2flag(ires)==seamch).and. &
-            (aseam%u1flag(jres)==seamch) )) then
+!      if ( ((aseam%u1flag(ires)==seamch).and. &
+!            (aseam%u2flag(jres)==seamch) ).or. &
+!           ((aseam%u2flag(ires)==seamch).and. &
+!            (aseam%u1flag(jres)==seamch) )) then
+!        inseam = .true.
+!      endif
+!      if ( ((aseam%u1flag(ires) /= '.') .and. &
+!          (aseam%u1flag(jres) == '.')) .or. &
+!          ((aseam%u1flag(ires) == '.') .and. &
+!          (aseam%u1flag(jres) /= '.')) .or. &
+!          ((aseam%u2flag(ires) /= '.') .and. &
+!          (aseam%u2flag(jres) == '.')) .or. &
+!          ((aseam%u2flag(ires) == '.') .and. &
+!          (aseam%u2flag(jres) /= '.')) ) then
+!          inseam = .true.
+!       endif 
+      if( ((aseam%u1flag(ires) /= ".") .and. &
+           (aseam%u2flag(jres) /= ".")) .or. &
+          ((aseam%u2flag(ires) /= ".") .and. &
+           (aseam%u1flag(jres) /= ".")) then
         inseam = .true.
-      endif
-      if ( ((aseam%u1flag(ires) /= '.') .and. &
-          (aseam%u1flag(jres) == '.')) .or. &
-          ((aseam%u1flag(ires) == '.') .and. &
-          (aseam%u1flag(jres) /= '.')) .or. &
-          ((aseam%u2flag(ires) /= '.') .and. &
-          (aseam%u2flag(jres) == '.')) .or. &
-          ((aseam%u2flag(ires) == '.') .and. &
-          (aseam%u2flag(jres) /= '.')) ) then
-          inseam = .true.
-       endif 
     enddo
     if (present(ib)) ib = fb
     return
