@@ -58,7 +58,6 @@ program splitseams
   !! Read seams file, result in barrels_array()
   call geofold_seams_read(seamsfile)
   !! Read hbonds file. Private array used in geofold_hbonds_get
-  !!!SEGFAULT HERE, CAUSE UNKNOWN.  CHECKING geofold_hbonds_read
   call geofold_hbonds_read(hbfile)
   !!  Read SAS file, result in  private variable sasnrg.
   !!  Accessed through geofold_masker_seamenergy
@@ -66,7 +65,6 @@ program splitseams
   dunit = pickunit(10)
   open(dunit, file=parfile, form="formatted", status="old", iostat=ierr)
   IF (ierr > 0 ) STOP "splitseams.f90:: Error! File parfile not found!"
-  !!! SEGFAULT HERE TOO
   call geofold_readparameter(dunit,"HBONDENERGY",geofold_hbonds_eperbond)
   eperbond = geofold_hbonds_eperbond
   call geofold_readparameter(dunit,"OMEGA",geofold_masker_omega)
@@ -75,7 +73,6 @@ program splitseams
   !!  Generate u1flag and u2flag arrays
   write(*,*) "Dividing buttons into contiguous segments... tolerance = ",segment_tolerance
   t = segment_tolerance
-  !SEGFAULT HERE barrels_array not initialized?
   do k=1,size(barrels_array)
     !! For each barrel, each seam, split buttons between beta1 and beta2 sides.
     write(*,*) "Barrel number ",k," ..."
@@ -124,10 +121,14 @@ program splitseams
           !! if we did not exit loop, increment tolerance and try again
         enddo
         !! if here, then no place was found for this button. Start a new segment
-        mseg = mseg + 1
-        flag(m,mseg) = "A"
-        !! diagnostic
-        write(*,'(" new segment.... ",i5)') mseg
+        if(mseg < MAXSEG) then
+          mseg = mseg + 1
+          flag(m,mseg) = "A"
+          !! diagnostic
+          write(*,'(" new segment.... ",i5)') mseg
+        else
+          stop 'ERROR: Maximum segments segmented'
+        endif
       enddo BLOOP !! buttons
       write(*,*) "    segmented into  ",mseg," segments."
       !! merge segments that are within segment_tolerance
@@ -233,7 +234,18 @@ program splitseams
       write(*,'(a,$)') "      U2 =  "
       do ires=1,geofold_nres;if (seam%u2flag(ires)=="A") write(*,'(i5,$)') ires; enddo; write(*,*)
       write(*,*) "      Energy =  ", energy
+      
+      !Add + to residues that are "." in both u1flag and u2flag
+      do ires = 1,geofold_nres
+        if(seam%u1flag(ires)=="." .and. seam%u2flag(ires)==".") then
+          seam%u1flag(ires)="+"
+          seam%u2flag(ires)="+"
+        endif
+      enddo
     enddo
+    
+    
+      
   enddo
   dunit = pickunit(10)
   !stop 'works'
