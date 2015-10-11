@@ -110,12 +110,16 @@ MODULE geofold_hbonds
 !      enddo
 !    enddo ILOOP
 !    hbonds = n/2   ! because every H-bond is counted twice !
-    do hbitr = 1, geofold_nhbonds
+    do hbitr = 1, size(geofold_hb,2)
       ires = geofold_hb(1,hbitr)
       jres = geofold_hb(2,hbitr)
       if (f%iflag(ires)==".") cycle
       if (f%iflag(jres)==".") cycle
-      if (geofold_pivots_queryinseam(f,ires,jres)) cycle
+      if(present(seamchar)) then
+        if(geofold_pivots_queryinseam(f,ires,jres,seamchar=seamchar)) cycle
+      elseif (geofold_pivots_queryinseam(f,ires,jres)) then
+        cycle
+      endif
       n = n + 1
     enddo
     hbonds = n
