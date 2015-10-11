@@ -1157,7 +1157,7 @@ CONTAINS  !! public routines start with geofold_ not geofold_pivot_
     integer  :: nb, iseam, fb, i,j
 	
 	  nb = size(barrels_array)
-    if (present(seamchar)) seamch=seamchar
+!    if (present(seamchar)) seamch=seamchar
     inseam= .false.
 	  do i=1, nb
       fb = f%barrel(i) 
@@ -1179,15 +1179,42 @@ CONTAINS  !! public routines start with geofold_ not geofold_pivot_
 !          (aseam%u2flag(jres) /= '.')) ) then
 !          inseam = .true.
 !       endif 
-      if( ((aseam%u1flag(ires) /= ".") .and. &
-           (aseam%u2flag(jres) /= ".")) .or. &
-          ((aseam%u2flag(ires) /= ".") .and. &
-           (aseam%u1flag(jres) /= "."))) then
+!     if( ((aseam%u1flag(ires) /= ".") .and. &
+!          (aseam%u2flag(jres) /= ".")) .or. &
+!         ((aseam%u2flag(ires) /= ".") .and. &
+!          (aseam%u1flag(jres) /= "."))) then
+!       inseam = .true.
+!     endif
+!   enddo
+    if(present(seamchar)) then
+      !!ires in u1 & jres in u2
+      if(aseam%u1flag(ires) == seamchar .and. aseam%u2flag(jres) == seamchar) then
         inseam = .true.
+        if(present(ib)) ib = fb
+        return
+      elseif(aseam%u1flag(jres) == seamchar .and. aseam%u2flag(ires) == seamchar) then
+        inseam = .true.
+        if(present(ib)) ib = fb
+        return
       endif
-    enddo
-    if (present(ib)) ib = fb
-    return
+    else
+      !ires not in seam
+      if(aseam%u1flag(ires) == "+") cycle
+      !jres not in seam
+      if(aseam%u1flag(jres) == "+") cycle
+      !ires in u1 & jres in u2
+      if(aseam%u1flag(ires) /= "." .and. aseam%u2flag(jres) /= ".") then
+        inseam = .true.
+        if(present(ib)) ib = fb
+        return
+      !jres in u1 & ires in u2
+      elseif(aseam%u1flag(jres) /= "." .and. aseam%u2flag(ires) /= ".") then
+        inseam = .true.
+        if(present(ib)) ib = fb
+        return
+      endif
+    endif
+  enddo
   endfunction geofold_pivots_queryinseam
   !----------------------------------------------------------------------------------
   logical function geofold_pivots_inclosedbarrel(f,ires,jres) result (inbarrel)

@@ -18,6 +18,7 @@ MODULE geofold_hbonds
  CONTAINS
 !!----------------------------------------------------------------------
 !! Get hbonds between two sides of a seam
+!! ex.  hbond (d,a) has d on one side of the seam and a on the other
 !!
   subroutine geofold_hbonds_getbetween(aseam,hbonds,seamchar)
     implicit none
@@ -25,35 +26,63 @@ MODULE geofold_hbonds
     character,dimension(MAXRES) :: f1,f2
     integer,intent(out) :: hbonds
     character,intent(in),optional :: seamchar
-    integer :: n,ires,jres,da,h,kres
+    integer :: n,ires,jres,da,h,kres,hbitr
     n = 0
     if (present(seamchar)) then
-      do ires=1,geofold_nres
-        if (aseam%u1flag(ires)/=seamchar) cycle
-        do da=1,2    !da = donor/acceptor
-          do h = 1, size(geofold_hb, 2)
-            jres = geofold_hb(da,h)
-            if (jres/=ires) cycle
-            kres = geofold_hb((2/da),h) ! note 2/da flips 1 to 2, 2 to 1
-            if (aseam%u2flag(kres)/=seamchar) cycle
-            n = n + 1
-          enddo
-        enddo
+      do hbitr = 1, geofold_nhbonds
+        ires = geofold_hb(1,hbitr)
+        jres = geofold_hb(2,hbitr)
+        !this if-statement completes if u1flag contains jres and u2flag has ires
+        if(aseam%u1flag(ires)/=seamchar) then
+          !neither residue is in u1flag
+          if(aseam%u1flag(jres)/=seamchar) cycle
+          !neither u1flag nor u2flag contain ires
+          if(aseam%u2flag(ires)/=seamchar) cycle          
+        !u1flag contains ires, but u2flag doesn't have jres
+        elseif(aseam%u2flag(jres)/=seamchar) then
+          cycle
+        endif
+        n = n+1
       enddo
+!      do ires=1,geofold_nres
+!        if (aseam%u1flag(ires)/=seamchar) cycle
+!        do da=1,2    !da = donor/acceptor
+!          do h = 1, size(geofold_hb, 2)
+!            jres = geofold_hb(da,h)
+!            if (jres/=ires) cycle
+!            kres = geofold_hb((2/da),h) ! note 2/da flips 1 to 2, 2 to 1
+!            if (aseam%u2flag(kres)/=seamchar) cycle
+!            n = n + 1
+!          enddo
+!        enddo
+!      enddo
     else
-      do ires=1,geofold_nres
-        if (aseam%u1flag(ires)==".") cycle
-        do da=1,2
-          do h = 1, size(geofold_hb, 2)
-            jres = geofold_hb(da,h)
-            if (jres/=ires) cycle
-            kres = geofold_hb((2/da),h) ! note 2/da flips 1 to 2, 2 to 1
-            if (aseam%u2flag(kres)==".") cycle
-            n = n + 1
-          enddo
-        enddo
+      do hbitr = 1, geofold_nhbonds
+        ires = geofold_hb(1,hbitr)
+        jres = geofold_hb(2,hbitr)
+        !residue not involved in seam
+        if(aseam%u1flag(ires)=="+") cycle
+        !both residues are in u2flag
+        if(aseam%u1flag(ires)=="." .and. aseam%u1flag(jres)==".") cycle
+        !both residues are in u1flag 
+        if(aseam%u2flag(ires)=="." .and. aseam%u2flag(jres)==".") cycle
+        n = n + 1
       enddo
     endif
+!    
+!      do ires=1,geofold_nres
+!        if (aseam%u1flag(ires)==".") cycle
+!        do da=1,2
+!          do h = 1, size(geofold_hb, 2)
+!            jres = geofold_hb(da,h)
+!            if (jres/=ires) cycle
+!            kres = geofold_hb((2/da),h) ! note 2/da flips 1 to 2, 2 to 1
+!            if (aseam%u2flag(kres)==".") cycle
+!            n = n + 1
+!          enddo
+!        enddo
+!      enddo
+!    endif
     hbonds = n   ! every H-bond is counted once only
   end subroutine geofold_hbonds_getbetween
 !!====================================================================================
@@ -65,23 +94,31 @@ MODULE geofold_hbonds
     type(intermediate), POINTER :: f
     integer,intent(out) :: hbonds
     character,intent(in),optional :: seamchar
-    integer :: n,ires,jres,da,h,kres,bar_itr,seam_itr
-    character, dimension(maxres) :: u1flag, u2flag
+    integer :: n,ires,jres,da,h,kres,hbitr
     n = 0
-    ILOOP: do ires=1,geofold_nres
-      if (f%iflag(ires)==".") cycle ILOOP
-      do da=1,2
-        do h = 1, size(geofold_hb, 2)
-          jres = geofold_hb(da,h)
-          if (jres/=ires) cycle
-          kres = geofold_hb((2/da),h) !kres is the acceptor/donor residue where ires is the donor/acceptor
-          if (f%iflag(kres)==".") cycle
-          if (geofold_pivots_queryinseam(f, ires,kres)) cycle
-          n = n + 1
-        enddo
-      enddo
-    enddo ILOOP
-    hbonds = n/2   ! because every H-bond is counted twice !
+!    ILOOP: do ires=1,geofold_nres
+!      if (f%iflag(ires)==".") cycle ILOOP
+!      do da=1,2
+!        do h = 1, size(geofold_hb, 2)
+!          jres = geofold_hb(da,h)
+!          if (jres/=ires) cycle
+!          kres = geofold_hb((2/da),h) !kres is the acceptor/donor residue where ires is the donor/acceptor
+!          if (f%iflag(kres)==".") cycle
+!          if (geofold_pivots_queryinseam(f, ires,kres)) cycle
+!          n = n + 1
+!        enddo
+!      enddo
+!    enddo ILOOP
+!    hbonds = n/2   ! because every H-bond is counted twice !
+    do hbitr = 1, geofold_nhbonds
+      ires = geofold_hb(1,hbitr)
+      jres = geofold_hb(2,hbitr)
+      if (f%iflag(ires)==".") cycle
+      if (f%iflag(jres)==".") cycle
+      if (geofold_pivots_queryinseam(f,ires,jres)) cycle
+      n = n + 1
+    enddo
+    hbonds = n
   end subroutine geofold_hbonds_getwithin
 
  !!----------------------
