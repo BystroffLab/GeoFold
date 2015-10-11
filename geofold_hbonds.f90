@@ -188,7 +188,7 @@ MODULE geofold_hbonds
        n = n + 1
        geofold_hb(1, n) = res1
        geofold_hb(2, n) = res2
-       n = n + 1
+!       n = n + 1
      case ("S","s")
        geofold_ss(res1) = res2
        geofold_ss(res2) = res1
