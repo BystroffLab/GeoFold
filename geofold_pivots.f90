@@ -1199,9 +1199,9 @@ CONTAINS  !! public routines start with geofold_ not geofold_pivot_
       endif
     else
       !ires not in seam
-      if(aseam%u1flag(ires) == "+") cycle
+      if(aseam%u1flag(ires) == "." .and. aseam%u2flag(ires)==".") cycle
       !jres not in seam
-      if(aseam%u1flag(jres) == "+") cycle
+      if(aseam%u1flag(jres) == "." .and. aseam%u2flag(jres)==".") cycle
       !ires in u1 & jres in u2
       if(aseam%u1flag(ires) /= "." .and. aseam%u2flag(jres) /= ".") then
         inseam = .true.
