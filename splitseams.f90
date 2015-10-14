@@ -236,12 +236,12 @@ program splitseams
       write(*,*) "      Energy =  ", energy
       
       !Add + to residues that are "." in both u1flag and u2flag
-      do ires = 1,geofold_nres
-        if(seam%u1flag(ires)=="." .and. seam%u2flag(ires)==".") then
-          seam%u1flag(ires)="+"
-          seam%u2flag(ires)="+"
-        endif
-      enddo
+!      do ires = 1,geofold_nres
+!        if(seam%u1flag(ires)=="." .and. seam%u2flag(ires)==".") then
+!          seam%u1flag(ires)="+"
+!          seam%u2flag(ires)="+"
+!        endif
+!      enddo
     enddo
     
     

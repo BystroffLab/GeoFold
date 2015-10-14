@@ -61,7 +61,7 @@ MODULE geofold_hbonds
         ires = geofold_hb(1,hbitr)
         jres = geofold_hb(2,hbitr)
         !residue not involved in seam
-        if(aseam%u1flag(ires)=="+") cycle
+        if(aseam%u1flag(ires)=="." .and. aseam%u2flag(ires)==".") cycle
         !both residues are in u2flag
         if(aseam%u1flag(ires)=="." .and. aseam%u1flag(jres)==".") cycle
         !both residues are in u1flag 
