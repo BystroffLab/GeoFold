@@ -82,8 +82,7 @@ def createForm(out,parfile):
 
 #new energy profile function
 def writeEnergyProfile(tmpDir,htmlDir,LName,nn):
-  gnuplot = "/bach1/home/walcob/usr/bin/gnuplot"
-  #gnuplot = "gnuplot"
+  global gnuplot
   #list of colors to use
   colors = ['black','red','orange','yellow','green','blue','violet','cyan','magenta','pink','gold']
   plot = [[]]
@@ -167,7 +166,6 @@ def writeEnergyProfile(tmpDir,htmlDir,LName,nn):
       gnuOut = open("%s/%s_%s.nrg2.gnu"%(tmpDir,LName,nn),'w+')
     except IOError:
       return [1,"Failed to open file %s_%s.nrg2.gnu"%(LName,nn)]
-    gnuplot="gnuplot"
     gnuOut.write('set term postscript enhanced portrait\n')
     gnuOut.write('set size 1.4,0.7\n')
     gnuOut.write('set title "%s_%s"\n'%(LName,nn))
@@ -295,7 +293,7 @@ def createGnuplot(LName, wat):
   #os.environ['GNUHELP']='/bach1/usr/local/share/gnuplot/4.2/gnuplot.gih'
   #os.environ['GNUPLOT_PS_DIR']='/bach1/usr/local/share/gnuplot/4.2/PostScript'
   global thermal
-  gnuplot = 'gnuplot'
+  global gnuplot
 
   print("createGnuplot")
   try:
@@ -351,6 +349,7 @@ def createGnuplot(LName, wat):
 
 #plots the unfolding timecourse
 def plotTimeCourse(LName,nn):
+  global gnuplot
   print("plotTimeCourse")
   #initial setup
   try:
@@ -366,8 +365,6 @@ def plotTimeCourse(LName,nn):
   #gnuplot environmental variables
   #os.environ['GNUPLOT_PS_DIR'] = '/bach1/usr/local/share/gnuplot/4.2/PostScript'
   #os.environ['GNUHELP'] = '/bach1/usr/local/share/gnuplot/4.2/gnuplot.gih'
-  #gnuplot program itself
-  gnuplot = 'gnuplot'
   #initial gnuplot settings
   gnuOut.write('set terminal postscript enhanced portrait\n')
   gnuOut.write('set size 1.4,0.7\n')
@@ -437,8 +434,7 @@ def energyProfileAll(LName,omegaRange):
   #gnuplot environmental variables
   # os.environ['GNUPLOT_PS_DIR'] = '/bach1/usr/local/share/gnuplot/4.2/PostScript'
   # os.environ['GNUHELP'] = '/bach1/usr/local/share/gnuplot/4.2/gnuplot.gih'
-  #gnuplot program itself
-  gnuplot = 'gnuplot'
+  global gnuplot
  #from geofold this program takes the arguments LName, omegaRange
 
   try:
@@ -628,6 +624,7 @@ global htmlOut
 global parameters
 global thermal
 global debug
+global gnuplot
 debug = False
 parameters = {}
 
@@ -662,6 +659,9 @@ jobDir = configuration['jobDir']
 paramTemplate = configuration['paramTemplate']
 baseURL = configuration['baseURL']
 outputURL = configuration['outputURL']
+dot = configuration['dot']
+convert = configuration['convert']
+gnuplot = configuration['gnuplot']
 
 '''
 #Directory settings for server
@@ -857,8 +857,8 @@ else:
   ###PROGRAMS####
   maxTraffic= gDir+"/maxTraffic"
   mtCut= 0.1
-  convert = "/usr/bin/convert"
-  dot = "/usr/bin/dot"
+  #convert = "/usr/bin/convert"
+  #dot = "/usr/bin/dot"
 
   try:
     tmpWrite = open(htmlTmp, 'w+')
