@@ -4,8 +4,8 @@ module seams_main
   use seams_graph
   use seams_utils
 
-  integer, parameter :: MIN_CONTACTS_REGION=8  !15 !! Minimal number of contacts for regions 
-  integer, parameter :: MIN_CONTACTS_BETAS=4    !5 !! Minimal number of beta contacts 
+  integer, parameter :: MIN_CONTACTS_REGION=15  !15 !! Minimal number of contacts for regions 
+  integer, parameter :: MIN_CONTACTS_BETAS=5    !5 !! Minimal number of beta contacts 
 
   !! Structure for barrels 
   type :: barrel_type

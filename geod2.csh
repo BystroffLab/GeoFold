@@ -6,19 +6,19 @@ echo "Running on `hostname` `date` in `pwd`" > Running
 ## /home/bystrc/server/geofold
 ## NOTE: server/geofold is located on brahms
 ############ change SHOME to the directory geofold is installed in ##########
-setenv SHOME /bach1/home/bystrc/server
-setenv LHOME /home/bystrc/server
-setenv GDIR $SHOME/geofold
-setenv BDIR $GDIR/bin
-setenv PYTHON /bach1/usr/local/bin/python
+setenv SHOME /bach1/home/flex
+setenv LHOME /home/flex
+setenv GDIR $SHOME/server/geofold
+setenv BDIR $GDIR
+setenv PYTHON /usr/bin/python
 echo "Jobs currently running on `hostname` 0" > Load
 echo "Running in $GDIR" >> Running
-setenv PDBDIR $SHOME/data/pdb
-if !(-e $PDBDIR ) setenv PDBDIR $LHOME/data/pdb
+setenv PDBDIR $SHOME/server/data/pdb
+if !(-e $PDBDIR ) setenv PDBDIR $LHOME/server/data/pdb
 setenv LOGDIR $GDIR/log
-setenv BIOLUNIT $SHOME/data/pdb1
-if !(-e $BIOLUNIT ) setenv BIOLUNIT $LHOME/data/pdb1
-setenv GETCHAIN $GDIR/src/geofold/xgetchain
+setenv BIOLUNIT $PDBDIR
+if !(-e $BIOLUNIT ) setenv BIOLUNIT $SHOME/server/data/pdb1
+setenv GETCHAIN $GDIR/xgetchain
 setenv STMP $GDIR/tmp
 setenv SJOB $GDIR/jobs
 setenv WGETPDB 'ssh bach1 cd server/geofold; /bach1/home/bystrc/bin/wgetpdb'
@@ -51,7 +51,7 @@ while ( 1 )
     echo "geod.csh queue unpaused `date`"
   end
   ## COUNT GEOFOLD PROCESSES CURRENTLY RUNNING
-  set N = `ps ax -o user -o pid -o command | awk -v w=bystrc '$1 == w' | grep "${STMP}/.*csh" | grep -v "grep" | wc -l | awk '{print $1}'`
+  set N = `ps ax -o user -o pid -o command | awk -v w=walcob '$1 == w' | grep "${STMP}/.*csh" | grep -v "grep" | wc -l | awk '{print $1}'`
   if ( $N < $ALLOWABLE ) then
     ## if we can start another job, then do the following:
     ##  1. submit a geofold job using the basename of the file as the basename of the output,
@@ -59,29 +59,39 @@ while ( 1 )
     foreach CFILE (`/bin/ls -1tra ${SJOB}/*.job | & grep -v "No match"`)
       echo "GEOFOLD JOB ========> $CFILE  `date`"
       if ( -e ${CFILE} ) then
+        echo "if61"
         if ( -z ${CFILE} ) then
+          echo "if63"
           echo "Zero length input file. ${CFILE} ......removing it." 
           rm -vf ${CFILE}
         else
+          echo "else67"
           ## The .job file exists and non-zero .  Set up the job.
           setenv PDBCODE `awk '{print $1}' ${CFILE} | head -1`
           setenv CHAIN `awk '{print $2}' ${CFILE} | head -1`
           setenv BUNIT `awk '{print $3}' ${CFILE} | head -1`
           if (`awk '{print NF}'  ${CFILE} | head -1` > 3 ) then
+            echo "if73"
             setenv ONAME `awk '{print $4}' ${CFILE} | head -1`
             ## NOTE: Do-over. PDB file should already exist in ${STMP}/
           else
+            echo "else77"
             setenv ONAME ""
             ## NOTE: PDB file should already exist in pdb/ or pdb1/.
             ## If it does not, use wget to get it.
-            if ( $BUNIT ) then
+            if ( -e $BUNIT ) then
+              echo 'if82'
               if ( -e ${STMP}/$PDBCODE.pdb ) then
+                echo 'if84'
               else if ( -e $BIOLUNIT/$PDBCODE.pdb ) then
+                echo 'else if 86'
                 cp $BIOLUNIT/$PDBCODE.pdb  ${STMP}/
               else
+                echo 'else89'
                 $WGETPDB $PDBCODE 1 > wgetlog
                 if (`grep -c "Connection refused" wgetlog` > 0) then
-                   echo "ERROR: cannot communicate with PDB ftp site" > ${STMP}/$PDBCODE.error
+                  echo 'if92'
+                  echo "ERROR: cannot communicate with PDB ftp site" > ${STMP}/$PDBCODE.error
                 else
                   mv $PDBCODE.pdb1 $BIOLUNIT/$PDBCODE.pdb
                   cp $BIOLUNIT/$PDBCODE.pdb  ${STMP}/
@@ -108,7 +118,7 @@ while ( 1 )
           mv -fv $CFILE ${CFILE}.x
           # if ($CHAIN == "" ) setenv CHAIN  _
           ## mv ${GDIR}/${SJOB}/${LNAME}.par $STMP/
-          $PYTHON $GDIR/bin/rungeofold.py ${STMP}/$PARFILE > $GDIR/tmp/${LNAME}.log
+          $PYTHON $GDIR/rungeofold.py ${STMP}/$PARFILE > $LOGDIR/${LNAME}.log
           # chmod +x $GDIR/tmp/${LNAME}.csh
           ############ NEXT LINE SHOULD BE A JOB SUBMISSION -- MACHINE DEPENDENT
           ## qsub -b n -j y -cwd -o $LOGDIR/${LNAME}.log tmp/${LNAME}.csh $PDBCODE $CHAIN ${LNAME}  ${ONAME}
