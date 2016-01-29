@@ -656,10 +656,10 @@ subroutine getseams (f, seammove, nMove,contacts,flory,w,T)
         if(associated(u1)) deallocate(u1)
         energy = tmpMove%energy
       endif
-!      if (energy < maxval(seammove(1:nseam)%energy,dim=1)) then
-!        i = maxloc(seammove(1:nseam)%energy,dim=1)
-      if(energy > minval(seammove(1:nseam)%energy,dim=1)) then
-        i = minloc(seammove(1:nseam)%energy,dim=1)
+      if (energy < maxval(seammove(1:nseam)%energy,dim=1)) then
+        i = maxloc(seammove(1:nseam)%energy,dim=1)
+!      if(energy > minval(seammove(1:nseam)%energy,dim=1)) then
+!        i = minloc(seammove(1:nseam)%energy,dim=1)
         seammove(i) = tmpMove
         nMove = nMove + 1
       endif
