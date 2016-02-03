@@ -425,19 +425,35 @@ program unfoldsim
       ! integer    :: f,u1,u2,pf   !! index to inter
       ! character  :: cuttype
       ! real(8)    :: entropy, thetam, ku, kf, TdS,dsas,solid,traffic,dlambda,dvoid,dhb
-      write(99,'(i7,3i5,1x,a1,10(1pe10.2e2),3i5,1pE11.3e2,a)') &
-        its,tstate(its)%f,  &
-        tstate(its)%u1,  &
-        tstate(its)%u2,  &
-        tstate(its)%cuttype,  &
-        tstate(its)%entropy,tstate(its)%thetam,tstate(its)%ku,tstate(its)%kf,tstate(its)%TdS,  &
-        tstate(its)%dsas,tstate(its)%solid,tstate(its)%dlambda,tstate(its)%dvoid,  &
-        tstate(its)%dhb, &
-        inter(tstate(its)%f)%nres, &
-        inter(tstate(its)%u1)%nres, &
-        inter(tstate(its)%u2)%nres, &
-        dnrg, &  
-        trim(inter(tstate(its)%f)%residuelist)
+      if(tstate(its)%cuttype /= "s") then
+        write(99,'(i7,3i5,1x,a1,10(1pe10.2e2),3i5,1pE11.3e2,a)') &
+          its,tstate(its)%f,  &
+          tstate(its)%u1,  &
+          tstate(its)%u2,  &
+          tstate(its)%cuttype,  &
+          tstate(its)%entropy,tstate(its)%thetam,tstate(its)%ku,tstate(its)%kf,tstate(its)%TdS,  &
+          tstate(its)%dsas,tstate(its)%solid,tstate(its)%dlambda,tstate(its)%dvoid,  &
+          tstate(its)%dhb, &
+          inter(tstate(its)%f)%nres, &
+          inter(tstate(its)%u1)%nres, &
+          inter(tstate(its)%u2)%nres, &
+          dnrg, &  
+          trim(inter(tstate(its)%f)%residuelist)
+      else
+        write(99,'(i7,2i5,1x,a1,10(1pe10.2e2),2i5,1pE11.3e2,a)') &
+          its,tstate(its)%f,  &
+          tstate(its)%u1,  &
+          ! tstate(its)%u2,  &
+          tstate(its)%cuttype,  &
+          tstate(its)%entropy,tstate(its)%thetam,tstate(its)%ku,tstate(its)%kf,tstate(its)%TdS,  &
+          tstate(its)%dsas,tstate(its)%solid,tstate(its)%dlambda,tstate(its)%dvoid,  &
+          tstate(its)%dhb, &
+          inter(tstate(its)%f)%nres, &
+          inter(tstate(its)%u1)%nres, &
+          ! inter(tstate(its)%u2)%nres, &
+          dnrg, &  
+          trim(inter(tstate(its)%f)%residuelist)
+      endif
     endif
   enddo
   if (verbose) close(99)
