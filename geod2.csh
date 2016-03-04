@@ -119,7 +119,7 @@ while ( 1 )
           # if ($CHAIN == "" ) setenv CHAIN  _
           ## mv ${GDIR}/${SJOB}/${LNAME}.par $STMP/
           #$PYTHON $GDIR/rungeofold.py ${STMP}/$PARFILE > $LOGDIR/${LNAME}.log
-          bash $GDIR/rungeofold_wrapper.sh ${STMP}/$PARFILE $GDIR/bach_flex.conf > $LOGDIR/${LNAME}.log
+          bash $GDIR/rungeofold_wrapper.sh ${STMP}/$PARFILE $GDIR/bach_flex.conf $LOGDIR/${LNAME}.log
           # chmod +x $GDIR/tmp/${LNAME}.csh
           ############ NEXT LINE SHOULD BE A JOB SUBMISSION -- MACHINE DEPENDENT
           ## qsub -b n -j y -cwd -o $LOGDIR/${LNAME}.log tmp/${LNAME}.csh $PDBCODE $CHAIN ${LNAME}  ${ONAME}
