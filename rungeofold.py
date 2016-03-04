@@ -36,7 +36,10 @@ import sys
 import commands
 import time
 import math
-from georansac import fit
+try:
+  from georansac import fit
+except ImportError:
+  pass
 
 def readConf(confFile):
   output = {}
