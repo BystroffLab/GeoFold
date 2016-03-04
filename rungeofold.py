@@ -41,6 +41,14 @@ try:
 except ImportError:
   pass
 
+def makeZip(directory,LName):
+  '''creates a zip archive of the directory and stores it within itself'''
+  os.chdir("%s/.."%(directory))
+  status,output = commands.getstatusoutput('zip -rv %s/%s.zip %s'%(LName,LName,LName))
+  if status != 0:
+    writeOut('%s: %s'%(status,output))
+    runProgram('error')   
+
 def readConf(confFile):
   output = {}
   conf = open(confFile,'r')
@@ -1375,6 +1383,7 @@ else:
   permWrite.write('<h4><a href="%s.pdb">Coordinate file (%s)</a></h4>\n'%(LName,LName))
   permWrite.write('<h4><a href="./%s_1.dag.out">Unfolding graph for %s</a></h4>\n'%(LName,LName))
   #h/s-bond info
+  permWrite.write('<h4><a href="./%s.zip" download>Download as zip file</a></h4>\n'%(LName))
   permWrite.write('<h5>Number of H-bonds fond: %s</h5>\n'%(h))
   permWrite.write('<h5>Number of SS-bonds found: %s</h5>\n'%(s))
   #Sequence info
@@ -1603,6 +1612,4 @@ else:
     nn+=1
     commands.getstatusoutput("cp %s/%s_%s.dag.out %s/%s_%s.dag.out"%(tmpDir,LName,nn,htmlDir,LName,nn))
     commands.getstatusoutput("cp %s/%s_%s.log %s/%s_%s.log" %(tmpDir,LName,nn,htmlDir,LName,nn))
-
-
-
+  makeZip(htmlDir,LName)
