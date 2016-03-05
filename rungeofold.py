@@ -350,6 +350,8 @@ def createGnuplot(LName, wat):
   gnuOut.write('set xtics nomirror\n')
   gnuOut.write('set ytics nomirror\n')
   gnuOut.write('set key right\n')
+  #standardizing yrange to prevent errors when everything is in a horizontal line
+  gnuOut.write('set yrange [5:20]\n')
   #The line that actually tells gnuplot what to plot
   gnuOut.write('p "%s.plot" w p pt 7, %s + %s*x\n'%(LName,bb,mm))
   gnuOut.close()
@@ -1576,6 +1578,7 @@ else:
     runProgram(runConvert)
   status,output = createGnuplot("%s/%s"%(tmpDir,LName),wat)
   #status = 1
+  print output
   if status != 0:
     print(status)
     print(output)
