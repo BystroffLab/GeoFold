@@ -7,14 +7,14 @@ echo "Running on `hostname` `date` in `pwd`" > Running
 ## NOTE: server/geofold is located on brahms
 ############ change SHOME to the directory geofold is installed in ##########
 setenv SHOME /bach1/home/flex
-setenv LHOME /home/flex
+setenv LHOME /bach1/home/flex
 setenv GDIR $SHOME/server/GeoFold
 setenv BDIR $GDIR
 setenv PYTHON /usr/bin/python
 echo "Jobs currently running on `hostname` 0" > Load
 echo "Running in $GDIR" >> Running
-setenv PDBDIR $SHOME/pdbs
-if !(-e $PDBDIR ) setenv PDBDIR $LHOME/pdbs
+setenv PDBDIR $GDIR/pdbs
+if !(-e $PDBDIR ) setenv PDBDIR $LHOME/server/pdbs
 setenv LOGDIR $GDIR/log
 setenv BIOLUNIT $PDBDIR
 if !(-e $BIOLUNIT ) setenv BIOLUNIT $SHOME/server/data/pdb1
@@ -51,7 +51,7 @@ while ( 1 )
     echo "geod.csh queue unpaused `date`"
   end
   ## COUNT GEOFOLD PROCESSES CURRENTLY RUNNING
-  set N = `ps ax -o user -o pid -o command | awk -v w=flex '$1 == w' | grep "${STMP}/.*csh" | grep -v "grep" | wc -l | awk '{print $1}'`
+  set N = `ps ax -o user -o pid -o command | awk -v w=flex '$1 == w' | grep "rungeofold.py" | grep -v "grep" | wc -l | awk '{print $1}'`
   if ( $N < $ALLOWABLE ) then
     ## if we can start another job, then do the following:
     ##  1. submit a geofold job using the basename of the file as the basename of the output,
