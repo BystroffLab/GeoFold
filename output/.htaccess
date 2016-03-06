@@ -1,2 +1,1 @@
-ErrorDocument 404 /geofold/output/404.php
-AddHandler php5-script .php
+ErrorDocument 404 /geofold/geofourohfour.html
