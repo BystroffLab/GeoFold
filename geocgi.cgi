@@ -316,7 +316,7 @@ def secondScript(form):
     
     #write HTML output
     print('<html><head>')
-    print('<meta http-equiv="refresh" content="30;url=%s">'%(urlwrite))
+    print('<meta http-equiv="refresh" content="5;url=%s">'%(urlwrite))
     print('</head><body><h4>Creating GeoFOLD job. Please wait...</h4><br>')
     #print('</body></html>')
     #new URL settings
@@ -369,7 +369,6 @@ def secondScript(form):
       oname = ''
     job.write(' %s'%(oname))
     job.close()
-    print 'job written to %s/%s.job'%(jobdir,form['lname'].value)
     #deprotect files
     commands.getstatusoutput('chmod 0777 %s/%s'%(outdir,url))
     commands.getstatusoutput('chmod 0777 %s/%s.job'%(jobdir,form["lname"].value))
