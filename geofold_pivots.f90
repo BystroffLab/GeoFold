@@ -458,7 +458,7 @@ CONTAINS  !! public routines start with geofold_ not geofold_pivot_
     enddo resloop
     pivotpoint = ires    
     if (entropy<pcutoff) entropy = -1
-    deallocate(assigned)
+    if(allocated(assigned)) deallocate(assigned)
     return
   end subroutine geofold_getnextpivot
   !------------------------------------------------------------------------------
@@ -948,7 +948,7 @@ CONTAINS  !! public routines start with geofold_ not geofold_pivot_
       hinge2 = nres
       entropy = -1
     endif
-    deallocate(assigned)
+    if(allocated(assigned)) deallocate(assigned)
   end subroutine geofold_getnexthinge
   !!========================================================================
   ! call geofold_getnextbreak(calpha=allcoords,chainid=f%iflag,u1=u1%iflag,u2=u2%iflag, &
@@ -1152,25 +1152,69 @@ CONTAINS  !! public routines start with geofold_ not geofold_pivot_
     integer,intent(in) :: ires, jres
     integer,intent(out),optional :: ib
     character,intent(in), optional :: seamchar
-	type (seam_type),pointer    :: aseam
+	  type (seam_type),pointer    :: aseam
     character :: seamch="A"
     integer  :: nb, iseam, fb, i,j
-	nb = size(barrels_array)
-    if (present(seamchar)) seamch=seamchar
+	
+	  nb = size(barrels_array)
+!    if (present(seamchar)) seamch=seamchar
     inseam= .false.
-	do i=1, nb
+	  do i=1, nb
       fb = f%barrel(i) 
-	  if (fb == 0) cycle !! if fb==0, seam fb is still closed
+	    if (fb == 0) cycle !! if fb==0, seam fb is still closed
       aseam => barrels_array(i)%seams(fb)
-      if ( ((aseam%u1flag(ires)==seamch).and. &
-            (aseam%u2flag(jres)==seamch) ).or. &
-           ((aseam%u2flag(ires)==seamch).and. &
-            (aseam%u1flag(jres)==seamch) )) then
+!      if ( ((aseam%u1flag(ires)==seamch).and. &
+!            (aseam%u2flag(jres)==seamch) ).or. &
+!           ((aseam%u2flag(ires)==seamch).and. &
+!            (aseam%u1flag(jres)==seamch) )) then
+!        inseam = .true.
+!      endif
+!      if ( ((aseam%u1flag(ires) /= '.') .and. &
+!          (aseam%u1flag(jres) == '.')) .or. &
+!          ((aseam%u1flag(ires) == '.') .and. &
+!          (aseam%u1flag(jres) /= '.')) .or. &
+!          ((aseam%u2flag(ires) /= '.') .and. &
+!          (aseam%u2flag(jres) == '.')) .or. &
+!          ((aseam%u2flag(ires) == '.') .and. &
+!          (aseam%u2flag(jres) /= '.')) ) then
+!          inseam = .true.
+!       endif 
+!     if( ((aseam%u1flag(ires) /= ".") .and. &
+!          (aseam%u2flag(jres) /= ".")) .or. &
+!         ((aseam%u2flag(ires) /= ".") .and. &
+!          (aseam%u1flag(jres) /= "."))) then
+!       inseam = .true.
+!     endif
+!   enddo
+    if(present(seamchar)) then
+      !!ires in u1 & jres in u2
+      if(aseam%u1flag(ires) == seamchar .and. aseam%u2flag(jres) == seamchar) then
         inseam = .true.
+        if(present(ib)) ib = fb
+        return
+      elseif(aseam%u1flag(jres) == seamchar .and. aseam%u2flag(ires) == seamchar) then
+        inseam = .true.
+        if(present(ib)) ib = fb
+        return
       endif
-    enddo
-    if (present(ib)) ib = fb
-    return
+    else
+      !ires not in seam
+      if(aseam%u1flag(ires) == "." .and. aseam%u2flag(ires)==".") cycle
+      !jres not in seam
+      if(aseam%u1flag(jres) == "." .and. aseam%u2flag(jres)==".") cycle
+      !ires in u1 & jres in u2
+      if(aseam%u1flag(ires) /= "." .and. aseam%u2flag(jres) /= ".") then
+        inseam = .true.
+        if(present(ib)) ib = fb
+        return
+      !jres in u1 & ires in u2
+      elseif(aseam%u1flag(jres) /= "." .and. aseam%u2flag(ires) /= ".") then
+        inseam = .true.
+        if(present(ib)) ib = fb
+        return
+      endif
+    endif
+  enddo
   endfunction geofold_pivots_queryinseam
   !----------------------------------------------------------------------------------
   logical function geofold_pivots_inclosedbarrel(f,ires,jres) result (inbarrel)
