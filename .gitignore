@@ -1,0 +1,7 @@
+*.par
+*.par.1
+x*
+output/*
+*.pdb
+*.pdb.1
+pdbs/*
