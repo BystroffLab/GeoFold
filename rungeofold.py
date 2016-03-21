@@ -47,7 +47,7 @@ def makeZip(directory,LName):
   status,output = commands.getstatusoutput('zip -rv %s/%s.zip %s'%(LName,LName,LName))
   if status != 0:
     writeOut('%s: %s'%(status,output))
-    runProgram('error')   
+    runProgram('error')
 
 def readConf(confFile):
   output = {}
@@ -830,7 +830,7 @@ else:
   os.environ["dagDir"] = htmlDir
   cp = "cp -p %s/isegment.cgi %s/isegment.cgi"%(gDir,htmlDir)
   commands.getstatusoutput(cp)
-  
+
   #Added for do-over script interface
   status,redo = findParam(paramFile,"REDO")
   if status == 0 and len(redo) != 0:
@@ -1469,6 +1469,7 @@ else:
     permWrite.write('<td>%s</td><td>%s</td><td>%s</td><td>%s</td>'%(line[1],line[2],line[3],line[4]))
     #calculate ln(ku) stuff for plot
     i = 0
+    '''
     #find the last timecourse where the unfolded state is < 50 if unfolding, folded state if otherwise
     if folding != 1:
       while i<len(timecourses) and float(timecourses[i][3])<50:
@@ -1477,6 +1478,8 @@ else:
       while i < len(timecourses) and float(timecourses[i][2])<50:
         i+=1
     i-=1
+    '''
+    i = len(timecourses)-1
     # hl = math.log(math.log(2)/float(timecourses[i][1]))
     try:
       lnku = math.log(math.log(2)/float(timecourses[i][5]))
