@@ -1300,7 +1300,7 @@ else:
     nn+=1
     pathway2ps = "%s/xpathway2ps %s/%s.seq %s/%s_%s.dag.age %s/%s.cij %s/%s_%s.ps 4" %(gDir,tmpDir,LName,tmpDir,LName,nn,tmpDir,LName,tmpDir,LName,nn)
     tmpWrite.write(pathway2ps+'<br>')
-    status,output = commands.getstatusoutput(pathway2ps)
+    runProgram(pathway2ps)
     tmpWrite.write(output+'<br>')
     if debug:
       tmpWrite.close()
@@ -1317,13 +1317,13 @@ else:
     nn+=1
     runConvert = "%s -trim -geometry 100 -background white %s/%s_%s.ps %s/%s_%s_thumb.png" %(convert,tmpDir,LName,nn,tmpDir,LName,nn)
     tmpWrite.write(runConvert+'<br>')
-    commands.getstatusoutput(runConvert)
+    runProgram(runConvert)
     runConvert = "%s -background white %s/%s_%s_thumb.png %s/%s_%s_thumb.png" %(convert,tmpDir,LName,nn,htmlDir,LName,nn)
-    commands.getstatusoutput(runConvert)
+    runProgram(runConvert)
     runConvert = "%s -trim -background white %s/%s_%s.ps %s/%s_%s.png" %(convert,tmpDir,LName,nn,tmpDir,LName,nn)
-    commands.getstatusoutput(runConvert)
+    runProgram(runConvert)
     runConvert = "%s -background white %s/%s_%s.png %s/%s_%s.png" %(convert,tmpDir,LName,nn,htmlDir,LName,nn)
-    commands.getstatusoutput(runConvert)
+    runProgram(runConvert)
 
   print("============= MAXTRAFFIC =============")
   tmpWrite.write("============= MAXTRAFFIC =============<br>")
