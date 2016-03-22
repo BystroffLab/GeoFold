@@ -111,13 +111,13 @@ def firstScript(form):
     #set directories
     basedir = "/bach1/home/flex"
     urldir = "/bach1/home/flex/public_html/geofold"
-    tmpdir = "%s/server/geofold/tmp"%(basedir)
+    tmpdir = "%s/server/GeoFold/tmp"%(basedir)
     dbgfile = "%s/output/debug.out"%(urldir)
     #default parameters file
-    paramfile = "%s/server/geofold/bin/parameters"%(basedir)
+    paramfile = "%s/server/GeoFold/bin/parameters"%(basedir)
     #pdb repository
-    pdbdir = "%s/server/data/pdb"%(basedir)
-    pdbunit = "%s/server/data/pdb1"%(basedir)
+    pdbdir = "%s/server/GeoFold/pdbs"%(basedir)
+    pdbunit = "%s/server/GeoFold/pdbs"%(basedir)
     settings= "settings.html"
     pid = os.getpid()
     outdir = "output/"
@@ -293,14 +293,14 @@ def secondScript(form):
     waitimage = "http://www.bioinfo.rpi.edu/bystrc/pub/mpeg/peptide.gif"
     #set directories
     basedir = "/bach1/home/flex"
-    gdir = "%s/server/geofold"%(basedir)
+    gdir = "%s/server/GeoFold"%(basedir)
     urldir = "/bach1/home/flex/public_html/geofold"
-    tmpdir = "%s/server/geofold/tmp"%(basedir)
+    tmpdir = "%s/server/GeoFold/tmp"%(basedir)
     #default parameters file
-    paramfile = "%s/server/geofold/bin/parameters"%(basedir)
+    paramfile = "%s/server/GeoFold/bin/parameters"%(basedir)
     #pdb repository
-    pdbdir = "%s/server/data/pdb"%(basedir)
-    pdbunit = "%s/server/data/pdb1"%(basedir)
+    pdbdir = "%s/server/GeoFold/pdbs"%(basedir)
+    pdbunit = "%s/server/GeoFold/pdbs"%(basedir)
     settings= "settings.html"
     pid = os.getpid()
     outdir = "output/"
@@ -316,7 +316,7 @@ def secondScript(form):
     
     #write HTML output
     print('<html><head>')
-    print('<meta http-equiv="refresh" content="30;url=%s">'%(urlwrite))
+    print('<meta http-equiv="refresh" content="5;url=%s">'%(urlwrite))
     print('</head><body><h4>Creating GeoFOLD job. Please wait...</h4><br>')
     #print('</body></html>')
     #new URL settings
@@ -369,7 +369,6 @@ def secondScript(form):
       oname = ''
     job.write(' %s'%(oname))
     job.close()
-    print 'job written to %s/%s.job'%(jobdir,form['lname'].value)
     #deprotect files
     commands.getstatusoutput('chmod 0777 %s/%s'%(outdir,url))
     commands.getstatusoutput('chmod 0777 %s/%s.job'%(jobdir,form["lname"].value))
@@ -381,13 +380,13 @@ def redo(form):
     #set directories
     basedir = "/bach1/home/flex"
     urldir = "/bach1/home/flex/public_html/geofold"
-    tmpdir = "%s/server/geofold/tmp"%(basedir)
+    tmpdir = "%s/server/GeoFold/tmp"%(basedir)
     dbgfile = "%s/output/debug.out"%(urldir)
     #default parameters file
-    paramfile = "%s/server/geofold/bin/parameters"%(basedir)
+    paramfile = "%s/server/GeoFold/bin/parameters"%(basedir)
     #pdb repository
-    pdbdir = "%s/server/data/pdb"%(basedir)
-    pdbunit = "%s/server/data/pdb1"%(basedir)
+    pdbdir = "%s/server/GeoFold/pdbs"%(basedir)
+    pdbunit = "%s/server/GeoFold/pdbs"%(basedir)
     settings= "settings.html"
     pid = os.getpid()
     outdir = "output/"
@@ -556,14 +555,14 @@ def fourthScript(form):
     waitimage = "http://www.bioinfo.rpi.edu/bystrc/pub/mpeg/peptide.gif"
     #set directories
     basedir = "/bach1/home/flex"
-    gdir = "%s/server/geofold"%(basedir)
+    gdir = "%s/server/GeoFold"%(basedir)
     urldir = "/bach1/home/flex/public_html/geofold"
     tmpdir = "%s/tmp"%(gdir)
     #default parameters file
-    paramfile = "%s/server/geofold/bin/parameters"%(basedir)
+    paramfile = "%s/server/GeoFold/bin/parameters"%(basedir)
     #pdb repository
-    pdbdir = "%s/server/data/pdb/"%(basedir)
-    pdbunit = "%s/server/data/pdb1/"%(basedir)
+    pdbdir = "%s/server/GeoFold/pdbs/"%(basedir)
+    pdbunit = "%s/server/GeoFold/pdbs/"%(basedir)
     settings= "settings.html"
     pid = os.getpid()
     outdir = "output/"

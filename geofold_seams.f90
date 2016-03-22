@@ -53,7 +53,7 @@ subroutine test (filename)
       print *, allButtons (1:nButtons)
     enddo
   enddo
-    deallocate(allButtons)
+    if(allocated(allButtons)) deallocate(allButtons)
 endsubroutine test
 !----------------------------------------------------------------------------
 ! Return the points which delimit the region (A point: minX, minY, maxX, maxY)

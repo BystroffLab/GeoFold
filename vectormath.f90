@@ -1095,7 +1095,8 @@ CONTAINS
         !   I,c0(1:3,I),x1(1:3,I)
         ! enddo
         !write(*,*) 'RMSD===============',err
-        deallocate(x0,x1)
+        if(allocated(x0)) deallocate(x0)
+        if(allocated(x1)) deallocate(x1)
         end subroutine ovrlap
 !***********************************************************************
         subroutine superimp(coord0,coord1,err,natm)
@@ -1133,7 +1134,8 @@ CONTAINS
         if (nnn < 5) then
           !! write(*,'("VECTORMATH::superimp:Number of atoms   =",i9,"  <===too small.")') nnn
           err = -1
-          deallocate(x0,x1)
+          if(allocated(x0)) deallocate(x0)
+          if(allocated(x1)) deallocate(x1)
           return
         endif
         call ovrlap(x0,x1,err,nnn,mat,vec)
@@ -1154,7 +1156,8 @@ CONTAINS
           ! write(*,'("Superimposed ATOMS ",i5,6f8.3)') &
           ! I,coord0(1:3,I),coord1(1:3,I)
         enddo
-        deallocate(x0,x1)
+        if(allocated(x0)) deallocate(x0)
+        if(allocated(x1)) deallocate(x1)
         end subroutine superimp
 !!***********************************************************************
 !* find the limits of up to N fields of non-blank

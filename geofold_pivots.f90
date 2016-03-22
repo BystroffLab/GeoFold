@@ -458,7 +458,7 @@ CONTAINS  !! public routines start with geofold_ not geofold_pivot_
     enddo resloop
     pivotpoint = ires    
     if (entropy<pcutoff) entropy = -1
-    deallocate(assigned)
+    if(allocated(assigned)) deallocate(assigned)
     return
   end subroutine geofold_getnextpivot
   !------------------------------------------------------------------------------
@@ -948,7 +948,7 @@ CONTAINS  !! public routines start with geofold_ not geofold_pivot_
       hinge2 = nres
       entropy = -1
     endif
-    deallocate(assigned)
+    if(allocated(assigned)) deallocate(assigned)
   end subroutine geofold_getnexthinge
   !!========================================================================
   ! call geofold_getnextbreak(calpha=allcoords,chainid=f%iflag,u1=u1%iflag,u2=u2%iflag, &

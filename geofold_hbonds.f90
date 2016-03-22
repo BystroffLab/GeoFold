@@ -132,7 +132,7 @@ MODULE geofold_hbonds
   ! integer,intent(in) :: harg
   !CHARACTER (len=*) :: mfile
   character (len=1000) :: mfile
-  INTEGER :: res1, res2, ierr, dunit, n, ss, nhbonds = 0
+  INTEGER :: res1, res2, ierr, dunit, n, ss, nhbonds
   REAL :: engy, x
   CHARACTER (len=200) :: aline
   character :: bond !! "H" or "S" for Hbond or disulfide
@@ -141,6 +141,7 @@ MODULE geofold_hbonds
   dunit = 34
   minres = 999
   maxres = -999
+  nhbonds = 0
   if (allocated(geofold_hb)) deallocate(geofold_hb)
   allocate(geofold_ss(geofold_nres),stat=ierr)
   if (ierr/=0) stop 'read_hbonds:: error allocating geofold_ss'
@@ -166,8 +167,8 @@ MODULE geofold_hbonds
 
   geofold_hb = 0.
   geofold_ss = 0.
-  n = 0
-  ss = 0
+  n = 1
+  ss = 1
   DO
      !! res1 is donor, res2 is acceptor
      !! geofold_hbond_hb(1,i) is donor to i
@@ -185,7 +186,6 @@ MODULE geofold_hbonds
      endif
      select case (bond)
      case ("H","h")
-       n = n + 1
        geofold_hb(1, n) = res1
        geofold_hb(2, n) = res2
        n = n + 1

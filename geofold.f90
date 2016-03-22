@@ -57,6 +57,7 @@ PROGRAM geofold
   logical :: all_seams = .true.
   ! character(len=3) :: aa
   !------------------------------ COMMAND LINE ----------------
+
   ires = 0
   jarg = iargc() ! get the number of command line arguments
   IF ( jarg < 3 ) THEN
@@ -88,6 +89,7 @@ PROGRAM geofold
   dunit = pickunit(20)
   open(dunit,file=parfile,status='old',form='formatted',iostat=ios)
   if (ios/=0) stop 'geofold.f90:: parameters file not found.'
+!  write(0,*) 'Reading parameters'
   call geofold_readparameter(dunit,"HINGECUT",hcutoff,low=0.0,high=1.0,default=hcutoff)
   call geofold_readparameter(dunit,"PIVOTCUT",pcutoff,low=0.0,high=1.0,default=pcutoff)
   call geofold_readparameter(dunit,"BREAKCUT",bcutoff,low=0.0,high=1.0,default=bcutoff)
@@ -107,17 +109,23 @@ PROGRAM geofold
   call geofold_readparameter(dunit,"SEAMCUT",scutoff,low=0.0,high=1.0,default=scutoff)
   call geofold_readparameter(dunit,"ALLSEAMS",all_seams,default=.true.)
   close(dunit)
+!  write(0,*) 'Read parameters'
   !------------------------------ READ INPUT PDB and other FILEs ---------
   dunit = pickunit(10)
   open(dunit, file=filename, form="formatted", status="old", iostat=ierr)
   IF (ierr > 0 ) STOP "geofold:: Error! File not found!"
+  !write(0,*) 'geofold_readpdb'
   call geofold_readpdb(dunit)
+  !write(0,*) 'geofold_masker_readvoids'
   call geofold_masker_readvoids(dunit)   !! read from same PDB file
   close(dunit)
+  !write(0,*) 'geofold_masker_read'
   call geofold_masker_read(cmfile)
   write(0,'("hbfile: ",a)') hbfile
-  write(0,*) "TESTING............."
+!  write(0,*) "TESTING............."
+  !write(0,*) 'geofold_hbonds_read'
   call geofold_hbonds_read(hbfile)
+  !write(0,*) 'geofold_seams_read'
   call geofold_seams_read(seamfile)
   !------------------------------ INITIALIZE   ----------------
   nres = geofold_nres 
@@ -129,17 +137,24 @@ PROGRAM geofold
   NULLIFY(Native%next)
   gptr => Native
   nullify(ilistroot)
-
+  !write(0,*) 'initpivot'
   CALL geofold_initpivot(allcoords,nres,chainid=masterchains)
+  !write(0,*) 'geofold_masker_setvoids()'
   CALL geofold_masker_setvoids()
+  !write(0,*) 'geofold_flory_all_contacts'
   call geofold_flory_all_contacts(hbfile,cmfile,contacts,geofold_nres)
   !------------------------------ WORK   ----------------
+  !write(0,*) 'getcutpoints'
   call getcutpoints(gptr,contacts,flory,T)
   !------------------------------ FINISH UP   ----------------
+  !write(0,*) 'dag_write'
   call dag_write(dagfile,ounit=dunit) 
+!  write(0,*) 'geofold_seams_write'
   call geofold_seams_write(ounit=dunit)
   close(dunit)
+!  write(0,*) 'cleanuplists'
   call cleanuplists()
+!  close(45)
 CONTAINS
 
 !!====================================================================================
@@ -181,6 +196,7 @@ RECURSIVE SUBROUTINE getcutpoints( f ,contacts,flory,T)
   type (seammove_type), pointer :: seammove (:)
   !-----------
   nullify(u1, u2)
+  nullify(seammove)
   if (allocated(allentropy)) deallocate(allentropy)
   allocate(allentropy(maxsplit+1),stat=ios)
   if (ios/=0) stop 'geofold:: getcutpoints: error allocating allentropy'
@@ -206,12 +222,15 @@ RECURSIVE SUBROUTINE getcutpoints( f ,contacts,flory,T)
   !!---- CYCLE FROM HERE as long as no cutpoints can be found
   ! CUTOFFLOOP: DO
   !!---- if intermediate is too small, melt it.
+!  write(0,*) 'getallchains'
   call getallchains(f%iflag,uniqchains(1:nres),nchain,nres)  !! returns chain chars in uniqchains
   mres = count(f%iflag(1:geofold_nres) /= '.')
   if (nchain==1.and.mres<=(2*pivottail+3)) then
+!    write(0,*) 'getmelting'
     call getmelting(f)
     return
   endif
+!  write(0,*) 'saveintermediate'
   CALL saveintermediate(f)
   IF ( count(f%iflag(1:geofold_nres) /= '.') == 1 ) RETURN     ! leaf node
   !! ---- two new children are created for each recursion depth ----
@@ -234,38 +253,54 @@ RECURSIVE SUBROUTINE getcutpoints( f ,contacts,flory,T)
   if (geofold_split==0) geofold_split = 1
   if (geofold_split>maxsplit) geofold_split = maxsplit
   !!------------- BREAKS ----------------
+!  write(0,*) 'getbreaks'
   call getbreaks(f,allu1,allentropy,nbreak,contacts,flory)
   if (verbose.and.nbreak > 0) write(*,*) '============>>> found ',nbreak,' BREAKs'
   breakloop: DO ibreak=1,nbreak
      entropy = allentropy(ibreak)
      u1%iflag = allu1(ibreak)%iflag
      f%axis = allu1(ibreak)%axis
+!     write(0,*) 'calling getcutpoints from break u1'
      CALL getcutpoints(u1,contacts,flory,T)   !!  recusrively find cutpoints
      u2%iflag = f%iflag
      where (u1%iflag/='.') u2%iflag = '.'
+!     write(0,*) 'calling getcutpoints from break u2'
      CALL getcutpoints(u2,contacts,flory,T)
      cuttype = breakflag
+!     write(0,*) 'calling savetstate from break'
      CALL savetstate(f,u1,u2=u2,t=cuttype, ent=entropy)
   enddo breakloop
   if (nbreak > 0) return
   !!------------- PIVOTS ----------------
+!  write(0,*) 'getpivots'
   call getpivots(f,allu1,allentropy,npivot,contacts,flory)
+!  write(0,*) 'got pivots'
   if (verbose.and.npivot > 0) write(*,*) '============>>> found ',npivot,' PIVOTS'
   pivotloop: DO ipivot=1,npivot 
+!     write(0,*) 'in pivotloop'
      entropy = allentropy(ipivot)
      u1%iflag = allu1(ipivot)%iflag
      f%axis = allu1(ipivot)%axis
+!     write(0,*) 'pu1 getcutpoints'
      CALL getcutpoints(u1,contacts,flory,T)   !!  recusrively find cutpoints
      u2%iflag = f%iflag
      where (u1%iflag/='.') u2%iflag = '.'
+!     write(0,*) 'pu2 getcutpoints'
      CALL getcutpoints(u2,contacts,flory,T)
      cuttype = pivotflag
+!     write(0,*) 'p savetstate'
      CALL savetstate(f,u1,u2=u2,t=cuttype, ent=entropy)
   enddo pivotloop
+!  write(0,*) 'out of pivot loop'
+!  write(0,'(i3," pivots found.")') npivot
   if (npivot > 0) return
   !!------------- SEAMS  ----------------
   !!-1: left, 1: right  --> allside
+  !This is apparently where the segfault is happening.... What do?
+  write(0,*) 'deallocating seammove'
+  write(0,*) associated(seammove)
   if (associated(seammove)) deallocate(seammove)
+  write(0,*) 'seammove deallocated'
   nseam = maxsplit
   !!!All seams
   if(all_seams) then
@@ -277,6 +312,7 @@ RECURSIVE SUBROUTINE getcutpoints( f ,contacts,flory,T)
   !!!
   allocate(seammove(nseam),stat=ios); if (ios/=0) stop 'geofold:: getcutpoints: error allocating seammove.'
   seammove(:)%barrel=0;seammove(:)%seam=0;seammove(:)%energy=0;seammove(:)%side=0;
+!  write(0,*) 'getseams'
   call getseams(f, seammove, nseam,contacts,flory,w,T) 
   if (verbose.and.nseam > 0) then
      write(*,*) '============>>> found ',nseam,' SEAMS'
@@ -296,15 +332,18 @@ RECURSIVE SUBROUTINE getcutpoints( f ,contacts,flory,T)
      u1%iflag = f%iflag
      u1%barrel(seammove(iseam)%barrel) = seammove(iseam)%seam !! set flag
      write(*,*) "seamloop:: u1%barrel(seammove(",iseam,")%barrel)=",u1%barrel(seammove(iseam)%barrel)
+!     write(0,*) 'su1 getcutpoints'
      CALL getcutpoints(u1,contacts,flory,T)   !!  recursively find cutpoints
      cuttype = seamflag
      !Flory entropy
      !entropy = entropy + geofold_flory_calc_entropy(flory,f,u1,c_list=contacts,w=w,T=T)
+!     write(0,*) 's savetstate'
      CALL savetstate(f,u1,t=cuttype, ent=entropy, iseam=u1%barrel(seammove(iseam)%barrel)) !! add to list of intermediates
   enddo seamloop
   if (associated(seammove)) deallocate(seammove)
   if (nseam > 0) return
   !!------------- HINGES  ----------------
+!  write(0,*) 'gethinges'
   call gethinges(f,allu1,allentropy,nhinge,contacts,flory)
   if (verbose.and.nhinge > 0) then
     write(*,*) '============>>> found ',nhinge,' HINGES'
@@ -315,11 +354,14 @@ RECURSIVE SUBROUTINE getcutpoints( f ,contacts,flory,T)
      entropy = allentropy(ihinge)
      u1%iflag = allu1(ihinge)%iflag
      f%axis = allu1(ihinge)%axis
+!     write(0,*) 'hu1 getcutpoints'
      CALL getcutpoints(u1,contacts,flory,T)   !!  recusrively find cutpoints
      u2%iflag = '.'
      where (f%iflag/='.'.and.u1%iflag=='.') u2%iflag = f%iflag
+!     write(0,*) 'hu2 getcutpoints'
      CALL getcutpoints(u2,contacts,flory,T)
      cuttype = hingeflag
+!     write(0,*) 'h savetstate'
      CALL savetstate(f,u1,u2=u2,t=cuttype, ent=entropy)
   enddo hingeloop
   if (nhinge > 0) return
@@ -329,6 +371,7 @@ RECURSIVE SUBROUTINE getcutpoints( f ,contacts,flory,T)
   WRITE(*,*) 'WARNING: No cutpoints found for ',f%iflag(1:geofold_nres)
   if (any(f%barrel(:)/=0)) write(*,*) "NOTE: It is an open barrel."
   WRITE(*,*) 'MELTING it.'
+!  write(0,*) 'getmelting'
   call getmelting(f,force=.true.)
   return
 END SUBROUTINE getcutpoints
@@ -367,7 +410,8 @@ SUBROUTINE getbreaks(f,allu1,allentropy,nbreak,contacts,flory)
   nres = geofold_nres
   call getallchains(f%iflag,uniqchains,nchain,nres)  !! returns chain chars in uniqchains
   if (nchain <= 1) then
-    deallocate(u1,u2)
+    if(associated(u1)) deallocate(u1)
+    if(associated(u2)) deallocate(u2)
     return
   endif
   mbreak = 2**(nchain-2)
@@ -402,8 +446,9 @@ SUBROUTINE getbreaks(f,allu1,allentropy,nbreak,contacts,flory)
       allu1(ibreak)%axis = bvec
     endif
   enddo
-  deallocate(u1,u2)
-  deallocate(allenergy)
+  if(associated(u1)) deallocate(u1)
+  if(associated(u2)) deallocate(u2)
+  if(allocated(allenergy)) deallocate(allenergy)
 END SUBROUTINE getbreaks
 
 !!====================================================================================
@@ -441,20 +486,27 @@ SUBROUTINE getpivots(f,allu1,allentropy,npivot,contacts,flory)
   allentropy = 0.
   allenergy = -99999999.
   bvec = 0
+  write(0,*) 'getpivots stuff initialized'
   do while (bpoint<nres)
     write(0,*) bpoint, " ", nres
+    write(0,*) 'geofold_getnextpivot'
     call geofold_getnextpivot(f=f,calpha=allcoords,chainid=f%iflag,u1=u1%iflag,u2=u2%iflag, &
                              nres=nres,pivotpoint=bpoint,entropy=entropy,bvec=bvec)
     if(entropy /= -1)&
       entropy = entropy + geofold_flory_calc_entropy(flory,f,u1,u2,contacts,w,T)
     if (entropy<pcutoff) then
-      deallocate(u1,u2)
+      write(0,*) 'entropy too low...'
+      if(associated(u1)) deallocate(u1)
+      if(associated(u2)) deallocate(u2)
+      write(0,*) 'returning...'
       return
     endif
+    write(0,*) 'geofold_masker_energy'
     call geofold_masker_energy(u1,u1energy)
     call geofold_masker_energy(u2,u2energy)
     energy = u1energy + u2energy - fenergy
     if (entropy>pcutoff) then
+      write(0,*) 'energy > pcutoff'
       if (npivot<nsplit) npivot = npivot + 1
       ipivot = npivot + 1
       !!do while (entropy>allentropy(ipivot-1))
@@ -472,8 +524,10 @@ SUBROUTINE getpivots(f,allu1,allentropy,npivot,contacts,flory)
       allu1(ipivot)%axis = bvec
     endif
   enddo
-  deallocate(u1,u2)
-  deallocate(allenergy)
+  if(associated(u1)) deallocate(u1)
+  if(associated(u2)) deallocate(u2)
+  if(allocated(allenergy)) deallocate(allenergy)
+  write(0,*) 'end of getpivots'
 END SUBROUTINE getpivots
 !!====================================================================================
 ! gethinges attempts to find pairs of positions in the
@@ -517,7 +571,8 @@ SUBROUTINE gethinges(f,allu1,allentropy,nhinge,contacts,flory)
     if(entropy /= -1)&
       entropy = entropy + geofold_flory_calc_entropy(flory,f,u1,u2,contacts,w,T)
     if (entropy<hcutoff) then
-      deallocate(u1,u2)
+      if(associated(u1)) deallocate(u1)
+      if(associated(u2)) deallocate(u2)
       return
     endif
     if (entropy>hcutoff) then
@@ -545,8 +600,9 @@ SUBROUTINE gethinges(f,allu1,allentropy,nhinge,contacts,flory)
       allu1(ihinge)%axis = 10000*lasti + lastj
     endif
   enddo
-  deallocate(u1,u2)
-  deallocate(allenergy)
+  if(associated(u1)) deallocate(u1)
+  if(associated(u2)) deallocate(u2)
+  if(allocated(allenergy)) deallocate(allenergy)
 
 END SUBROUTINE gethinges
 !---------------------------------------------------------------------------------
@@ -597,13 +653,13 @@ subroutine getseams (f, seammove, nMove,contacts,flory,w,T)
         u1%barrel(iBarrel)=iSeam      
         tmpMove%energy = tmpMove%energy - &
         T*geofold_flory_calc_entropy(flory,f,u1,c_list=contacts,w=w,T=T)
-        deallocate(u1)
+        if(associated(u1)) deallocate(u1)
         energy = tmpMove%energy
       endif
-!      if (energy < maxval(seammove(1:nseam)%energy,dim=1)) then
-!        i = maxloc(seammove(1:nseam)%energy,dim=1)
-      if(energy > minval(seammove(1:nseam)%energy,dim=1)) then
-        i = minloc(seammove(1:nseam)%energy,dim=1)
+      if (energy < maxval(seammove(1:nseam)%energy,dim=1)) then
+        i = maxloc(seammove(1:nseam)%energy,dim=1)
+!      if(energy > minval(seammove(1:nseam)%energy,dim=1)) then
+!        i = minloc(seammove(1:nseam)%energy,dim=1)
         seammove(i) = tmpMove
         nMove = nMove + 1
       endif
@@ -1016,7 +1072,7 @@ SUBROUTINE cleanuplists()
     !!
     do while (associated (tptr%next) )
        thead => tptr%next
-       deallocate(tptr)
+       if(associated(tptr)) deallocate(tptr)
        tptr => thead
     end do
     if (associated(tptr)) deallocate(tptr)
@@ -1027,7 +1083,7 @@ SUBROUTINE cleanuplists()
     !!
     do while (associated (iptr%next) )
        ihead => iptr%next
-       deallocate(iptr)
+       if(associated(iptr)) deallocate(iptr)
        iptr => ihead
     end do
     if (associated(iptr)) deallocate(iptr)

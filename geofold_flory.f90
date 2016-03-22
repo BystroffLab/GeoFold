@@ -268,10 +268,10 @@ subroutine removeZeroes(paths)
   enddo
   newsize = oldsize(1) - nzero
   call reallocate(tmp,newsize)
-  deallocate(paths)
+  if(allocated(paths)) deallocate(paths)
   allocate(paths(newsize,oldsize(2)))
   paths = tmp
-  deallocate(tmp)
+  if(allocated(tmp)) deallocate(tmp)
 end subroutine removeZeroes
   
   
@@ -298,7 +298,7 @@ subroutine reallocate(array,ns)
   if(allocated(tmp)) deallocate(tmp)
   allocate(tmp(oldsize,width))
   tmp = array
-  deallocate(array)
+  if(allocated(array)) deallocate(array)
   allocate(array(newsize,width))
   array = 0
   if(newsize > oldsize) then
@@ -310,7 +310,7 @@ subroutine reallocate(array,ns)
       array(i,1:size(array,2)) = tmp(i,1:size(array,2))
     enddo
   endif
-  deallocate(tmp)
+  if(allocated(tmp)) deallocate(tmp)
 end subroutine reallocate
 
 !adds value n to array, reallocates array if size is too small
@@ -778,7 +778,7 @@ subroutine flip(array, arraySize)
     array(j) = flop(i)
     j = j+1
   enddo
-  deallocate(flop)
+  if(allocated(flop)) deallocate(flop)
 end subroutine flip
 
 logical function allVisited(j,c_list,visited,nres) result(answer)
@@ -909,8 +909,8 @@ subroutine shortest_path(a, b, c_list,cost,nres)
     !no shorter path found, save straight walkalong
     if(l == 0) then
       cost = maxCost
-      deallocate(visited)
-      deallocate(unvisited)
+      if(allocated(visited)) deallocate(visited)
+      if(allocated(unvisited)) deallocate(unvisited)
       return
     endif
   !enddo
@@ -921,8 +921,8 @@ subroutine shortest_path(a, b, c_list,cost,nres)
     c_list(i)%path = 0
   enddo
   !deallocate visited and unvisited
-  deallocate(visited)
-  deallocate(unvisited)
+  if(allocated(visited)) deallocate(visited)
+  if(allocated(unvisited)) deallocate(unvisited)
 end subroutine shortest_path
 
 
