@@ -7,14 +7,14 @@ echo "Running on `hostname` `date` in `pwd`" > Running
 ## NOTE: server/geofold is located on brahms
 ############ change SHOME to the directory geofold is installed in ##########
 setenv SHOME /bach1/home/flex
-setenv LHOME /home/flex
-setenv GDIR $SHOME/server/geofold
+setenv LHOME /bach1/home/flex
+setenv GDIR $SHOME/server/GeoFold
 setenv BDIR $GDIR
 setenv PYTHON /usr/bin/python
 echo "Jobs currently running on `hostname` 0" > Load
 echo "Running in $GDIR" >> Running
-setenv PDBDIR $SHOME/server/data/pdb
-if !(-e $PDBDIR ) setenv PDBDIR $LHOME/server/data/pdb
+setenv PDBDIR $GDIR/pdbs
+if !(-e $PDBDIR ) setenv PDBDIR $LHOME/server/pdbs
 setenv LOGDIR $GDIR/log
 setenv BIOLUNIT $PDBDIR
 if !(-e $BIOLUNIT ) setenv BIOLUNIT $SHOME/server/data/pdb1
@@ -51,7 +51,7 @@ while ( 1 )
     echo "geod.csh queue unpaused `date`"
   end
   ## COUNT GEOFOLD PROCESSES CURRENTLY RUNNING
-  set N = `ps ax -o user -o pid -o command | awk -v w=walcob '$1 == w' | grep "${STMP}/.*csh" | grep -v "grep" | wc -l | awk '{print $1}'`
+  set N = `ps ax -o user -o pid -o command | awk -v w=flex '$1 == w' | grep "rungeofold.py" | grep -v "grep" | wc -l | awk '{print $1}'`
   if ( $N < $ALLOWABLE ) then
     ## if we can start another job, then do the following:
     ##  1. submit a geofold job using the basename of the file as the basename of the output,
@@ -118,14 +118,15 @@ while ( 1 )
           mv -fv $CFILE ${CFILE}.x
           # if ($CHAIN == "" ) setenv CHAIN  _
           ## mv ${GDIR}/${SJOB}/${LNAME}.par $STMP/
-          $PYTHON $GDIR/rungeofold.py ${STMP}/$PARFILE > $LOGDIR/${LNAME}.log
+          #$PYTHON $GDIR/rungeofold.py ${STMP}/$PARFILE > $LOGDIR/${LNAME}.log
+          bash $GDIR/rungeofold_wrapper.sh ${STMP}/$PARFILE $GDIR/bach_flex.conf $LOGDIR/${LNAME}.log
           # chmod +x $GDIR/tmp/${LNAME}.csh
           ############ NEXT LINE SHOULD BE A JOB SUBMISSION -- MACHINE DEPENDENT
           ## qsub -b n -j y -cwd -o $LOGDIR/${LNAME}.log tmp/${LNAME}.csh $PDBCODE $CHAIN ${LNAME}  ${ONAME}
           # $GDIR/tmp/${LNAME}.csh $PDBCODE $CHAIN ${LNAME}  ${ONAME} >& $LOGDIR/${LNAME}.log &
           ## Old way...
           ## $GDIR/tmp/${LNAME}.csh >& $LOGDIR/${LNAME}.log &
-          ## New python script (Erin Gilbert and Ben Walcott)
+          ## New python script (Erin Gilbert and Benjamin Walcott)
           # $GDIR/tmp/${LNAME}.csh >& $LOGDIR/${LNAME}.log &
           echo "job submitted: ${CFILE}"
           @ NDONE ++

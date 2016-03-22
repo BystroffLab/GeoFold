@@ -280,7 +280,7 @@ CONTAINS
     END DO
     
     !!
-    deallocate(sasnrg,stat=ierr)
+    if(allocated(sasnrg)) deallocate(sasnrg,stat=ierr)
     if (ierr/=0) stop 'Error deallocating!!'
     call geofold_hbonds_cleanup()
     !!

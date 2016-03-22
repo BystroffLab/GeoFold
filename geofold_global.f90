@@ -299,7 +299,7 @@ CONTAINS
       i=index(aline,' ')-1
       if(i == 0) cycle
       !write(0,*) len(key), i
-      if (allcaps(aline(1:i))/=trim(key(1:100))) cycle
+      if (allcaps(aline(1:i))/=trim(key(1:len(key)))) cycle
       !stop 'works'
       read(aline(i+1:),*,iostat=ios) val
       if (ios/=0) then

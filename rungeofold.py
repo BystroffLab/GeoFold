@@ -36,7 +36,32 @@ import sys
 import commands
 import time
 import math
-from georansac import fit
+try:
+  from georansac import fit
+except ImportError:
+  pass
+
+def makeZip(directory,LName):
+  '''creates a zip archive of the directory and stores it within itself'''
+  os.chdir("%s/.."%(directory))
+  status,output = commands.getstatusoutput('zip -rv %s/%s.zip %s'%(LName,LName,LName))
+  if status != 0:
+    writeOut('%s: %s'%(status,output))
+    runProgram('error')
+
+def readConf(confFile):
+  output = {}
+  conf = open(confFile,'r')
+  for line in conf:
+    if line[0] != "#":
+      line = line.split()
+      if len(line) > 2:
+        line[1] = " ".join(line[1:])
+      if len(line) == 2:
+        output[line[0]] = line[1]
+  conf.close()
+  return output
+
 
 def writeOut(x):
   global htmlOut
@@ -68,8 +93,7 @@ def createForm(out,parfile):
 
 #new energy profile function
 def writeEnergyProfile(tmpDir,htmlDir,LName,nn):
-  gnuplot = "/bach1/home/walcob/usr/bin/gnuplot"
-  #gnuplot = "gnuplot"
+  global gnuplot
   #list of colors to use
   colors = ['black','red','orange','yellow','green','blue','violet','cyan','magenta','pink','gold']
   plot = [[]]
@@ -153,7 +177,6 @@ def writeEnergyProfile(tmpDir,htmlDir,LName,nn):
       gnuOut = open("%s/%s_%s.nrg2.gnu"%(tmpDir,LName,nn),'w+')
     except IOError:
       return [1,"Failed to open file %s_%s.nrg2.gnu"%(LName,nn)]
-    gnuplot="gnuplot"
     gnuOut.write('set term postscript enhanced portrait\n')
     gnuOut.write('set size 1.4,0.7\n')
     gnuOut.write('set title "%s_%s"\n'%(LName,nn))
@@ -281,7 +304,7 @@ def createGnuplot(LName, wat):
   #os.environ['GNUHELP']='/bach1/usr/local/share/gnuplot/4.2/gnuplot.gih'
   #os.environ['GNUPLOT_PS_DIR']='/bach1/usr/local/share/gnuplot/4.2/PostScript'
   global thermal
-  gnuplot = 'gnuplot'
+  global gnuplot
 
   print("createGnuplot")
   try:
@@ -327,6 +350,8 @@ def createGnuplot(LName, wat):
   gnuOut.write('set xtics nomirror\n')
   gnuOut.write('set ytics nomirror\n')
   gnuOut.write('set key right\n')
+  #standardizing yrange to prevent errors when everything is in a horizontal line
+  gnuOut.write('set yrange [5:20]\n')
   #The line that actually tells gnuplot what to plot
   gnuOut.write('p "%s.plot" w p pt 7, %s + %s*x\n'%(LName,bb,mm))
   gnuOut.close()
@@ -337,6 +362,7 @@ def createGnuplot(LName, wat):
 
 #plots the unfolding timecourse
 def plotTimeCourse(LName,nn):
+  global gnuplot
   print("plotTimeCourse")
   #initial setup
   try:
@@ -352,8 +378,6 @@ def plotTimeCourse(LName,nn):
   #gnuplot environmental variables
   #os.environ['GNUPLOT_PS_DIR'] = '/bach1/usr/local/share/gnuplot/4.2/PostScript'
   #os.environ['GNUHELP'] = '/bach1/usr/local/share/gnuplot/4.2/gnuplot.gih'
-  #gnuplot program itself
-  gnuplot = 'gnuplot'
   #initial gnuplot settings
   gnuOut.write('set terminal postscript enhanced portrait\n')
   gnuOut.write('set size 1.4,0.7\n')
@@ -423,8 +447,7 @@ def energyProfileAll(LName,omegaRange):
   #gnuplot environmental variables
   # os.environ['GNUPLOT_PS_DIR'] = '/bach1/usr/local/share/gnuplot/4.2/PostScript'
   # os.environ['GNUHELP'] = '/bach1/usr/local/share/gnuplot/4.2/gnuplot.gih'
-  #gnuplot program itself
-  gnuplot = 'gnuplot'
+  global gnuplot
  #from geofold this program takes the arguments LName, omegaRange
 
   try:
@@ -614,10 +637,11 @@ global htmlOut
 global parameters
 global thermal
 global debug
+global gnuplot
 debug = False
 parameters = {}
 
-Username = "flex"
+conf = "default.conf"
 
 ########################## DIRECTORIES #############################
 ### SET THESE DIRECTORIES AS FOLLOWS:
@@ -632,8 +656,27 @@ Username = "flex"
 # (not used in this script except to clean up)
 # thisDir is the directory where you are running this script.
 if len(sys.argv) == 3:
-  Username = sys.argv[2]
+  conf = sys.argv[2]
 
+configuration = readConf(conf)
+thisDir = os.getcwd()
+baseDir = configuration['baseDir']
+gDir = configuration['gDir']
+bDir = configuration['bDir']
+maskerDir = configuration['maskerDir']
+tmpDir = configuration['tmpDir']
+pdbDir = configuration['pdbDir']
+logDir = configuration['logDir']
+htmlDir = configuration['htmlDir']
+jobDir = configuration['jobDir']
+paramTemplate = configuration['paramTemplate']
+baseURL = configuration['baseURL']
+outputURL = configuration['outputURL']
+dot = configuration['dot']
+convert = configuration['convert']
+gnuplot = configuration['gnuplot']
+
+'''
 #Directory settings for server
 if Username == "bystrc":
   thisDir = os.getcwd()
@@ -702,6 +745,7 @@ if Username == 'public':
   paramTemplate=gDir+'/parameters'
   baseURL='http://www.bioinfo.rpi.edu/bystrc/geofold'
   outputURL='output'
+'''
 
 if len(sys.argv) < 2 or len(sys.argv) > 4:
   #### JOB level variable from parameter file ####
@@ -710,7 +754,7 @@ if len(sys.argv) < 2 or len(sys.argv) > 4:
   # LName is a unique name for this job or the process ID
   # OName is a unique name for a previous job, to be used to skip GEOFOLD.
   # UName is a unique name for the current job (or username?)
-  print("USAGE: rungeofold.py parametersFile [username]")
+  print("USAGE: rungeofold.py parametersFile [configuration.conf]")
   sys.exit()
 else:
   #Read parameters from the parameters file
@@ -786,7 +830,7 @@ else:
   os.environ["dagDir"] = htmlDir
   cp = "cp -p %s/isegment.cgi %s/isegment.cgi"%(gDir,htmlDir)
   commands.getstatusoutput(cp)
-  
+
   #Added for do-over script interface
   status,redo = findParam(paramFile,"REDO")
   if status == 0 and len(redo) != 0:
@@ -826,8 +870,8 @@ else:
   ###PROGRAMS####
   maxTraffic= gDir+"/maxTraffic"
   mtCut= 0.1
-  convert = "/usr/bin/convert"
-  dot = "/usr/bin/dot"
+  #convert = "/usr/bin/convert"
+  #dot = "/usr/bin/dot"
 
   try:
     tmpWrite = open(htmlTmp, 'w+')
@@ -1256,7 +1300,7 @@ else:
     nn+=1
     pathway2ps = "%s/xpathway2ps %s/%s.seq %s/%s_%s.dag.age %s/%s.cij %s/%s_%s.ps 4" %(gDir,tmpDir,LName,tmpDir,LName,nn,tmpDir,LName,tmpDir,LName,nn)
     tmpWrite.write(pathway2ps+'<br>')
-    status,output = commands.getstatusoutput(pathway2ps)
+    runProgram(pathway2ps)
     tmpWrite.write(output+'<br>')
     if debug:
       tmpWrite.close()
@@ -1273,13 +1317,13 @@ else:
     nn+=1
     runConvert = "%s -trim -geometry 100 -background white %s/%s_%s.ps %s/%s_%s_thumb.png" %(convert,tmpDir,LName,nn,tmpDir,LName,nn)
     tmpWrite.write(runConvert+'<br>')
-    commands.getstatusoutput(runConvert)
+    runProgram(runConvert)
     runConvert = "%s -background white %s/%s_%s_thumb.png %s/%s_%s_thumb.png" %(convert,tmpDir,LName,nn,htmlDir,LName,nn)
-    commands.getstatusoutput(runConvert)
+    runProgram(runConvert)
     runConvert = "%s -trim -background white %s/%s_%s.ps %s/%s_%s.png" %(convert,tmpDir,LName,nn,tmpDir,LName,nn)
-    commands.getstatusoutput(runConvert)
+    runProgram(runConvert)
     runConvert = "%s -background white %s/%s_%s.png %s/%s_%s.png" %(convert,tmpDir,LName,nn,htmlDir,LName,nn)
-    commands.getstatusoutput(runConvert)
+    runProgram(runConvert)
 
   print("============= MAXTRAFFIC =============")
   tmpWrite.write("============= MAXTRAFFIC =============<br>")
@@ -1341,6 +1385,7 @@ else:
   permWrite.write('<h4><a href="%s.pdb">Coordinate file (%s)</a></h4>\n'%(LName,LName))
   permWrite.write('<h4><a href="./%s_1.dag.out">Unfolding graph for %s</a></h4>\n'%(LName,LName))
   #h/s-bond info
+  permWrite.write('<h4><a href="./%s.zip" download>Download as zip file</a></h4>\n'%(LName))
   permWrite.write('<h5>Number of H-bonds fond: %s</h5>\n'%(h))
   permWrite.write('<h5>Number of SS-bonds found: %s</h5>\n'%(s))
   #Sequence info
@@ -1424,6 +1469,7 @@ else:
     permWrite.write('<td>%s</td><td>%s</td><td>%s</td><td>%s</td>'%(line[1],line[2],line[3],line[4]))
     #calculate ln(ku) stuff for plot
     i = 0
+    '''
     #find the last timecourse where the unfolded state is < 50 if unfolding, folded state if otherwise
     if folding != 1:
       while i<len(timecourses) and float(timecourses[i][3])<50:
@@ -1432,6 +1478,8 @@ else:
       while i < len(timecourses) and float(timecourses[i][2])<50:
         i+=1
     i-=1
+    '''
+    i = len(timecourses)-1
     # hl = math.log(math.log(2)/float(timecourses[i][1]))
     try:
       lnku = math.log(math.log(2)/float(timecourses[i][5]))
@@ -1533,6 +1581,7 @@ else:
     runProgram(runConvert)
   status,output = createGnuplot("%s/%s"%(tmpDir,LName),wat)
   #status = 1
+  print output
   if status != 0:
     print(status)
     print(output)
@@ -1569,6 +1618,4 @@ else:
     nn+=1
     commands.getstatusoutput("cp %s/%s_%s.dag.out %s/%s_%s.dag.out"%(tmpDir,LName,nn,htmlDir,LName,nn))
     commands.getstatusoutput("cp %s/%s_%s.log %s/%s_%s.log" %(tmpDir,LName,nn,htmlDir,LName,nn))
-
-
-
+  makeZip(htmlDir,LName)
