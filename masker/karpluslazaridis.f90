@@ -8,22 +8,25 @@ module karpluslazaridis
   "OH1 ","O   ","OC  ","S   ","SH1E"/)
   !angstroms cubed
   real,dimension(17),parameter :: volumes = (/14.7,8.3,23.7,22.4,30.0,4.4,4.4,&
-  11.2,11.2,11.2,0.0,10.8,10.8,10.8,14.7,21.4/)
+    11.2,11.2,11.2,0.0,10.8,10.8,10.8,14.7,21.4/)
   !kcal/mol --> need J or kJ?  It looks like we want J
   real,dimension(17),parameter :: Grefs = (/0.000,-3723.760,-782.408,1556.448,&
-4556.376,238.488,-24894.800,-15982.880,-22802.800,-83680.000,-41840.000,&
--4184.000,-24769.280,-22300.720,-41840.000,-13556.160,-8577.200/) ! J/mol
-real,dimension(17),parameter :: Gfrees = (/0.00,-5857.60,-1046.00,2175.68,&
-6276.00,334.72,-37237.60,-16736.00,-32635.20,-83680.00,-41840.00,-6485.20,&
--28032.80,-24476.40,-41840.00,-17154.40,-11296.80/) !J/mol
+    4556.376,238.488,-24894.800,-15982.880,-22802.800,-83680.000,-41840.000,&
+    -4184.000,-24769.280,-22300.720,-41840.000,-13556.160,-8577.200/) ! J/mol
+  real,dimension(17),parameter :: Gfrees = (/0.00,-5857.60,-1046.00,2175.68,&
+    6276.00,334.72,-37237.60,-16736.00,-32635.20,-83680.00,-41840.00,-6485.20,&
+    -28032.80,-24476.40,-41840.00,-17154.40,-11296.80/) !J/mol
   real,dimension(17),parameter :: Hrefs = (/0.000,9288.480,3665.184,-2552.240,&
-  -7443.336,-4071.032,-37902.856,-19472.336,-37773.152,-104600.000,-50208.000,&
-  -5230.000,-38760.576,-24212.808,-50208.000,-18723.400,-18723.400/) !J/mol
+    -7443.336,-4071.032,-37902.856,-19472.336,-37773.152,-104600.000,-50208.000,&
+    -5230.000,-38760.576,-24212.808,-50208.000,-18723.400,-18723.400/) !J/mol
   !angstroms
   real,dimension(17),parameter :: CorrLengths = (/3.5,3.5,3.5,3.5,3.5,3.5,3.5,&
-  3.5,3.5,6.0,6.0,3.5,3.5,3.5,6.0,3.5,3.5/)
+    3.5,3.5,6.0,6.0,3.5,3.5,3.5,6.0,3.5,3.5/)
+  real,parameter :: pi=3.1415927410125732421875
+  real,dimension(17),parameter :: Vdws = (/2.1,2.1,2.1,2.1,2.1,2.1,1.6,1.6,1.6,&
+    1.6,1.6,1.6,1.6,1.6,1.6,1.89,1.89/)
 
-  public: getKplType
+  public: getKplType, kpl_gsolv
 
 contains
   integer function getKplType(aline) result(type)
@@ -97,18 +100,54 @@ contains
    read(aline(13:16),*) atom
    read(aline(18:20),*) res
    do i = 1, 21
-     if(i == 21) then
+     if(i == 21) then !Unrecognized amino acid
        type = 0
        exit
      endif
      if(residues(i) == res) exit
    enddo
-   do j = 1, 18
-     if(j == 18 .or. i == 21) then
+   do j = 1, 15
+     if(j == 15 .or. i == 21) then !Unrecognized atomname
        type = 0
        exit
      endif
      if(atomnames(i,j) == atom) exit
    enddo
-   if(i /= 21 .and. j /= 18) type = types(i,j)
+   if(i /= 21 .and. j /= 15) type = types(i,j)
   end function getKplType
+
+  real function get_dist(atom1,atom2) result(dist)
+    implicit none
+    real,dimension(3),intent(in) :: atom1,atom2
+    real,dimension(3) :: temp
+
+    temp = atom1-atom2
+    temp = temp*temp
+    dist = sqrt(temp(1)+temp(2)+temp(3))
+  end function get_dist
+
+  real function kpl_gsolv (xyz,nat,start) result(gsolv)
+    ! Calculates the solvation energy according to the Karplus-Lazaridis solvation
+    ! model.  It follows a really annoying equation that I don't want to put here...
+    implicit none
+    integer, intent(in) :: nat
+    real, dimension(3,nat),intent(in) :: xyz
+    integer, intent(in) :: start
+    integer :: iatom,jatom
+    real :: rij
+    real :: gref,gfree,corrL,vdw,Vj,alpha,xi,dist
+
+    gsolv = 0.
+
+    do iatom = 1,nat
+      gsolv = gsolv + Grefs(atype(iatom))
+      do jatom = 1, nat
+        if(iatom == jatom) cycle
+        if(atype(iatom) <= 0 .or. atype(jatom) <= 0) cycle
+        dist = get_dist(xyz(:,iatom),xyz(:,jatom))
+        alpha = (2*Gfrees(atype(iatom)))/(sqrt(pi*CorrLengths(atype(iatom))))
+        xi = (dist-Vdws(atype(iatom)))/CorrLengths(atype(iatom))
+        gsolv = gsolv - ((alpha*exp(-2*xi))/(4*pi*dist*dist))*volumes(atype(jatom))
+  end function kpl_gsolv
+
+end module karpluslazaridis
