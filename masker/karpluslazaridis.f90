@@ -7,8 +7,8 @@ module karpluslazaridis
   "CH1E","CH2E","CH3E","CR1E","NH1 ","NR  ","NH2 ","NH3 ","NC2 ","N   ",&
   "OH1 ","O   ","OC  ","S   ","SH1E"/)
   !angstroms cubed
-  real,dimension(17),parameter :: volumes = (/14.7,8.3,23.7,22.4,30.0,4.4,4.4,&
-    11.2,11.2,11.2,0.0,10.8,10.8,10.8,14.7,21.4/)
+  real,dimension(17),parameter :: volumes = (/14.7,8.3,23.7,22.4,30.0,18.4,4.4,&
+    4.4,11.2,11.2,11.2,0.0,10.8,10.8,10.8,14.7,21.4/)
   !kcal/mol --> need J or kJ?  It looks like we want J
   real,dimension(17),parameter :: Grefs = (/0.000,-3723.760,-782.408,1556.448,&
     4556.376,238.488,-24894.800,-15982.880,-22802.800,-83680.000,-41840.000,&
@@ -26,7 +26,7 @@ module karpluslazaridis
   real,dimension(17),parameter :: Vdws = (/2.1,2.1,2.1,2.1,2.1,2.1,1.6,1.6,1.6,&
     1.6,1.6,1.6,1.6,1.6,1.6,1.89,1.89/)
 
-  public: getKplType, kpl_gsolv
+  public getKplType, kpl_gsolv
 
 contains
   integer function getKplType(aline) result(type)
@@ -131,23 +131,27 @@ contains
     ! model.  It follows a really annoying equation that I don't want to put here...
     implicit none
     integer, intent(in) :: nat
-    real, dimension(3,nat),intent(in) :: xyz
+    real, dimension(:,:),intent(in) :: xyz
     integer, intent(in) :: start
-    integer :: iatom,jatom
+    integer :: iatom,jatom,loopnum
     real :: rij
     real :: gref,gfree,corrL,vdw,Vj,alpha,xi,dist
-
     gsolv = 0.
 
-    do iatom = 1,nat
+    loopnum = 1
+    do iatom = start,nat+start-1
+      if(atype(iatom)<=0) cycle
       gsolv = gsolv + Grefs(atype(iatom))
-      do jatom = 1, nat
+      do jatom = start, nat+start-1
+        loopnum = loopnum + 1
         if(iatom == jatom) cycle
-        if(atype(iatom) <= 0 .or. atype(jatom) <= 0) cycle
+        if(atype(jatom) <= 0) cycle
         dist = get_dist(xyz(:,iatom),xyz(:,jatom))
         alpha = (2*Gfrees(atype(iatom)))/(sqrt(pi*CorrLengths(atype(iatom))))
         xi = (dist-Vdws(atype(iatom)))/CorrLengths(atype(iatom))
         gsolv = gsolv - ((alpha*exp(-2*xi))/(4*pi*dist*dist))*volumes(atype(jatom))
+      enddo
+    enddo
   end function kpl_gsolv
 
 end module karpluslazaridis
