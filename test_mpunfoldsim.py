@@ -3,20 +3,37 @@
 # Execute using mpirun
 # Wenyin San
 # March 2016
-if __name__ == '__main__':
-	from shell import shell
-	from launch import launch
-	from runmpi import get_mpirun
-	from get_cpu_num import get_cpu_num
-	import os
-	import sys
+from shell import shell
+from launch import launch
+from runmpi import get_mpirun
+from get_cpu_num import get_cpu_num
+import os
+import sys
 
+def test_mpunfoldsim(argFile):
 	MPIRUN = get_mpirun()
 	nproc = get_cpu_num()
 	# shell("make > make.log")
-	status, output = launch("./mpunfoldsim.py", runcmd=MPIRUN, nproc=nproc, pipe=False)
+	"""
+	omegaRange = omegaRange
+    tmpDir = arg['tmpDir']
+    LName = arg['LName']
+    nn = arg['nn'] 
+    paramFilename = arg['paramFilename'] 
+    thermal = arg['thermal']
+    htmlTmp = arg['htmlTmp']
+    doIT = arg['doIT']
+    """
+    this_dir = os.getcwd()
+    command = this_dir + "/hosts" + this_dir + "/py_hello_world.py" #+ " " + "argFile"
+	status, output = launch(command, runcmd=MPIRUN, nproc=nproc, pipe=False)
 	# Save the output in a log file
 	f = open("run.log", "w")
 	f.seek(0)
 	f.write(str(output))
 	f.close()
+
+
+
+
+	
