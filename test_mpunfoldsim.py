@@ -12,20 +12,9 @@ import sys
 
 def test_mpunfoldsim(argFile):
 	MPIRUN = get_mpirun()
-	nproc = get_cpu_num()
-	# shell("make > make.log")
-	"""
-	omegaRange = omegaRange
-    tmpDir = arg['tmpDir']
-    LName = arg['LName']
-    nn = arg['nn'] 
-    paramFilename = arg['paramFilename'] 
-    thermal = arg['thermal']
-    htmlTmp = arg['htmlTmp']
-    doIT = arg['doIT']
-    """
-    this_dir = os.getcwd()
-    command = this_dir + "/hosts" + this_dir + "/py_hello_world.py" #+ " " + "argFile"
+	nproc = get_cpu_num()# shell("make > make.log")
+	this_dir = os.getcwd()
+	command = this_dir + "/hosts" + this_dir + "/py_hello_world.py" #+ " " + "argFile"
 	status, output = launch(command, runcmd=MPIRUN, nproc=nproc, pipe=False)
 	# Save the output in a log file
 	f = open("run.log", "w")
