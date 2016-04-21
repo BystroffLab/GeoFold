@@ -16,16 +16,16 @@ def test_mpunfoldsim(argFile):
 	# shell("make > make.log")
 	"""
 	omegaRange = omegaRange
-    tmpDir = arg['tmpDir']
-    LName = arg['LName']
-    nn = arg['nn'] 
-    paramFilename = arg['paramFilename'] 
+	tmpDir = arg['tmpDir']
+	LName = arg['LName']
+	nn = arg['nn']
+	paramFilename = arg['paramFilename'] 
     thermal = arg['thermal']
     htmlTmp = arg['htmlTmp']
     doIT = arg['doIT']
     """
     this_dir = os.getcwd()
-    command = this_dir + "/GeoFold/py_hello_world.py" #+ " " + "argFile"
+    command = this_dir + "/py_hello_world.py" #+ " " + "argFile"
 	status, output = launch(command, runcmd=MPIRUN, "hosts", nproc=5, pipe=False)
 	# Save the output in a log file
 	f = open("run.log", "w")
