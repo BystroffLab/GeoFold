@@ -3,11 +3,14 @@
 # Uses 'mpirun' by default
 # Wenyin San
 # March 2016
-
+import os
+import sys
 from shell import shell
 import get_cpu_num
 
-def launch(command, runcmd="mpirun -np", nproc=None, output=None, pipe=False, verbose=True):
+this_dir = os.getcwd()
+
+def launch(command, runcmd = "mpirun -np", hostfile = None, nproc=None, output=None, pipe=False, verbose=True):
     """
     Launch MPI jobs
     status, output = launch(command, nproc, output=None)
@@ -19,8 +22,10 @@ def launch(command, runcmd="mpirun -np", nproc=None, output=None, pipe=False, ve
     # Determine number of CPUs on this machine
     if nproc == None:
         nproc = get_cpu_num()
+    if hostfile == None:
+        hostfile = this_dir+"/hosts" 
 
-    cmd = runcmd + " " + str(nproc) + " python " + command
+    cmd = runcmd + " " + str(nproc) +' --hostfile ' + hostfile + " python " + command
     
     if output != None:
         cmd = cmd + " > "+output
