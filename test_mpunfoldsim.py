@@ -26,7 +26,7 @@ def test_mpunfoldsim():
         """
         this_dir = os.getcwd()
         command = this_dir + "/py_hello_world.py" #+ " " + "argFile"
-	status, output = launch(command, runcmd=MPIRUN, "hosts", nproc=5, pipe=False)
+	status, output = launch(command, runcmd=MPIRUN, hostfile = None, nproc=5, pipe=False)
 	# Save the output in a log file
 	f = open("run.log", "w")
 	f.seek(0)
