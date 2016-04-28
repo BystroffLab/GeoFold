@@ -8,7 +8,7 @@ import sys
 from shell import shell
 import get_cpu_num
 
-this_dir = os.getcwd()
+this_dir = "/bach1"+os.getcwd()
 
 def launch(command, runcmd = "mpirun -np", hostfile = None, nproc=None, output=None, pipe=False, verbose=True):
     """
