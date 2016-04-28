@@ -9,7 +9,7 @@ from runmpi import get_mpirun
 from get_cpu_num import get_cpu_num
 import os
 import sys
-
+this_dir = "/bach1"+os.getcwd()
 def test_mpunfoldsim():
         MPIRUN = get_mpirun()
         #nproc = get_cpu_num()
@@ -24,7 +24,6 @@ def test_mpunfoldsim():
         htmlTmp = arg['htmlTmp']
         doIT = arg['doIT']
         """
-        this_dir = os.getcwd()
         command = this_dir + "/py_hello_world.py" #+ " " + "argFile"
 	status, output = launch(command, runcmd=MPIRUN, hostfile = None, nproc=5, pipe=False)
 	# Save the output in a log file
