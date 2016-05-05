@@ -26,7 +26,7 @@ def test_mpunfoldsim():
         doIT = arg['doIT']
         """
         command = this_dir + "/py_mpfiles.py" #+ " " + "argFile"
-	status, output = launch(command, runcmd=MPIRUN, hostfile = None, nproc=5, pipe=False)
+	status, output = launch(command, runcmd=MPIRUN, hostfile = None, nproc=7, pipe=False)
 	# Save the output in a log file
 	f = open("run.log", "w")
 	f.seek(0)
