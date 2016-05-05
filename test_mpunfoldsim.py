@@ -3,6 +3,7 @@
 # Execute using mpirun
 # Wenyin San
 # March 2016
+# Case for saving files
 from shell import shell
 from launch import launch
 from runmpi import get_mpirun
@@ -24,7 +25,7 @@ def test_mpunfoldsim():
         htmlTmp = arg['htmlTmp']
         doIT = arg['doIT']
         """
-        command = this_dir + "/py_hello_world.py" #+ " " + "argFile"
+        command = this_dir + "/py_mpfiles.py" #+ " " + "argFile"
 	status, output = launch(command, runcmd=MPIRUN, hostfile = None, nproc=5, pipe=False)
 	# Save the output in a log file
 	f = open("run.log", "w")
