@@ -36,6 +36,11 @@ import sys
 import commands
 import time
 import math
+import sys
+from launch import launch
+from runmpi import get_mpirun
+from get_cpu_num import get_cpu_num
+from shell import shell
 from georansac import fit
 from mpunfoldsim import mpunfoldsim
 from test_mpunfoldsim import test_mpunfoldsim
@@ -1256,57 +1261,19 @@ else:
   argFile.write('doIT:\n')
   argFile.write("%s\n" %(doIT))
   argFile.close() 
-
-
   #############################################################
   if doIt != 3:
-
       print(doIt == 3)
       print(doIt)
       print("============= UNFOLDSIM =============")
       tmpWrite.write("Unfolding %s%s<br>" %(pdbCode,chain))
       tmpWrite.write("============= UNFOLDSIM =============<br>")
       writeOut("============= UNFOLDSIM =============\n")
-
-      #####################################################################################################################################
-      #  tmpDir,LName, thermal,
-      """ 
-      dagread = mpunfoldsim(tmpDir,LName, thermal, paramFilename)
-
-
-      try:
-          readDag = open(dagread,'r')
-      except IOError:
-          oneliner("DAG file is missing: "+dag)
-          readDag.close()
-      """
-      argFile = "%s/argFile.txt" %(tmpDir)
-	  try:
-	    argWrite = open(argFile, 'w+')
-	  except IOError:
-	    paramFile.close()
-	    sys.exit("Couldn't open file %s"%(argFile))
-	  argFile.write('omegaRange:\n')
-	  for value in omegaRange:
-	  	argFile.write("%s\n" %(value))
-      argFile.write('tmpDir:\n')
-      argFile.write("%s\n" %(tmpDir))
-      argFile.write('LName:\n')
-      argFile.write("%s\n" %(LName))
-      argFile.write('nn:\n')
-      argFile.write("%s\n" %(nn))
-      argFile.write('paramFilename:\n')
-      argFile.write("%s\n" %(paramFilename))
-      argFile.write('thermal:\n')
-      argFile.write("%s\n" %(thermal))
-      argFile.write('htmlTmp:\n')
-      argFile.write("%s\n" %(htmlTmp))
-      argFile.close()
-      test_mpunfoldsim(arg)
-
-
-      #############################################################
-      nn = 0
+      #Run MPUNFOLDSIM
+      mpunfoldsim = "%s/xunfoldsim %s/%s_%s.dag %s.1 > %s" %(gDir,tmpDir,LName,nn,paramFilename,logFile)
+             unfoldsim = "%s/xunfoldsim %s/%s_%s.dag %s.1 > %s" %(gDir,tmpDir,LName,nn,paramFilename,logFile)
+        tmpWrite.write(unfoldsim+'<br>')
+        runProgram(unfoldsim)
       for value in omegaRange:
         nn += 1
         cp = "cp %s/%s.dag %s/%s_%s.dag" %(tmpDir,LName,tmpDir,LName,nn)

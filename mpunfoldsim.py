@@ -12,9 +12,7 @@ from mpi4py import MPI
 from mpi4py.MPI import ANY_SOURCE
 from georansac import fit
 
-
 # set comm, rank & size
-
 try :
 	comm  = MPI.COMM_WORLD
 	rank = comm.Get_rank()
@@ -25,8 +23,11 @@ except Exception as e :
     traceback.print_exc ()
     print "error : %s" % e
     sys.exit (1)
+"""
+readConf(confFile) method from original version of GeoFold
+bach_sanw.conf saved at the home directory
 
-
+"""
 conf = "bach_sanw.conf"
 
 def readConf(confFile):
@@ -60,11 +61,7 @@ dot = configuration['dot']
 convert = configuration['convert']
 gnuplot = configuration['gnuplot']
 
-"""
-It processes a given file and returns a HMM object ready to roll.
-"""
 # initialize status and status iterator
-
 try:
     argWrite = open(argFile, 'w+')
   except IOError:
@@ -82,7 +79,7 @@ try:
   argFile.write('doIT:\n')
   argFile.write("%s\n" %(doIT))
   argFile.close() 
-
+  
 def readArg(argFile)
     try:
     	argRead = open(argFile, 'r')
