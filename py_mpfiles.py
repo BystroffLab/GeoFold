@@ -12,5 +12,5 @@ name = MPI.Get_processor_name()
 
 filename = "aaa%d.log" %rank
 outWrite = open(filename,'a')
-outWrite.write("Hello, World! I am process %d of %d on %s.\n" % (rank, size, name)))
+outWrite.write(rank, size, name)
  
