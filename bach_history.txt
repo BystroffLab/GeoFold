@@ -74,4 +74,13 @@ But I couldn't open the help file:
 
 
 -------------------------------
+py_mpfiles.py test
+Each node can save files on home dirctory
+python test_mpunfoldsim.
+[sanw@bach1 GeoFold]$ cat aaa6.log
+Hello, World! I am process 6 of 7 on bach7.bio.rpi.edu.
+[sanw@bach1 GeoFold]$ 
+
+
+
 
