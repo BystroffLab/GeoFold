@@ -12,12 +12,13 @@ from mpi4py import MPI
 from mpi4py.MPI import ANY_SOURCE
 from georansac import fit
 
+
 # set comm, rank & size
 
 try :
 	comm  = MPI.COMM_WORLD
 	rank = comm.Get_rank()
-	#size = comm.Get_size()
+	size = comm.Get_size()
 	name = MPI.Get_processor_name()
 
 except Exception as e :
@@ -25,10 +26,112 @@ except Exception as e :
     print "error : %s" % e
     sys.exit (1)
 
-size = math.ceil(float(omegaRange/n))
+
+conf = "bach_sanw.conf"
+
+def readConf(confFile):
+  output = {}
+  conf = open(confFile,'r')
+  for line in conf:
+    if line[0] != "#":
+      line = line.split()
+      if len(line) > 2:
+        line[1] = " ".join(line[1:])
+      if len(line) == 2:
+        output[line[0]] = line[1]
+  conf.close()
+  return output
+
+configuration = readConf(conf)
+thisDir = os.getcwd()
+baseDir = configuration['baseDir']
+gDir = configuration['gDir']
+bDir = configuration['bDir']
+maskerDir = configuration['maskerDir']
+tmpDir = configuration['tmpDir']
+pdbDir = configuration['pdbDir']
+logDir = configuration['logDir']
+htmlDir = configuration['htmlDir']
+jobDir = configuration['jobDir']
+paramTemplate = configuration['paramTemplate']
+baseURL = configuration['baseURL']
+outputURL = configuration['outputURL']
+dot = configuration['dot']
+convert = configuration['convert']
+gnuplot = configuration['gnuplot']
+
+"""
+It processes a given file and returns a HMM object ready to roll.
+"""
+# initialize status and status iterator
+
+try:
+    argWrite = open(argFile, 'w+')
+  except IOError:
+    paramFile.close()
+    sys.exit("Couldn't open file %s"%(argFile))
+  argFile.write('omegaRange:\n')
+  for value in omegaRange:
+  	argFile.write("%s\n" %(value))
+  argFile.write('LName:\n')
+  argFile.write("%s\n" %(LName))
+  argFile.write('paramFilename:\n')
+  argFile.write("%s\n" %(paramFilename))
+  argFile.write('thermal:\n')
+  argFile.write("%s\n" %(thermal))
+  argFile.write('doIT:\n')
+  argFile.write("%s\n" %(doIT))
+  argFile.close() 
+
+def readArg(argFile)
+    try:
+    	argRead = open(argFile, 'r')
+    except IOError:
+    	argFile.close()
+    	sys.exit("Couldn't open file %s"%(argFile))
+
+    output = {}
+	STATUSES = ('omegaRange:', 'LName:', 'paramFilename:', 'thermal:', 'doIT:')
+	statuses = iter(STATUSES)
+	states = {}
+    omegaRange = []
+    for line in argRead:
+        # match all words in each line
+        columns = re.findall("[^\s]+", line.strip())
+
+        if columns[0] in ['omegaRange:', 'LName:', 'paramFilename:', 'thermal:', 'doIT:']:
+            status = next(statuses)
+            continue
+
+        elif status == 'omegaRange:':
+    		omegaRange.append(float(columns[0]))
+            continue
+
+        elif status == 'LName:':
+    		Lname = columns[0]
+    		continue
+
+        elif status == 'paramFilename:':
+    		paramFilename = columns[0]
+    		continue
+
+    	elif status == 'thermal:':
+    		thermal = bool(columns[0])
+    		continue
+
+    	elif status == 'doIT:':
+    		doIT = int(columns[0])
+    		continue
+
+	return omegaRange, LName, paramFilename, thermal, doIT
 
 ##++++++++++++++++++++++++++++++++++++++++++
 ##++++++++++++++++++++++++++++++++++++++++++
+argFile = "%s/argFile.txt" %(tmpDir)
+
+omegaRange, LName, paramFilename, thermal, doIT = readArg(argFile)
+
+oR_size = math.ceil(float(omegaRange/n))
 
 def Range():
 	if rank != n-1:

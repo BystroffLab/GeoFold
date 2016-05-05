@@ -628,7 +628,7 @@ global gnuplot
 debug = False
 parameters = {}
 
-conf = "default.conf"
+conf = "bach_sanw.conf"
 
 ########################## DIRECTORIES #############################
 ### SET THESE DIRECTORIES AS FOLLOWS:
@@ -1247,21 +1247,15 @@ else:
   argFile.write('omegaRange:\n')
   for value in omegaRange:
   	argFile.write("%s\n" %(value))
-  argFile.write('tmpDir:\n')
-  argFile.write("%s\n" %(tmpDir))
   argFile.write('LName:\n')
   argFile.write("%s\n" %(LName))
   argFile.write('paramFilename:\n')
   argFile.write("%s\n" %(paramFilename))
   argFile.write('thermal:\n')
   argFile.write("%s\n" %(thermal))
-  argFile.write('htmlTmp:\n')
-  argFile.write("%s\n" %(htmlTmp))
   argFile.write('doIT:\n')
   argFile.write("%s\n" %(doIT))
   argFile.close() 
-
-  test_mpunfoldsim(argFile)
 
 
   #############################################################
