@@ -1262,6 +1262,15 @@ else:
   argFile.write("%s\n" %(doIT))
   argFile.close() 
   #############################################################
+  """
+  Compare host numbers and size of omegarange
+  return nproc
+  """
+  hf_dir = "/bach1"+os.getcwd()
+  hostfile = hf_dir+"/hosts"
+  hosts = sum(1 for line in open(hostfile))
+  proc_num = len(omegaRange)
+  
   if doIt != 3:
       print(doIt == 3)
       print(doIt)
@@ -1269,11 +1278,23 @@ else:
       tmpWrite.write("Unfolding %s%s<br>" %(pdbCode,chain))
       tmpWrite.write("============= UNFOLDSIM =============<br>")
       writeOut("============= UNFOLDSIM =============\n")
-      #Run MPUNFOLDSIM
-      mpunfoldsim = "%s/xunfoldsim %s/%s_%s.dag %s.1 > %s" %(gDir,tmpDir,LName,nn,paramFilename,logFile)
-             unfoldsim = "%s/xunfoldsim %s/%s_%s.dag %s.1 > %s" %(gDir,tmpDir,LName,nn,paramFilename,logFile)
-        tmpWrite.write(unfoldsim+'<br>')
-        runProgram(unfoldsim)
+      #Run mpUnfoldsim
+      MPIRUN = get_mpirun()
+      #nproc = get_cpu_num()
+      # shell("make > make.log")
+      """
+      omegaRange = omegaRange
+      tmpDir = arg['tmpDir']
+      LName = arg['LName']
+      nn = arg['nn']
+      paramFilename = arg['paramFilename'] 
+      thermal = arg['thermal']
+      htmlTmp = arg['htmlTmp']
+      doIT = arg['doIT']
+      """
+      command = this_dir + "mpunfoldsim.py" 
+      status, output = launch(command, runcmd=MPIRUN, hostfile = None, nproc=proc_num, pipe=False)
+     
       for value in omegaRange:
         nn += 1
         cp = "cp %s/%s.dag %s/%s_%s.dag" %(tmpDir,LName,tmpDir,LName,nn)

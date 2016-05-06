@@ -75,10 +75,24 @@ But I couldn't open the help file:
 
 -------------------------------
 py_mpfiles.py test
-Each node can save files on home dirctory
+Each node can save files on home directory
 python test_mpunfoldsim.
 [sanw@bach1 GeoFold]$ cat aaa6.log
 Hello, World! I am process 6 of 7 on bach7.bio.rpi.edu.
+[sanw@bach1 GeoFold]$ cat aaa0.log
+Hello, World! I am process 0 of 5 on bach1.bio.rpi.edu.
+Hello, World! I am process 0 of 7 on bach1.bio.rpi.edu.
+Hello, World! I am process 0 of 7 on bach1.bio.rpi.edu.
+[sanw@bach1 GeoFold]$ cat aaa1.log
+Hello, World! I am process 1 of 5 on bach2.bio.rpi.edu.
+Hello, World! I am process 1 of 7 on bach2.bio.rpi.edu.
+Hello, World! I am process 1 of 7 on bach2.bio.rpi.edu.
+[sanw@bach1 GeoFold]$ cat aaa6.log
+Hello, World! I am process 6 of 7 on bach7.bio.rpi.edu.
+Hello, World! I am process 6 of 7 on bach7.bio.rpi.edu.
+[sanw@bach1 GeoFold]$ cat aaa5.log
+Hello, World! I am process 5 of 7 on bach6.bio.rpi.edu.
+Hello, World! I am process 5 of 7 on bach6.bio.rpi.edu.
 [sanw@bach1 GeoFold]$ 
 
 
