@@ -33,7 +33,7 @@ pi4 = 0.0
 # This is the master node.
 if rank == 0:
     pi = 0
-    slice = 
+    slice = 10
     process = 1
  
     print size
