@@ -779,7 +779,7 @@ else:
     paramFile.close()
     sys.exit(paramFilename+" chainid not found.")
   print("Chain "+chain)
-  status,LName=  findParam(paramFile, "LNAME")
+  status,LName=  findParam(paramFile, "dag")
   if status != 0:
     print(paramFilename+" LNAME value not found.")
     LName= str(os.getpid())
@@ -1294,7 +1294,7 @@ else:
       """
       command = this_dir + "mpunfoldsim.py" 
       status, output = launch(command, runcmd=MPIRUN, hostfile = None, nproc=proc_num, pipe=False)
-     
+      """
       for value in omegaRange:
         nn += 1
         cp = "cp %s/%s.dag %s/%s_%s.dag" %(tmpDir,LName,tmpDir,LName,nn)
@@ -1345,9 +1345,7 @@ else:
           outWrite.write('</pre></body></html>\n')
           outWrite.close()
         ####################################################################################################################################
-  ##++++++++++++++++++++++++++++++++++++++++++
-  ##++++++++++++++++++++++++++++++++++++++++++
-
+    """
 
   print("============= PATHWAY2PS =============")
   tmpWrite.write("============= PATHWAY2PS =============<br>")

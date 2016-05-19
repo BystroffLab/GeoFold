@@ -95,6 +95,11 @@ Hello, World! I am process 5 of 7 on bach6.bio.rpi.edu.
 Hello, World! I am process 5 of 7 on bach6.bio.rpi.edu.
 [sanw@bach1 GeoFold]$ 
 
+____________________________________
+GNU sed method 
+paramFile
+edited by each omegaRange Value. 
+
 
 
 
