@@ -57,6 +57,7 @@ if rank == 0:
             comm.send(slice, dest=process, tag=1)
             print "Sending slice",slice,"to process",process
             slice += 1
+        print received_processes
  
     # Send the shutdown signal
     for process in range(1,size):
