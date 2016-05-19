@@ -26,7 +26,7 @@ size = comm.Get_size()
 
 # I will change these parameters for the performance table
 slice_size = 100000
-total_slices = 10
+total_slices = 40
 
 start = time.time()
 pi4 = 0.0
