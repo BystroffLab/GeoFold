@@ -25,7 +25,7 @@ rank = comm.Get_rank()
 size = comm.Get_size()
 
 # I will change these parameters for the performance table
-slice_size = 1000000
+slice_size = 10000
 total_slices = 50
 
 start = time.time()
@@ -63,7 +63,7 @@ if rank == 0:
         comm.send(-1, dest=process, tag=1)
   
     pi4 = 4.0 * pi
-    #print "Pi is ", 4.0 * pi
+    print "Pi is ", 4.0 * pi
  
 # These are the slave nodes, where rank > 0. They do the real work
 else:
