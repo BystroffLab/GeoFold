@@ -73,14 +73,12 @@ do
   else
     read(aline(23:26),*,iostat=ios) ires
     read(aline(27:27),*,iostat=ios) insert_char
+    if(ios /= 0) insert_char = " "
     read(aline(17:17),*,iostat=is_zero) current_alt !is_zero will only equal 0 if the altloc is not a space
-    !write(*,*) ios
     if(is_zero == 0) then
-        !write(*,*) "current_alt: ",current_alt
         if(altloc == " ") then
             altloc = current_alt
         elseif(current_alt /= altloc) then
-            !write(*,*) "altloc: ",altloc
             cycle
         endif
     endif
