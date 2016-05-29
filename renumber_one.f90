@@ -12,13 +12,14 @@ character(len=20) :: res1='ACDEFGHIKLMNPQRSTVWY'
 character(len=60) :: &
 res3='ALACYSASPGLUPHEGLYHISILELYSLEUMETASNPROGLNARGSERTHRVALTRPTYR'
 integer,dimension(1000) :: seq
-character(len=1) :: achar,chainID,insert_char,current_insert
+character(len=1) :: achar,chainID,insert_char,current_insert,altloc,current_alt
 character(len=3) :: ares
 character(len=80) :: infile,outfile
 real :: x,y
 integer :: iatm,firstres,jarg
 real,parameter :: cfcut=0.50
 logical :: complete
+integer :: is_zero
 
 integer :: iargc
 !! NNN is the number of the first residue
@@ -26,6 +27,8 @@ integer :: iargc
 
 current_insert = " "
 insert_char = " "
+altloc = " "
+current_alt = " "
 
 jarg = iargc()
 if (jarg < 2) then
@@ -70,6 +73,17 @@ do
   else
     read(aline(23:26),*,iostat=ios) ires
     read(aline(27:27),*,iostat=ios) insert_char
+    read(aline(17:17),*,iostat=is_zero) current_alt !is_zero will only equal 0 if the altloc is not a space
+    !write(*,*) ios
+    if(is_zero == 0) then
+        !write(*,*) "current_alt: ",current_alt
+        if(altloc == " ") then
+            altloc = current_alt
+        elseif(current_alt /= altloc) then
+            !write(*,*) "altloc: ",altloc
+            cycle
+        endif
+    endif
     iatm = iatm + 1
     write(aline(7:11),'(i5)') iatm
     if (ires/=lres .or. insert_char /= current_insert) then
