@@ -1,15 +1,10 @@
 """
 
-This code computes pi. It's not the first python
-pi computation tool that I've written.  This program
-is a good test of the mpi4py library, which is
-essentially a python wrapper to the C MPI library.
+This code computes pi. 
 
 To execute this code:
 
-mpiexec -np NUMBER_OF_PROCESSES -f NODES_FILE python mpipypi.py
-
-where....
+mpiexec -np NUMBER_OF_PROCESSES -f NODES_FILE python mpipypi.py、
 
 NUMBER_OF_PROCESSES is the number of desired processes.
 NODES_FILE is a file which records the location of your nodes.
