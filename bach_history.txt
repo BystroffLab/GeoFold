@@ -1,0 +1,105 @@
+-------------------------------
+Bach 1
+python get_cpu_num.py
+2
+-------------------------------
+Bach 2
+python get_cpu_num.py
+4
+-------------------------------
+Got error on bach2:
+[sanw@bach2 bin]$ mpirun -np 5 python py_hello_world.py
+mpirun: error while loading shared libraries: libopen-rte.so.4: cannot open shared object file: No such file or directory
+'''''''''''''''''''''''''''''''
+Wrote change on bach2 .bashrc
+LD_LIBRARY_PATH = /bach1/usr/local/bin
+export LD_LIBRARY_PATH
+'''''''''''''''''''''''''''''''
+Still not work.
+Again, wrote change on bach2 .bashrc
+export LD_LIBRARY_PATH=/bach1/usr/local/lib:$LD_LIBRARY_PATH
+'''''''''''''''''''''''''''''''
+Still not work.
+Again, wrote change on bach2 .bashrc
+export LD_LIBRARY_PATH=/bach1/usr/local/lib/openmpi:$LD_LIBRARY_PATH
+'''''''''''''''''''''''''''''''
+Still not work.
+Remove all the changes on .bashrc
+'''''''''''''''''''''''''''''''
+[sanw@bach2 ~]$ which mpiexec
+/bach1/usr/local/bin/mpiexec
+[sanw@bach2 ~]$ ldd /bach1/usr/local/bin/mpiexec
+	linux-vdso.so.1 =>  (0x00007fffc81fe000)
+	libopen-rte.so.4 => not found
+	libdl.so.2 => /lib64/libdl.so.2 (0x00007f74ed6df000)
+	librt.so.1 => /lib64/librt.so.1 (0x00007f74ed4d7000)
+	libnsl.so.1 => /lib64/libnsl.so.1 (0x00007f74ed2be000)
+	libutil.so.1 => /lib64/libutil.so.1 (0x00007f74ed0ba000)
+	libm.so.6 => /lib64/libm.so.6 (0x00007f74ecdb8000)
+	libpthread.so.0 => /lib64/libpthread.so.0 (0x00007f74ecb9c000)
+	libc.so.6 => /lib64/libc.so.6 (0x00007f74ec7da000)
+	/lib64/ld-linux-x86-64.so.2 (0x00007f74ed8ef000)
+Still not work.
+Again, wrote change on bach2 .bashrc
+export LD_LIBRARY_PATH=/bach1/usr/local/lib:$LD_LIBRARY_PATH
+[sanw@bach2 ~]$ mpirun -np 2 python py_hello_world.py
+##############
+Sorry!  You were supposed to get help about:
+    opal_init:startup:internal-failure
+But I couldn't open the help file:
+    /usr/local/share/openmpi/help-opal-runtime.txt: No such file or directory.  Sorry!
+##############
+[bach2.bio.rpi.edu:00892] [[INVALID],INVALID] ORTE_ERROR_LOG: Error in file runtime/orte_init.c at line 79
+[bach2.bio.rpi.edu:00892] [[INVALID],INVALID] ORTE_ERROR_LOG: Error in file orterun.c at line 694
+[sanw@bach2 ~]$ 
+
+Again, wrote change on bach2 .bashrc
+export OPAL_PREFIX=/bach1/local/share/openmpi:$OPAL_PREFIX
+Last login: Thu Apr 21 10:44:55 2016 from bach1.bio.rpi.edu
+
+Finally, wrote change on bach2 .bashrc
+export OPAL_PREFIX=/bach1/usr/local$OPAL_PREFIX
+[sanw@bach1 GeoFold]$ mpirun -np 5 --hostfile hosts python py_hello_world.py
+sanw@bach2's password: 
+Hello, World! I am process 2 of 5 on bach1.bio.rpi.edu.
+Hello, World! I am process 0 of 5 on bach1.bio.rpi.edu.
+Hello, World! I am process 4 of 5 on bach1.bio.rpi.edu.
+Hello, World! I am process 1 of 5 on bach2.bio.rpi.edu.
+Hello, World! I am process 3 of 5 on bach2.bio.rpi.edu.
+--------------------------------------------------------------------------
+Sorry!  You were supposed to get help about:
+    opal_init:startup:internal-failure
+But I couldn't open the help file:
+    /bach1/local/share/openmpi:/share/openmpi/help-opal-runtime.txt: No such file or directory.  Sorry!
+
+
+-------------------------------
+py_mpfiles.py test
+Each node can save files on home directory
+python test_mpunfoldsim.
+[sanw@bach1 GeoFold]$ cat aaa6.log
+Hello, World! I am process 6 of 7 on bach7.bio.rpi.edu.
+[sanw@bach1 GeoFold]$ cat aaa0.log
+Hello, World! I am process 0 of 5 on bach1.bio.rpi.edu.
+Hello, World! I am process 0 of 7 on bach1.bio.rpi.edu.
+Hello, World! I am process 0 of 7 on bach1.bio.rpi.edu.
+[sanw@bach1 GeoFold]$ cat aaa1.log
+Hello, World! I am process 1 of 5 on bach2.bio.rpi.edu.
+Hello, World! I am process 1 of 7 on bach2.bio.rpi.edu.
+Hello, World! I am process 1 of 7 on bach2.bio.rpi.edu.
+[sanw@bach1 GeoFold]$ cat aaa6.log
+Hello, World! I am process 6 of 7 on bach7.bio.rpi.edu.
+Hello, World! I am process 6 of 7 on bach7.bio.rpi.edu.
+[sanw@bach1 GeoFold]$ cat aaa5.log
+Hello, World! I am process 5 of 7 on bach6.bio.rpi.edu.
+Hello, World! I am process 5 of 7 on bach6.bio.rpi.edu.
+[sanw@bach1 GeoFold]$ 
+
+____________________________________
+GNU sed method 
+paramFile
+edited by each omegaRange Value. 
+
+
+
+
