@@ -100,10 +100,6 @@ GNU sed method
 paramFile
 edited by each omegaRange Value. 
 
-git checkout mpi
-git pull
-git fetch
-
 
 
 
