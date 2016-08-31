@@ -56,14 +56,14 @@
   !!
   !! integer,parameter :: kind_8=selected_real_kind(P=8)
   private
-  integer,parameter,public :: MAXATOM=512   !! number of points in mask. 
+  integer,parameter,public :: MAXATOM=512   !! number of points in mask.
   integer,parameter,public :: KND=2         !! bytes per mask word
   integer,parameter,public :: NBIT=(KND*8)
   integer,parameter :: ILO=-(2**(15)),IHI=(2**(15))-1
   integer,parameter :: MASKSIZE=MAXATOM/NBIT   !! 3rd index of mask
   integer,parameter :: KC=1   !! thickness of collars (times DTHETA)
   integer :: runit=15   !! output unit for rendering
-  integer,parameter :: watfac=40   !! max numbers of waters per atom 
+  integer,parameter :: watfac=40   !! max numbers of waters per atom
   integer,parameter :: NSAVE=200   !! this is the number of nearest neighbor atoms to save
   real,parameter,private :: pi=3.1415927410125732421875
   real,parameter :: radius=10.

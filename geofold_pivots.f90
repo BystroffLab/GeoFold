@@ -1,7 +1,7 @@
 module geofold_pivots
   use vectormath
   use geofold_global
-  use geofold_seams   
+  use geofold_seams
   private
   !! ------  vectorball data ------
   !! The following is a set of N uniformly-spaced vectors of length 10. These are
@@ -73,7 +73,7 @@ module geofold_pivots
   ! 7.467,  2.417,  6.197, -0.452,  4.393,  8.972,  9.891, -1.446, -0.277,  8.982,  0.835,  4.316, &
   !-5.962, -1.381, -7.909, -6.157,  3.857, -6.872,  3.466,  9.339, -0.880,  4.515, -5.220, -7.236/),(/3,NVB/))
   !! ----- end of vectorball data ------
-  !! ----- chain IDs may be read from another module eventually 
+  !! ----- chain IDs may be read from another module eventually
   real,private,parameter :: pi=3.1415927
   real,parameter :: BALLLEN=10., MINROT=5*pi/180., SCUT=0.05
   real,dimension(3,3,NVB),save :: ballmat=0.
@@ -248,14 +248,14 @@ CONTAINS  !! public routines start with geofold_ not geofold_pivot_
     integer :: nchain,ires,jres,ich,mres,ios=0,nn,n1,n2,jch,kch,kres
     logical,dimension(MAXCHAIN) :: goeswithu1=.false.,goeswithu2=.false.
     !!----------------------------------------------------
-    entropy = -1    
+    entropy = -1
     bvec = 0
-    !! 
+    !!
     !! To signal that no pivot was found, send back entropy < 0
     !! and pivotpoint > nres.
     !! If F is too short to pivot, then melt it.
     !! If melting, set pivotpoint = pivotpoint + 1
-    !! 
+    !!
     if (.not.allocated(distancemat)) &
       stop 'geofold.f90:: BUG. call getdistancemat before getnextpivot'
     mres = count(chainid/='.')
@@ -276,7 +276,7 @@ CONTAINS  !! public routines start with geofold_ not geofold_pivot_
     call getallchains(chainid,uniqchains,nchain,nres)  !! returns chain chars in uniqchains
     if (allocated(assigned)) deallocate(assigned)
     allocate(assigned(nchain),stat=ios) ; if (ios/=0) stop 'geofold_getnextpivot:: error allocating assigned'
-    entropy = -1    
+    entropy = -1
     !if (nchain > 1) then
     !  if (allocated(chaincontact)) deallocate(chaincontact); if (ios/=0) stop 'geofold_getnextpivot:: error deallocating chaincontact'
     !  allocate(chaincontact(nchain,nchain),stat=ios); if (ios/=0) stop 'geofold_getnextpivot:: error allocating chaincontact'
@@ -297,7 +297,7 @@ CONTAINS  !! public routines start with geofold_ not geofold_pivot_
       foundit = geofold_pivots_ssinseg(ires,jres)
       if (chainid(ires)/=chainid(jres).and..not.foundit) cycle resloop
       !!
-      !! If here, the chain is long enough to pivot. First find out if ires is a pivot 
+      !! If here, the chain is long enough to pivot. First find out if ires is a pivot
       !! in this chain, ignoring all other chains.
       !!
       u1 = '.'
@@ -320,7 +320,7 @@ CONTAINS  !! public routines start with geofold_ not geofold_pivot_
       !!
       !! REVISED: Assign chain with smallest distance to u1, u2 in greedy fashion., using the contact distances.
       !! Assign chain to whichever u1/u2 has more contacts.
-      !! 
+      !!
       assigned = .false.
       do ich = 1,nchain
         if (chainid(ires)==uniqchains(ich)) exit
@@ -372,7 +372,7 @@ CONTAINS  !! public routines start with geofold_ not geofold_pivot_
       enddo
       !! at this point all chains have been assigned
       call checkpivot (f, calpha,u1,u2,calpha(1:3,ires),entropy,nres,bvec)
-      if (entropy>pcutoff) exit resloop   
+      if (entropy>pcutoff) exit resloop
       !!!!!!!!!!!!!!!!!
       !goeswithu1 = .false.
       !goeswithu2 = .false.
@@ -456,7 +456,7 @@ CONTAINS  !! public routines start with geofold_ not geofold_pivot_
       !! IF HERE: we found a pivot, skip out and remember where we were. Next time around, we will
       !! increment the pivotpoint.
     enddo resloop
-    pivotpoint = ires    
+    pivotpoint = ires
     if (entropy<pcutoff) entropy = -1
     if(allocated(assigned)) deallocate(assigned)
     return
@@ -469,7 +469,7 @@ CONTAINS  !! public routines start with geofold_ not geofold_pivot_
     integer,intent(out) :: nchain
     character :: lastchain
     integer :: i
-    !! 
+    !!
     lastchain = "?"
     nchain = 0
     do i=1,nres
@@ -494,7 +494,7 @@ CONTAINS  !! public routines start with geofold_ not geofold_pivot_
     real,dimension(3) :: vec, v1
     real :: dd
     integer :: ires,jres,ivec, ivb
-    !! Note: all vectors in vectorball are length BALLLEN=10A. 
+    !! Note: all vectors in vectorball are length BALLLEN=10A.
     !! to avoid unnecessary computations, we assume 10A in the following code
     !! To change the distance of translation, pre-process vectorball to the
     !! length (BALLLEN) desired, within geofold_init().
@@ -511,7 +511,7 @@ CONTAINS  !! public routines start with geofold_ not geofold_pivot_
         if (u1(ires)=='.') cycle resloop
         v1 = calpha(1:3,ires) + vec
         do jres=1,nres
-          if (u2(jres)=='.') cycle 
+          if (u2(jres)=='.') cycle
           if (ires==jres) stop 'BUG: overlapping u1, u2 in checkbreak.'
           if (distancemat(ires,jres)>DMATCUTOFF) cycle !! too far apart to consider
 		  !! barrel:f%barrel, nBarrel
@@ -527,7 +527,7 @@ CONTAINS  !! public routines start with geofold_ not geofold_pivot_
       ivb = ivb + 1
       bvec = ivec
     enddo vecloop
-    entropy = real(ivb)/real(NVB)
+    entropy = real(ivb)/real(NVB)       !entropy is the ratio of allowable translation vectors to the total number of translation vectors
     !if (verbose) then
     !  write(*,*) "bvec = ",bvec
     !endif
@@ -578,14 +578,14 @@ CONTAINS  !! public routines start with geofold_ not geofold_pivot_
           do jres=1,nres
             if (u2(jres)=='.') cycle
             !write(0,*)"u2(jres)!='.'"
-            if (abs(ires-jres)<pallow) cycle 
+            if (abs(ires-jres)<pallow) cycle
             !write(0,*)"abs(ires-jres)>=pallow"
             !! omit adjacents (**possible bug if ires,jres in different chains**)
             if (distancemat(ires,jres)>DMATCUTOFF) cycle !! too far apart to consider
             !write(0,*)"distancemat(ires,jres)<=DMATCUTOFF"
             v2 = calpha(1:3,jres)
             dd = sqrt(sum((v1-v2)**2))
-            if (dd > DISTCUT.or.dd > distancemat(ires,jres) ) cycle 
+            if (dd > DISTCUT.or.dd > distancemat(ires,jres) ) cycle
             !write(0,*)"dd<=DISTCUT or dd <= distancemat(ires,jres)"
             if (geofold_pivots_queryinseam (f, ires, jres)) cycle
             if (geofold_pivots_inclosedbarrel(f,ires,jres)) then
@@ -723,7 +723,7 @@ CONTAINS  !! public routines start with geofold_ not geofold_pivot_
     if (.not.allocated(distancemat)) &
       stop 'geofold.f90:: BUG. call getdistancemat before getnexthinge'
     entropy = -1
-    if (all(chainid=='.')) return !! nothing left 
+    if (all(chainid=='.')) return !! nothing left
     if (count(chainid/='.')<=2*pivottail+hingeloop+1) return !! not enough left to hinge
     call getallchains(chainid,uniqchains,nchain,nres)
     if (allocated(assigned)) deallocate(assigned)
@@ -752,7 +752,7 @@ CONTAINS  !! public routines start with geofold_ not geofold_pivot_
       !! ...or has a disulfide link between it and the C-terminus
       foundit = geofold_pivots_ssinseg(ires,jres)
       if (chainid(ires)/=chainid(jres).and..not.foundit) cycle
-      !! 
+      !!
       !! Check for a hinge at (ires, kres)
       !! kres must be at least hingeloop residues away and must be
       !! at least pivotttail residues from the end of the chain
@@ -773,7 +773,7 @@ CONTAINS  !! public routines start with geofold_ not geofold_pivot_
         !! ...or has a disulfide link between it and the C-terminus
         foundit = geofold_pivots_ssinseg(kres,jres)
         if (chainid(kres)/=chainid(jres).and..not.foundit) cycle
-        !! 
+        !!
         !! Are the two hinge points are in the same chain ?
         !! then u1 = inner segment, and
         !! u2 = outer segments split into two chains
@@ -873,9 +873,9 @@ CONTAINS  !! public routines start with geofold_ not geofold_pivot_
         !!-------------------------------------------------------------------------
         !u1save= u1
         !u2save= u2
-        !!! 
+        !!!
         !!!! If there are multiple chains, try all combinations
-        !!! 
+        !!!
         !goeswithu1 = .false.
         !goeswithu2 = .false.
         !!! assign chains to either u1 or u2 or both
@@ -937,7 +937,7 @@ CONTAINS  !! public routines start with geofold_ not geofold_pivot_
         !  endif
         !enddo
       enddo KLOOP
-      !! IF HERE: we found a hinge, skip out 
+      !! IF HERE: we found a hinge, skip out
       if (entropy>=hcutoff) exit ILOOP
     enddo ILOOP
     if (entropy>=hcutoff) then
@@ -1099,7 +1099,7 @@ CONTAINS  !! public routines start with geofold_ not geofold_pivot_
 !!========================================================================
    real function matrixdiff(m1,v1,m2,v2)
      !! what is the absolute distance after applying m1, v1 and the inverse of
-     !! m2, v2 
+     !! m2, v2
      real,intent(in) :: m1(3,3),v1(3),m2(3,3),v2(3)
      real :: t1(3),t2(3), xx,yy,zz
      t1 = (/10.,0.,0./)
@@ -1155,12 +1155,12 @@ CONTAINS  !! public routines start with geofold_ not geofold_pivot_
 	  type (seam_type),pointer    :: aseam
     character :: seamch="A"
     integer  :: nb, iseam, fb, i,j
-	
+
 	  nb = size(barrels_array)
 !    if (present(seamchar)) seamch=seamchar
     inseam= .false.
 	  do i=1, nb
-      fb = f%barrel(i) 
+      fb = f%barrel(i)
 	    if (fb == 0) cycle !! if fb==0, seam fb is still closed
       aseam => barrels_array(i)%seams(fb)
 !      if ( ((aseam%u1flag(ires)==seamch).and. &
@@ -1178,7 +1178,7 @@ CONTAINS  !! public routines start with geofold_ not geofold_pivot_
 !          ((aseam%u2flag(ires) == '.') .and. &
 !          (aseam%u2flag(jres) /= '.')) ) then
 !          inseam = .true.
-!       endif 
+!       endif
 !     if( ((aseam%u1flag(ires) /= ".") .and. &
 !          (aseam%u2flag(jres) /= ".")) .or. &
 !         ((aseam%u2flag(ires) /= ".") .and. &
@@ -1222,7 +1222,7 @@ CONTAINS  !! public routines start with geofold_ not geofold_pivot_
     integer, intent(in) :: ires, jres
     type (seam_type), pointer :: aseam
     integer :: nb, iseam, fb, i, j
-    
+
     nb = size(barrels_array)
     inbarrel = .false.
     loop1: do i = 1, nb
@@ -1242,7 +1242,7 @@ CONTAINS  !! public routines start with geofold_ not geofold_pivot_
       enddo
     enddo loop1
     return
-  endfunction geofold_pivots_inclosedbarrel  
+  endfunction geofold_pivots_inclosedbarrel
   !----------------------------------------------------------------------------------
   !----------------------------------------------------------------------------------
   !----------------------------------------------------------------------------------
@@ -1260,7 +1260,7 @@ function geofold_pivots_inseam (f, ires, jres ) result (inseam)
 	  type (barrel_type)          :: barrel
 	  type (seam_type)            :: seam
 	  integer                     :: nbuttons, allButtons(200)  ! maximum 200 buttons
-	
+
 	inseam = .false.
 	!call getAllButtons (barrels_array, allButtons)
 

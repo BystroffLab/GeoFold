@@ -36,7 +36,7 @@
 !!     Each transition state energy is assigned the highest value of all
 !!     barrier heights over all transitions in the maxTraffic tree with the
 !!     same number of steps from Folded.
-!! 
+!!
 !! |===== INPUT PARAMETERS for UNFOLDSIM ====='
 !! |  1. dagfile = output of GeoFold. DAG format'
 !! |  2. paramsfile = keyworded parameters. One per line.'
@@ -93,7 +93,7 @@
 !! Added energy output (writeenergyprofile) for plotting using gnuplot.
 !! Added entropic barrier heights (getSbarrier, keywords PIVOTBARRIER, HINGEBARRIER)
 !! This changes the hingebarrier, making it dependent on geofold entropy, and adds
-!! a similar barrier for pivots. 
+!! a similar barrier for pivots.
 !! ---------------- Tue Sep 29 06:15:57 EDT 2009  C.Bystroff
 !! Tracing version: find out what intermediates are dominant
 !! INTERMEDIATE -1 sets the program to output the node number of the highest
@@ -107,7 +107,7 @@
 !! to optimize the program.
 !! ---------------21-May-2009 C.Bystroff
 !! pivotpointentropy  = ( hingepointentropy + breakpointentropy) / 2.0 is now
-!! enforced. This is because entropy is a state function and the 
+!! enforced. This is because entropy is a state function and the
 !! total entropy added cannot be pathway dependent.
 !! ---------------3-JUL-2008 C.Bystroff
 !! t1/2 changed to mean time at which protein is half-unfolded (unfolding)
@@ -127,22 +127,24 @@ program unfoldsim
   use geofold_seams, only : geofold_seams_read
   use geofold_pivots, only : geofold_pivots_queryinseam
   implicit none
+  !Benjamin added
+  logical,parameter :: varTimestep = .true.
   real(8),parameter    :: nuk=1000000
   real(8),parameter    :: Rvalue = 8.314  !! J/mol/K
   REAL(8),parameter    :: DCCUTOFF = 0.00000001, TINYCONC=0.00000001
   REAL(8),parameter    :: SASBOND = 30.0
-  REAL(8),parameter    :: FCUTOFF=0.60, UCUTOFF=3000.,speedfac=2.0, speedlimit=10.0
+  REAL(8),parameter    :: FCUTOFF=0.60, UCUTOFF=3000.,speedfac=2.0, speedlimit=10.0 !speedfac=2.0
   REAL(8),parameter    :: MELTINGENERGY=1.00
   REAL(8),parameter    :: FLUIDITY=0.00
   !integer,parameter :: logfreq=10000, agefreq=5000, lifefreq=1000, speedfreq=10000
-  integer,parameter :: logfreq=10000, agefreq=500, lifefreq=50, speedfreq=10000
+  integer,parameter :: logfreq=10000, agefreq=500, lifefreq=50, speedfreq=100000
   integer,parameter :: MAXLEN=2000, SUMALLFLAG=99, convfreq=logfreq*3
   real(8),parameter    :: TIMESTEPSTART=1.0*10.**(-11)
   !!----- variable declarations ------------------
-  real(8)              :: timestep=TIMESTEPSTART, totaltime=0., maxtime=1000.0, mintime=0.001 
-  real(8)              :: Temperature = 300   
-  real(8)              :: breakpointentropy = 100.   
-  real(8)              :: pivotpointentropy = 0.  
+  real(8)              :: timestep=TIMESTEPSTART, totaltime=0., maxtime=1000.0, mintime=0.001
+  real(8)              :: Temperature = 300
+  real(8)              :: breakpointentropy = 100.
+  real(8)              :: pivotpointentropy = 0.
   real(8)              :: hingepointentropy = 10
   real(8)              :: seampointentropy = 0.
   REAL(8)              :: SPERRESID=10.00
@@ -175,7 +177,7 @@ program unfoldsim
   type (intype),pointer                         :: u1ptr,u2ptr,fptr
   !!----- miscelaneous variables -----------------
   integer                                :: iargc, jarg, its, fstate, iflag,global_nres,fing, ihalf, ix,j
-  integer                                :: mtstate, minter, intm=0, ios, inputstatus, icycle 
+  integer                                :: mtstate, minter, intm=0, ios, inputstatus, icycle
   integer                                :: i, ii, pwayout=0, f, u1, u2
   real(8),dimension(:),allocatable       :: dc
   real(8),dimension(:,:),allocatable     :: age
@@ -295,18 +297,18 @@ program unfoldsim
     !!------------ Calculate the changes in various values at the transition state.
     if (tstate(its)%cuttype=="s") then !! If move is a seam, then there is only u1, not u2.
       dsas = inter(u1)%solv
-      dlam = inter(u1)%lambda 
-      dvoid = inter(u1)%void 
-      dhb = inter(u1)%hb  
+      dlam = inter(u1)%lambda
+      dvoid = inter(u1)%void
+      dhb = inter(u1)%hb
       tstate(its)%u2=0
       u2 = 0
     else !! If move is not a seam, then sum the values for u1 and u2.
       dsas = inter(u1)%solv + inter(u2)%solv
       dlam = inter(u1)%lambda + inter(u2)%lambda
       dvoid = inter(u1)%void + inter(u2)%void
-      dhb = inter(u1)%hb   + inter(u2)%hb  
+      dhb = inter(u1)%hb   + inter(u2)%hb
     endif
-    !! ------------------- calculate delta-SAS 
+    !! ------------------- calculate delta-SAS
     tstate(its)%dsas    = inter(f)%solv - dsas
     !! ------------------- calculate change in SC entropy
     tstate(its)%dlambda = inter(f)%lambda - dlam
@@ -318,7 +320,7 @@ program unfoldsim
     tstate(its)%solid   = Solidity(tstate(its)%dsas,tstate(its)%entropy,flexibility)
     !! ------------------- calculate change in entropic term, TdS
     tstate(its)%TdS     = Temperature*dSfunction(tstate(its),inter(1)%hb)
-    !! ------------------- calculate equilibrium delta-Gu = wa dA + wh dHB - L wl T  - dV wv T - T dS 
+    !! ------------------- calculate equilibrium delta-Gu = wa dA + wh dHB - L wl T  - dV wv T - T dS
     dnrg =    tstate(its)%dsas*omega                 &  !! desolvation free energy, enthalpic part
             + tstate(its)%dhb                        &  !! change in H-bonds, an enthalpic term.
             - Temperature*(tstate(its)%dlambda*scfac &  !! side chain entropy gain
@@ -331,7 +333,7 @@ program unfoldsim
     tstate(its)%dnrg = dnrg - tstate(its)%TdS           !! move-dependent entropy gain.
     !! ------------------- calculate thetam  using similar triangles (see paper)
     tstate(its)%thetam  = getthetam(dnrg,tstate(its)%TdS)
-    !! ------------------- calculate UNFOLDING barrier and rate: dGddu, ku, -ln(Ku) = dGddu/RT 
+    !! ------------------- calculate UNFOLDING barrier and rate: dGddu, ku, -ln(Ku) = dGddu/RT
     !! NOTE: lnku is -ln(ku)
     lnku = ( ( tstate(its)%dsas*omega +                    &   !!  desolvation free energy (>0)
                tstate(its)%dhb -                           &   !!  H-bonds lost (>0)
@@ -351,7 +353,7 @@ program unfoldsim
     ! elseif (tstate(its)%cuttype == "m") then
     !   lnku = MELTINGENERGY
     ! endif
-    !! --------- add entropic barrier to unfolding. 
+    !! --------- add entropic barrier to unfolding.
     if (tstate(its)%cuttype == "m") then
       !! --------- Melting is a special case. Energy is ignored.
       lnku = MELTINGENERGY - FLUIDITY
@@ -362,10 +364,10 @@ program unfoldsim
       lnku = lnku + tstate(its)%dSdd/Rvalue
     endif
     tstate(its)%dGddu = lnku*RT
-    !! ------------------- calculate FOLDING barrier and rate: dGddf, kf, -ln(Kf) = dGddf/RT 
+    !! ------------------- calculate FOLDING barrier and rate: dGddf, kf, -ln(Kf) = dGddf/RT
     !! NOTE: lnkf is -ln(kf)
     !! dGddu - dGddf = dnrg  (dd is double-dagger, u is unfolding, f is folding)
-    !! therefore, RT*lnku - RT*lnkf = dnrg !! sas*tm + sas*(1-tm) = sas, check!  
+    !! therefore, RT*lnku - RT*lnkf = dnrg !! sas*tm + sas*(1-tm) = sas, check!
     !! -dlT*tm - dlT(1-tm) = -dlT, check!  !! -dvT*tm - dvT(1-tm) = -dvT, check!
     !! hb*tm + hb*(1-tm) = hb,  check!  !! -TdS*sol -  TdS(1-sol) = -TdS, check!
     lnkf = ( (-tstate(its)%dsas*omega -                    &   !! solvation free energy (<0)
@@ -386,7 +388,7 @@ program unfoldsim
     ! elseif (tstate(its)%cuttype == "m") then
     !   lnkf = 0.
     ! endif
-    !! --------- add entropic barrier to folding. 
+    !! --------- add entropic barrier to folding.
     if (tstate(its)%cuttype == "m") then
       !! --------- Melting is a special case. Energy is ignored.
       lnkf = -FLUIDITY
@@ -394,7 +396,7 @@ program unfoldsim
     else
       lnkf = lnkf + tstate(its)%dSdd/Rvalue
       !! ----- cases where folding/unfolding is diffusion controlled ------- !!
-      if (lnku < 0.) then 
+      if (lnku < 0.) then
         lnkf = lnkf - lnku
         lnku = 0.
         icycle = icycle + 1
@@ -411,16 +413,16 @@ program unfoldsim
       tstate(its)%kf      = nuk * exp(-lnkf) * (inter(tstate(its)%u1)%sym + 1)
     else
       tstate(its)%kf      = nuk * exp(-lnkf) * (inter(tstate(its)%u1)%sym + 1) * &
-      (inter(tstate(its)%u2)%sym + 1) 
+      (inter(tstate(its)%u2)%sym + 1)
     endif
     !! diagnostic------------------------ !! write out TSTATE data ------------------
     if (verbose) then
       if (mod(its-1,10)==0) then
-        write(99,'(100("-"))') 
+        write(99,'(100("-"))')
         write(99,'(a,a)') &
         "      n    f   u1   u2 C   entropy    thetam        ku        kf       TdS      ", &
         "dSAS  solidity   dlambda     dvoid     dHbnd   Nf  Nu1  Nu2       dnrg  res_list"
-        write(99,'(100("-"))') 
+        write(99,'(100("-"))')
       endif
       ! integer    :: f,u1,u2,pf   !! index to inter
       ! character  :: cuttype
@@ -437,7 +439,7 @@ program unfoldsim
           inter(tstate(its)%f)%nres, &
           inter(tstate(its)%u1)%nres, &
           inter(tstate(its)%u2)%nres, &
-          dnrg, &  
+          dnrg, &
           trim(inter(tstate(its)%f)%residuelist)
       else
         write(99,'(i7,2i5,1x,a1,10(1pe10.2e2),2i5,1pE11.3e2,a)') &
@@ -451,7 +453,7 @@ program unfoldsim
           inter(tstate(its)%f)%nres, &
           inter(tstate(its)%u1)%nres, &
           ! inter(tstate(its)%u2)%nres, &
-          dnrg, &  
+          dnrg, &
           trim(inter(tstate(its)%f)%residuelist)
       endif
     endif
@@ -476,7 +478,7 @@ program unfoldsim
   !! each tstate requires both u1 and u2, and if one is depleted to zero the other
   !! can't move. As a result, some melted states go to zero, but not all.
   !! In a quick experiment, folding runs were done with and without preequilibrating the
-  !! melted states. It made little difference in the half-life of folding. 
+  !! melted states. It made little difference in the half-life of folding.
   !! However, if the melted states were made inaccessible, the protein could not fold.
   !! Also, if the MELTINGENERGY was set to a very high number (>10.) then folding
   !! was significanntly slowed. If MELTINGENERGY was set to zero, on the other hand,
@@ -484,7 +486,7 @@ program unfoldsim
   !! giving the shortest halflife of folding in the testcase. Why?
   !! I think this is because unfolded states need to fluidly interchange in response
   !! to depletion by folding. If they cannot melt and reform as a different I-site,
-  !! then folding stalls because u1 or u2 is depleted. 
+  !! then folding stalls because u1 or u2 is depleted.
   !! Perhaps increasing the FLUIDITY will help? (currently set to zero)
   !! -----------------------------------------------------------------------------------------
   !if (fing==3) then   !! fing is never 3, This block is permanently off !
@@ -493,20 +495,20 @@ program unfoldsim
   !  PREEQ: do
   !    icycle = icycle + 1
   !    !! -------- calculate changes in concentration
-  !    dc = 0 
+  !    dc = 0
   !    do its=1,mtstate
-  !      if (tstate(its)%cuttype == "m") then  
-  !        if (inter(tstate(its)%u1)%conc>TINYCONC.AND.inter(tstate(its)%u2)%conc>TINYCONC) then 
+  !      if (tstate(its)%cuttype == "m") then
+  !        if (inter(tstate(its)%u1)%conc>TINYCONC.AND.inter(tstate(its)%u2)%conc>TINYCONC) then
   !          rate = inter(tstate(its)%u1)%conc*inter(tstate(its)%u2)%conc*tstate(its)%kf
   !          decrement = rate
-  !          dc(tstate(its)%f) = dc(tstate(its)%f) + decrement 
+  !          dc(tstate(its)%f) = dc(tstate(its)%f) + decrement
   !          dc(tstate(its)%u1) = dc(tstate(its)%u1) - decrement
   !          dc(tstate(its)%u2) = dc(tstate(its)%u2) - decrement
   !        endif
-  !        if (inter(tstate(its)%f)%conc > TINYCONC) then  
-  !          rate = inter(tstate(its)%f)%conc * tstate(its)%ku 
-  !          decrement = rate 
-  !          dc(tstate(its)%f) = dc(tstate(its)%f) - decrement 
+  !        if (inter(tstate(its)%f)%conc > TINYCONC) then
+  !          rate = inter(tstate(its)%f)%conc * tstate(its)%ku
+  !          decrement = rate
+  !          dc(tstate(its)%f) = dc(tstate(its)%f) - decrement
   !          dc(tstate(its)%u1) = dc(tstate(its)%u1) + decrement
   !          dc(tstate(its)%u2) = dc(tstate(its)%u2) + decrement
   !        endif
@@ -516,7 +518,7 @@ program unfoldsim
   !    x = timestep
   !    do ii=1,minter
   !      if (-dc(ii)*x > inter(ii)%conc ) then
-  !        x = inter(ii)%conc/(-dc(ii)) 
+  !        x = inter(ii)%conc/(-dc(ii))
   !      endif
   !    enddo
   !    if (x>0.00) timestep = x
@@ -526,7 +528,7 @@ program unfoldsim
   !      inter(ii)%conc = inter(ii)%conc + dc(ii)*timestep
   !      x = abs(dc(ii))
   !      if (x > maxdc) then; maxdc = x ; endif
-  !    enddo 
+  !    enddo
   !    !! -------- check for convergence, are concentrations changing?
   !    if ((maxdc*100000.)<1) then
   !       write(0,*) "PRE-EQUILIBRATED before FOLDING. ",&
@@ -545,13 +547,13 @@ program unfoldsim
   !  !!---- print out molten intermediates. They should all have zero conc.
   !  if (verbose) then
   !    do its=1,mtstate
-  !      if (tstate(its)%cuttype == "m") then  
+  !      if (tstate(its)%cuttype == "m") then
   !        write(*,'("TSTATE ",4i5,3f9.6," fsize=",i4)') &
   !            ii,tstate(its)%f,tstate(its)%u1,tstate(its)%u2,&
   !            inter(tstate(its)%f)%conc,   &
   !            inter(tstate(its)%u1)%conc,   &
   !            inter(tstate(its)%u2)%conc,   &
-  !            inter(tstate(its)%f)%nres   
+  !            inter(tstate(its)%f)%nres
   !      endif
   !    enddo
   !  endif
@@ -567,14 +569,14 @@ program unfoldsim
     icycle = icycle + 1
     !! ------- increase timestep if possible
     if (icycle >= 10000 .and. mod(icycle,speedfreq)==0) then
-      if (timestep < speedlimit) then
+      if (timestep < speedlimit .and. varTimestep .eqv. .true.) then
         timestep = speedfac*timestep
       endif
       iflag = 0
     endif
     totaltime = totaltime + timestep
     !! -------- calculate changes in concentration
-    dc = 0 
+    dc = 0
     call cpu_time(xin)
     do its=1,mtstate
       f = tstate(its)%f
@@ -584,28 +586,28 @@ program unfoldsim
       u1ptr => inter(u1)
       u2ptr => inter(u2)
       tsptr => tstate(its)
-      if (inter(f)%conc > TINYCONC) then  
-        rate = fptr%conc * tsptr%ku 
-        decrement = rate 
-        dc(f) = dc(f) - decrement 
+      if (inter(f)%conc > TINYCONC) then
+        rate = fptr%conc * tsptr%ku
+        decrement = rate
+        dc(f) = dc(f) - decrement
         dc(u1) = dc(u1) + decrement
         if (u2/=0) dc(u2) = dc(u2) + decrement
         tsptr%traffic = tsptr%traffic + decrement
-      endif 
+      endif
       if (u1ptr%conc>TINYCONC) then
         rate = 0.0
         if (tsptr%cuttype=="s") then     !! seam is a unimolecular reaction
           rate = u1ptr%conc*tsptr%kf
         else  !! All other cuttypes m, b, h, p are (virtually) bimolecular.
-          if (u2ptr%conc>TINYCONC) then 
+          if (u2ptr%conc>TINYCONC) then
             rate = u1ptr%conc*u2ptr%conc*tsptr%kf
           endif
         endif
         decrement = rate
-        dc(f) = dc(f) + decrement 
+        dc(f) = dc(f) + decrement
         dc(u1) = dc(u1) - decrement
         if (u2/=0) dc(u2) = dc(u2) - decrement
-        tsptr%traffic = tsptr%traffic + decrement 
+        tsptr%traffic = tsptr%traffic + decrement
       endif
     enddo
     iflag = 0
@@ -614,7 +616,7 @@ program unfoldsim
     do ii=1,minter
       !! find minimum timestep
       if (-dc(ii)*x > inter(ii)%conc ) then
-        x = inter(ii)%conc/(-dc(ii)) 
+        x = inter(ii)%conc/(-dc(ii))
       endif
     enddo
     if (x>0.0.and.x<timestep) timestep = x
@@ -708,14 +710,14 @@ program unfoldsim
       elseif (mod(icycle,convfreq)==0) then
         if (totaltime>mintime.and.abs(lastf-sumf)<0.00000001)  then
           write(0,*) "CONVERGENCE reached. change in F= ", abs(lastf-sumf)
-          exit  
+          exit
         endif
         lastf = sumf
       endif
       if (fing==1.and.halflifeonly.and.sumf>50.0) exit
       if (fing==0.and.halflifeonly.and.sumu>50.0) exit
     endif
-    !! ----------- Update estimate of half-life. OBSELETE?
+    !! ----------- Update estimate of half-life. OBSOLETE?
     if (mod(icycle,lifefreq)==0) then
       sumf = getsumf()*100./conc
       sumu = getsumu()*100./conc
@@ -743,7 +745,7 @@ program unfoldsim
   y = cpuend - cpustart
   write(*,'("CPU_TIME spent simulating            =",f9.4," seconds.",'//&
           'f9.2,"% calculating dc",f9.2,"% bookkeeping")') &
-           y, 100*(tmonitor/y),100*(tmonitor2/y) 
+           y, 100*(tmonitor/y),100*(tmonitor2/y)
   cpustart = cpuend
   !! --------------------------- all done. ----------------------------
   sumf = getsumc(1)*100./conc
@@ -754,11 +756,17 @@ program unfoldsim
   !write(*,'(a,E12.5e1,4(1x,f9.5),i12,$)') "TIMECOURSE ", totaltime, sumf, sumu, &
   !                                         sumi, sumtot, nint(maxdc*100000000.)
   !! ----------- final halflife
-  if (fing==1) then
-    write(*,'(E12.5e1,$)') halflife(nint(sumf/2.))
-  else
-    write(*,'(E12.5e1,$)') halflife(nint(sumu/2.))
-  endif
+  !!! Shouldn't it be halflife(50) since halflife is when it is 50% folded/unfolded???
+  !!! As it is currently, this is when the concentration of folded/unfolded is half its
+  !!! final concentration.  Weird...
+
+  ! if (fing==1) then
+  !   write(*,'(E12.5e1,$)') halflife(nint(sumf/2.))
+  ! else
+  !   write(*,'(E12.5e1,$)') halflife(nint(sumu/2.))
+  ! endif
+
+  write(*,'(E12.5e1,$)') halflife(50)
   !! ----------- final residue intm
   if (intm /= 0) then
     if (intm<0 .or. intm>minter) then
@@ -773,7 +781,7 @@ program unfoldsim
   if (verbose.and.fing==1) then
     write(*,'("====== MOLTEN INTERMEDIATES (diagnostic, should be zero) ============")')
     do its=1,mtstate
-      if (tstate(its)%cuttype == "m") then  
+      if (tstate(its)%cuttype == "m") then
         write(*,'("TSTATE ",4i5,3f9.6," fsize=",i4,2(1x,1pe10.4e2))') &
             ii,tstate(its)%f,tstate(its)%u1,tstate(its)%u2,&
             inter(tstate(its)%f)%conc,   &
@@ -870,11 +878,11 @@ CONTAINS
     !Do
       !read (iunit, '(a)', iostat = ios) aline
       !if(ios/= 0) exit
-      !if (aline(1:7)=="ISEGMT") then 
+      !if (aline(1:7)=="ISEGMT") then
       !minter = minter + 1
         !read (iunit, '(a)', iostat = ios) aline
         !if (ios/=0) stop 'Premature end. Expecting flags line.'
-      !endif 
+      !endif
     !enddo
     !!!!!
     if (.not.allocated(inter)) then
@@ -900,14 +908,14 @@ CONTAINS
           write(aline(55:60),'(f6.2)') getsumc(SUMALLFLAG,ires=ires)
           write(aline(61:66),'(f6.2)') getsumc(-1,ires=ires)  !! conc unfolded in B-factor column
           write(aline(67:72),'(f6.2)') getsumc(1,ires=ires)  !! conc folded after B-factor column
-          write(ounit, '(a)') trim(aline) 
+          write(ounit, '(a)') trim(aline)
         endif
       elseif (aline(1:7)=="TSTATE ") then
         !! The TSTATE lines are written by geofold.f90, and re-written by this program.
         !! They are read by this program , isegment.f90, and maxTraffic.cpp
         i = i + 1
         iseam = 0
-        read(aline(8:),*,iostat=inputstatus) j, &  
+        read(aline(8:),*,iostat=inputstatus) j, &
           tstate(i)%f,tstate(i)%u1,tstate(i)%u2,tstate(i)%entropy,tstate(i)%cuttype,iseam
         if (inputstatus/=0) then
            write(0,'(a)') trim(aline)
@@ -919,21 +927,21 @@ CONTAINS
             tstate(i)%u2 = 0
           endif
           !! Read seam to the end of the line. From geofold.f90. This number is also read by isegment.f90
-          !read(aline(8:),*,iostat=inputstatus) j, &  
+          !read(aline(8:),*,iostat=inputstatus) j, &
           !  tstate(i)%f,tstate(i)%u1,tstate(i)%u2,tstate(i)%entropy,tstate(i)%cuttype,iseam
           if (verbose)  write(*,'("SEAM move encountered ",i5,"-->",i5, "seam=",i3)') &
             tstate(i)%f,tstate(i)%u1, iseam
           !! Add this seam to the list
         endif
-      if (present(traffic_out)) then 
+      if (present(traffic_out)) then
           !! Add traffic to the end of the line. WARNING: this line is read by maxTraffic.cpp
           j = len_trim(aline)+2
           write(aline(j:),'(f8.4)') tstate(i)%traffic
           write(aline,'(a7,i7,i7,i7,i7,f11.2,3x,a1,i5,f13.8)') "TSTATE ",i,tstate(i)%f,tstate(i)%u1, &
              tstate(i)%u2,tstate(i)%entropy,tstate(i)%cuttype,iseam,tstate(i)%traffic
-        write(ounit, '(a)') trim(aline) 
+        write(ounit, '(a)') trim(aline)
           !TSTATE    2636      1   2774   2763        0.22   p    0
-      endif 
+      endif
       elseif (aline(1:7)=="ISEGMT ") then
         !! The ISEGMT lines are written by geofold.f90, and re-written by this program.
         !! They are read by this program , isegment.f90, and maxTraffic.cpp
@@ -942,7 +950,7 @@ CONTAINS
           allocate(inter(iseg)%f)
           nullify(inter(iseg)%f%next)
           inter(iseg)%f%state = 0
-          inter(iseg)%f%state = inter(iseg)%sym 
+          inter(iseg)%f%state = inter(iseg)%sym
           inter(iseg)%f%axis = 0
           inter(iseg)%f%barrel = 0
         endif
@@ -956,7 +964,7 @@ CONTAINS
           write(*,'(a)') trim(aline)
           stop 'unfoldsim.f90:: Parsing error 2: ISEGMT line'
         endif
-      if (present(traffic_out)) then 
+      if (present(traffic_out)) then
           !! This is the line from isegment.f90 that reads the ISEGMT lines. Make sure these sync!
           !isegment.f90:284     read(line1(7:),*) nseg,i,nsym,sas,ntrp,nvoid,nhb,ftype,conc
           aline = " "
@@ -974,9 +982,9 @@ CONTAINS
             aline(j:j) = "I"
           case (-1)
             aline(j:j) = "U"
-          end select 
-        write(ounit, '(a)') trim(aline) 
-      endif 
+          end select
+        write(ounit, '(a)') trim(aline)
+      endif
         !! The line after ISEGM must be the GeoFold flags. Aline must be len=MAXLEN
         read(iunit,'(a)',iostat=ios) aline
         if (ios/=0) stop 'Premature end. Expecting flags line.'
@@ -1014,7 +1022,7 @@ CONTAINS
         if (present(traffic_out)) &
           write(ounit, '(a)') trim(aline) // " " // trim(inter(iseg)%residuelist)
       else  !! HEADER, REMARK lines
-        if (present(traffic_out)) write(ounit, '(a)') trim(aline) 
+        if (present(traffic_out)) write(ounit, '(a)') trim(aline)
       endif
     enddo
     inter(1)%conc = fconc
@@ -1050,24 +1058,24 @@ CONTAINS
       if (tstate%u2/=0) then; if (inter(tstate%u2)%folded==0) nu = nu + inter(tstate%u2)%nres; endif
     endif
     select case (ctype)
-      case ("p") 
+      case ("p")
         ! BUG found 21-MAY-2009. entropy used in two places, here and Solidity().
         ! dSfunction = tstate%entropy*pivotpointentropy
         dSfunction = pivotpointentropy + nu*SPERRESID/2.
-      case ("h") 
+      case ("h")
         ! dSfunction = tstate%entropy*hingepointentropy
         dSfunction = hingepointentropy
-      case ("b") 
+      case ("b")
         ! dSfunction = tstate%entropy*breakpointentropy
         dSfunction = breakpointentropy + nu*SPERRESID
       case ("m")
         !! Melting rates are fixed using MELTINGENERGY
-        dSfunction = 0.0     
+        dSfunction = 0.0
       case ("s")
         dSfunction = seampointentropy
       case default
         write(0,*) 'unfoldsim:: unknown cuttype: ',tstate%cuttype
-      dSfunction = 0.0     
+      dSfunction = 0.0
     end select
     !! experimental -- try locking TdS to the number of Hbonds broken.
     !if (totalhb==0 .or. nhb<0) then
@@ -1105,7 +1113,7 @@ CONTAINS
     !! -----------------------------------------------------------------------
     !    dd = (sas*dS/flex)
     !    if (dd==0.) then
-    !        Solidity = 0 
+    !        Solidity = 0
     !    elseif(dd.gt.ovrflo) then
     !        Solidity = 0.5
     !    elseif(dd.lt.0) then
@@ -1115,10 +1123,10 @@ CONTAINS
     !    endif
     ! print *, "Solidity is ", Solidity, dd, tstate%dsas, flex
     !! -----------------------------------------------------------------------
-    !! Solidity, the fraction of configurational entropy expressed before the 
+    !! Solidity, the fraction of configurational entropy expressed before the
     !! transition state of unfolding, should be zero, since the degrees of
     !! freedom gained are manifest only when 100% of the interaction is
-    !! broken. Here we set Solidity to zero. In order to capture the 
+    !! broken. Here we set Solidity to zero. In order to capture the
     !! entropic component of the unfolding barrier, we use a new function
     !! dSdd.
     !! -----------------------------------------------------------------------
@@ -1233,7 +1241,7 @@ CONTAINS
     ! real(8),intent(in) :: dnrg,tmscale
     real(8),intent(in) :: dnrg,TdS
     real(8), parameter :: ovrflo=2.0
-    real(8) :: dd, gt 
+    real(8) :: dd, gt
     real(8),parameter :: TMSHIFT=0.5  !!  minimum theta-m
     !! getthetam = tmscale
     !! return
@@ -1321,7 +1329,7 @@ CONTAINS
   !! is the sum of the concentrations of the folding intermediates
   !! that have Cij . The output file from this routine
   !! can be converted to a postscript image using
-  !! pathway2ps.f90 
+  !! pathway2ps.f90
   !!--------------------------------------
   character(len=*),intent(in) :: infile
   integer :: iunit, ios=0,i,j,im, ib
@@ -1379,7 +1387,7 @@ CONTAINS
     !! Output the energy profile of the tree with highest traffic.
     !! Each step in the profile (the reaction coordinate) is a recursion
     !! depth in the pathway tree. If more than one branch has the same
-    !! recursion depth, the energies are summed. 
+    !! recursion depth, the energies are summed.
     !! The transition state energy and position are plotted for
     !! just the tstate with the highest barrier. Thus, information is lost,
     !! but the plot should provide be qualitatively correct.
@@ -1496,7 +1504,7 @@ CONTAINS
     !!-----------------------------------
     !! Paramaters file is a keyworded file with each line containing
     !! KEYWORD value
-    !! If the keyword is not one of those listed below, it will be ignored. 
+    !! If the keyword is not one of those listed below, it will be ignored.
     !! So comments can be freely added in the parameters file.
     !!-----------------------------------
     character(len=*),intent(in) :: paramfile
@@ -1601,12 +1609,12 @@ CONTAINS
         if (ios/=0) STOP 'unfoldsim.f90:: bad value for MAXTIME'
         if (verbose) write(*,'(a,f10.5)') "REMARK maximum simulation time  ",maxtime
       case default
-      end select 
+      end select
     enddo
     close(iunit)
     !! pivotpointentropy must be the average of breakpointentropy and hingepointentropy
-    !! since (1) the total entropy is a state function, 
-    !! and (2) for every hinge there is one break, and 
+    !! since (1) the total entropy is a state function,
+    !! and (2) for every hinge there is one break, and
     !! (3) a hinge plus a break is equivalent to two pivots
     pivotpointentropy = (breakpointentropy + hingepointentropy)/2.0
   end subroutine readparams
@@ -1708,7 +1716,7 @@ CONTAINS
   type (tstype),intent(in) :: tst
   !!-------------------------------
   !! The entropic barrier to folding, unfolding is destinct from
-  !! the configurational entropy. It is a function of the 
+  !! the configurational entropy. It is a function of the
   !! width of the unfolding/folding pathway. If there are many
   !! ways to break the interactions, then getSbarrier() is less.
   !! If there are few ways to break the interaction, getSbarrier()
@@ -1723,7 +1731,7 @@ CONTAINS
   !! Pivots represent diffusion in angle space, with the number of angles
   !! being unknown, a function of chain stiffness and orientation.
   !! Hinges are doubly dependent on stiffness and orientation and involve
-  !! roughly twice as many angles. 
+  !! roughly twice as many angles.
   !! Seams add no explicit degrees of freedome.
   !! All four moves are different. Therefore, we set a user-dependent
   !! entropic barrier hieght for each cuttype in the limit as tst%entropy
@@ -1739,7 +1747,7 @@ CONTAINS
     case ("m")
       getSbarrier = 0.
     case ("s")
-      getSBarrier = seambarrier 
+      getSBarrier = seambarrier
     case default
       stop 'unfoldsim:: getSbarrier: unknown tstate type.'
   end select

@@ -4,7 +4,7 @@
 Used to confirm the detection of beta sheets
 """
 
-import os, sys
+import os, sys, platform
 
 #-------------------------------------------------------------------------------
 # main
@@ -60,7 +60,10 @@ def runStride (pdbFilename, stridePath):
     sys.stderr.write("runStride\n")
     SEAMS_PATH = os.environ ["GDIR"] + "/seams"
     gDir = os.environ["GDIR"]+'/'
-    stride = SEAMS_PATH + "/stride "
+    if platform.system() != 'Darwin':
+        stride = SEAMS_PATH + "/stride "
+    else:
+        stride = SEAMS_PATH+"/osx_stride "
     stemName = name (pdbFilename)
     strideFilename = stridePath + stemName + "-tmp"  + ".stride"
 

@@ -12,17 +12,23 @@ character(len=20) :: res1='ACDEFGHIKLMNPQRSTVWY'
 character(len=60) :: &
 res3='ALACYSASPGLUPHEGLYHISILELYSLEUMETASNPROGLNARGSERTHRVALTRPTYR'
 integer,dimension(1000) :: seq
-character(len=1) :: achar,chainID
+character(len=1) :: achar,chainID,insert_char,current_insert,altloc,current_alt
 character(len=3) :: ares
 character(len=80) :: infile,outfile
 real :: x,y
 integer :: iatm,firstres,jarg
 real,parameter :: cfcut=0.50
 logical :: complete
+integer :: is_zero
 
 integer :: iargc
 !! NNN is the number of the first residue
 !! seqfile contains the AA sequence, unadulterated
+
+current_insert = " "
+insert_char = " "
+altloc = " "
+current_alt = " "
 
 jarg = iargc()
 if (jarg < 2) then
@@ -66,12 +72,23 @@ do
     write(12,'(a)') trim(aline)
   else
     read(aline(23:26),*,iostat=ios) ires
+    read(aline(27:27),*,iostat=ios) insert_char
+    if(ios /= 0) insert_char = " "
+    read(aline(17:17),*,iostat=is_zero) current_alt !is_zero will only equal 0 if the altloc is not a space
+    if(is_zero == 0) then
+        if(altloc == " ") then
+            altloc = current_alt
+        elseif(current_alt /= altloc) then
+            cycle
+        endif
+    endif
     iatm = iatm + 1
     write(aline(7:11),'(i5)') iatm
-    if (ires/=lres) then
+    if (ires/=lres .or. insert_char /= current_insert) then
       nback = 0
       complete = .false.
       lres = ires
+      current_insert = insert_char
     endif
     if (.not.complete) then
       select case (aline(13:16))
@@ -87,7 +104,7 @@ do
       case (" O  ")
         nback = nback + 8
         oline = trim(aline)
-      end select 
+      end select
     endif
     if (nback==15) then
       complete = .true.
@@ -111,6 +128,6 @@ do
 enddo
 write(*,*) 'all done. atoms out=', iatm
 close(11)
-    
+
 close(12)
 end program renumber_one
