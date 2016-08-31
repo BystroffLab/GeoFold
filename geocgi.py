@@ -633,30 +633,6 @@ def fourthScript(form):
     commands.getstatusoutput('chmod 0777 %s/%s.job'%(jobdir,lname))
     commands.getstatusoutput('chmod 0777 %s/%s.par'%(tmpdir,lname))
     
-def getDirs(directory):
-  cmd = 'ls -clt %s'%(directory)
-  status, output = commands.getstatusoutput(cmd)
-  if status != 0:
-    raise IOError
-  dirs = []
-  output = output.split('\n')
-  for line in output:
-    line = line.split()
-    if 'd' in line[0] and line[8] != 'gnuplot':
-      dirs.append(line[8])
-  return dirs
-
-def showFinished():
-  '''Show all recently completed jobs chronologically as links to their html pages'''
-  exclude = ['404.php','banner.gif','gnuplot','isegment.cgi']
-  #get chronological list of directories in output directory
-  Outdirs = getDirs('output')
-  #header w/ title
-  print("<title>Recent GeoFold jobs</title><center><h1>Recent GeoFold jobs</h1></center></head><body><pre>")
-  for dir in Outdirs:
-    print('<a href="./output/%s/%s.html">%s</a>'%(dir,dir,dir))
-  print('</pre></body></html>')
-
 
 #HTML header
 print "Content-Type: text/html;charset=utf-8\n\n"
@@ -665,7 +641,7 @@ print("<html><head>")
 print('<link type="text/css" rel="stylesheet" href="toggle.css"/>')
 printStyle()
 
-print("</head><body>")
+#print("</head><body>")
 form = cgi.FieldStorage()
 query = int(form['script'].value)
 if query == 1:
@@ -676,8 +652,6 @@ elif query == 3:
     redo(form)
 elif query == 4:
     fourthScript(form)
-elif query == 5:
-    showFinished()
 else:
      print("</head><body><pre>Invalid query: %s"%(query))
      for entry in form:
