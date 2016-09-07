@@ -56,7 +56,7 @@ Tue Jun 17 14:49:59 EDT 2014
   </tr>
   <tr>
     <td>
-      <FORM METHOD="POST" ACTION="./geocgi.cgi" ><input type="hidden" name="script" value=5><INPUT TYPE="submit" NAME=".submit" VALUE="View Recent"></FORM>
+      <FORM METHOD="POST" ACTION="./showfinished.cgi" ><INPUT TYPE="submit" NAME=".submit" VALUE="View Recent"></FORM>
     </td>
   </tr>
 </table>
