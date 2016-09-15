@@ -257,7 +257,7 @@ RECURSIVE SUBROUTINE getcutpoints( f ,contacts,flory,T)
   call getbreaks(f,allu1,allentropy,nbreak,contacts,flory)
   if (verbose.and.nbreak > 0) write(*,*) '============>>> found ',nbreak,' BREAKs'
   breakloop: DO ibreak=1,nbreak
-   !!!! Parallelize here  <<<<<<<<<<<<<<<<<<<<<<<<<
+!  SAN MPI Start <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
      entropy = allentropy(ibreak)
      u1%iflag = allu1(ibreak)%iflag
      f%axis = allu1(ibreak)%axis
@@ -271,7 +271,7 @@ RECURSIVE SUBROUTINE getcutpoints( f ,contacts,flory,T)
 !     write(0,*) 'calling savetstate from break'
      CALL savetstate(f,u1,u2=u2,t=cuttype, ent=entropy)
   enddo breakloop
-   !!!! Barrier here  <<<<<<<<<<<<<<<<<<<<<<<<<
+!  SAN MPI Barrier<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
   if (nbreak > 0) return
   !!------------- PIVOTS ----------------
 !  write(0,*) 'getpivots'
@@ -279,7 +279,7 @@ RECURSIVE SUBROUTINE getcutpoints( f ,contacts,flory,T)
 !  write(0,*) 'got pivots'
   if (verbose.and.npivot > 0) write(*,*) '============>>> found ',npivot,' PIVOTS'
   pivotloop: DO ipivot=1,npivot 
-   !!!! Parallelize here  <<<<<<<<<<<<<<<<<<<<<<<<<
+!  SAN MPI Start <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 !     write(0,*) 'in pivotloop'
      entropy = allentropy(ipivot)
      u1%iflag = allu1(ipivot)%iflag
@@ -294,9 +294,9 @@ RECURSIVE SUBROUTINE getcutpoints( f ,contacts,flory,T)
 !     write(0,*) 'p savetstate'
      CALL savetstate(f,u1,u2=u2,t=cuttype, ent=entropy)
   enddo pivotloop
-   !!!! Barrier here  <<<<<<<<<<<<<<<<<<<<<<<<<
+!  SAN MPI Barrier <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 !  write(0,*) 'out of pivot loop'
-!  write(0,'(i3," pivots found.")') npivot
+!  write(0,'(i3," pivo/home/cynthia/Downloads/Package Control.sublime-packagets found.")') npivot
   if (npivot > 0) return
   !!------------- SEAMS  ----------------
   !!-1: left, 1: right  --> allside
@@ -327,7 +327,7 @@ RECURSIVE SUBROUTINE getcutpoints( f ,contacts,flory,T)
      write(*,*) '============>>> found no SEAMS'
   endif
   seamloop: DO iseam=1,nseam
-   !!!! Parallelize here  <<<<<<<<<<<<<<<<<<<<<<<<<
+!  SAN MPI Start <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
      if (seammove(iseam)%barrel==0) cycle
      if (seammove(iseam)%barrel<0) then
        write(0,'("ERROR: seammove(",i3,")%barrel=",i3)') iseam,seammove(iseam)%barrel
@@ -345,7 +345,7 @@ RECURSIVE SUBROUTINE getcutpoints( f ,contacts,flory,T)
 !     write(0,*) 's savetstate'
      CALL savetstate(f,u1,t=cuttype, ent=entropy, iseam=u1%barrel(seammove(iseam)%barrel)) !! add to list of intermediates
   enddo seamloop
-   !!!! Barrier here  <<<<<<<<<<<<<<<<<<<<<<<<<
+!  SAN MPI Barrier <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
   if (associated(seammove)) deallocate(seammove)
   if (nseam > 0) return
   !!------------- HINGES  ----------------
@@ -357,7 +357,7 @@ RECURSIVE SUBROUTINE getcutpoints( f ,contacts,flory,T)
     write(*,*) '============>>> found no HINGES'
   endif
   hingeloop: DO ihinge=1,nhinge
-   !!!! Parallelize here  <<<<<<<<<<<<<<<<<<<<<<<<<
+!  SAN MPI Start <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
      entropy = allentropy(ihinge)
      u1%iflag = allu1(ihinge)%iflag
      f%axis = allu1(ihinge)%axis
@@ -371,7 +371,7 @@ RECURSIVE SUBROUTINE getcutpoints( f ,contacts,flory,T)
 !     write(0,*) 'h savetstate'
      CALL savetstate(f,u1,u2=u2,t=cuttype, ent=entropy)
   enddo hingeloop
-   !!!! Barrier here  <<<<<<<<<<<<<<<<<<<<<<<<<
+!  SAN MPI Barrier <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
   if (nhinge > 0) return
   !!------------- MELT    ----------------
   ! WRITE (*,*) 'ERROR: No cutpoints found for ',f%iflag(1:geofold_nres)
