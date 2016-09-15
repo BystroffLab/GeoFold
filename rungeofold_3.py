@@ -36,14 +36,16 @@ import sys
 import commands
 import time
 import math
-import sys
+from georansac import fit
 from launch import launch
 from runmpi import get_mpirun
 from get_cpu_num import get_cpu_num
 from shell import shell
-from georansac import fit
 from mpunfoldsim import mpunfoldsim
 from test_mpunfoldsim import test_mpunfoldsim
+from mpi4py import MPI
+
+
 
 def readConf(confFile):
   output = {}
@@ -57,6 +59,7 @@ def readConf(confFile):
         output[line[0]] = line[1]
   conf.close()
   return output
+
 
 def writeOut(x):
   global htmlOut
@@ -84,6 +87,7 @@ def createForm(out,parfile):
   #out.write('<input type="hidden" name="email_address" value="%s">\n'%(parameters["EMAIL"]))
   #submit button
   out.write('<br><input type="submit" name = "submit" value="submit"></form>')
+
 
 #new energy profile function
 def writeEnergyProfile(tmpDir,htmlDir,LName,nn):
@@ -620,6 +624,22 @@ def findParam (paramFile, target):
           return [0,s[1]]
 
   return [1, '']
+# San
+# set comm, rank & size
+try :
+  comm  = MPI.COMM_WORLD
+  rank = comm.Get_rank()
+  size = comm.Get_size()
+  name = MPI.Get_processor_name()
+
+except Exception as e :
+    traceback.print_exc ()
+    print "error : %s" % e
+    sys.exit (1)
+"""
+readConf(confFile) method from original version of GeoFold
+bach_sanw.conf saved at the home directory
+"""
 
 # Setting global variables
 global tmpWrite
@@ -634,7 +654,6 @@ debug = False
 parameters = {}
 
 conf = "bach_sanw.conf"
-
 ########################## DIRECTORIES #############################
 ### SET THESE DIRECTORIES AS FOLLOWS:
 # gDir is the geofold directory created by tar -zxvf geofold.tgz
@@ -779,7 +798,7 @@ else:
     paramFile.close()
     sys.exit(paramFilename+" chainid not found.")
   print("Chain "+chain)
-  status,LName=  findParam(paramFile, "dag")
+  status,LName=  findParam(paramFile, "LNAME")
   if status != 0:
     print(paramFilename+" LNAME value not found.")
     LName= str(os.getpid())
@@ -1228,45 +1247,6 @@ else:
   outWrite.close()
   ##SKIPGEOFOLD
   LNamePDB = "%s/%s.pdb" %(tmpDir,LName)
-  ##++++++++++++++++++++++++++++++++++++++++++
-  ##++++++++++++++++++++++++++++++++++++++++++
-  """ 
-	  dagread = mpunfoldsim(tmpDir,LName, thermal, paramFilename)
-	  try:
-	      readDag = open(dagread,'r')
-	  except IOError:
-	      oneliner("DAG file is missing: "+dag)
-	      readDag.close()
-  """
-  #omegaRange
-  argFile = "%s/argFile.txt" %(tmpDir)
-  try:
-    argWrite = open(argFile, 'w+')
-  except IOError:
-    paramFile.close()
-    sys.exit("Couldn't open file %s"%(argFile))
-  argFile.write('omegaRange:\n')
-  for value in omegaRange:
-  	argFile.write("%s\n" %(value))
-  argFile.write('LName:\n')
-  argFile.write("%s\n" %(LName))
-  argFile.write('paramFilename:\n')
-  argFile.write("%s\n" %(paramFilename))
-  argFile.write('thermal:\n')
-  argFile.write("%s\n" %(thermal))
-  argFile.write('doIT:\n')
-  argFile.write("%s\n" %(doIT))
-  argFile.close() 
-  #############################################################
-  """
-  Compare host numbers and size of omegarange
-  return nproc
-  """
-  hf_dir = "/bach1"+os.getcwd()
-  hostfile = hf_dir+"/hosts"
-  hosts = sum(1 for line in open(hostfile))
-  proc_num = len(omegaRange)
-  
   if doIt != 3:
       print(doIt == 3)
       print(doIt)
@@ -1274,23 +1254,7 @@ else:
       tmpWrite.write("Unfolding %s%s<br>" %(pdbCode,chain))
       tmpWrite.write("============= UNFOLDSIM =============<br>")
       writeOut("============= UNFOLDSIM =============\n")
-      #Run mpUnfoldsim
-      MPIRUN = get_mpirun()
-      #nproc = get_cpu_num()
-      # shell("make > make.log")
-      """
-      omegaRange = omegaRange
-      tmpDir = arg['tmpDir']
-      LName = arg['LName']
-      nn = arg['nn']
-      paramFilename = arg['paramFilename'] 
-      thermal = arg['thermal']
-      htmlTmp = arg['htmlTmp']
-      doIT = arg['doIT']
-      """
-      command = this_dir + "mpunfoldsim.py" 
-      status, output = launch(command, runcmd=MPIRUN, hostfile = None, nproc=proc_num, pipe=False)
-      """
+      nn = 0
       for value in omegaRange:
         nn += 1
         cp = "cp %s/%s.dag %s/%s_%s.dag" %(tmpDir,LName,tmpDir,LName,nn)
@@ -1312,7 +1276,6 @@ else:
         writeTime = "Time before running UNFOLDSIM "+time.strftime("%c") +'<br>'
         tmpWrite.write(writeTime)
         writeOut(writeTime)
-        return
         unfoldsim = "%s/xunfoldsim %s/%s_%s.dag %s.1 > %s" %(gDir,tmpDir,LName,nn,paramFilename,logFile)
         tmpWrite.write(unfoldsim+'<br>')
         runProgram(unfoldsim)
@@ -1340,9 +1303,6 @@ else:
           outWrite = open(htmlOut,'a')
           outWrite.write('</pre></body></html>\n')
           outWrite.close()
-        ####################################################################################################################################
-    """
-
   print("============= PATHWAY2PS =============")
   tmpWrite.write("============= PATHWAY2PS =============<br>")
   writeOut("============= PATHWAY2PS =============\n")
