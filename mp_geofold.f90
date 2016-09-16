@@ -1,7 +1,7 @@
 !put geofold_flory_calc_entropy in the get subroutines for each cut
 !or check subroutine?
 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!*****************************************
 ! FORTRAN90 Geofold 
 ! by Chris Bystroff, Suzanne Matthews, Luis Garreta
 ! Latest version: 
@@ -14,7 +14,7 @@
 ! Based on UNFOLD, by Mohammed Zaki, Vinay Nadimpaly, 
 ! Deb Bardham, and Chris Bystroff
 ! 2005
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!*****************************************
 !!====================================================================================
 !! MODIFICATIONS:
 !!  2-JUL-2008  Forced melting of left-over intermediates  C.B.
@@ -34,7 +34,8 @@
 !!  Fri Jun 5 2013: Adding SEAMS module, and read_seams. L.G.
 !!  Thu Aug 1 2013 Bug fixes in seam energies. C.B.
 !!  Tue Jul 1 2014 Speed/Bug fixed in seam-associated routines. C.B.
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!  Thur Sep 15 2016 OpenMP
+!!====================================================================================
 PROGRAM geofold
   USE geofold_global    !! geofold_global.f90
   USE geofold_pivots    !! geofold_pivots.f90
@@ -47,7 +48,7 @@ PROGRAM geofold
   INTEGER :: nres, ierr !number of residues
   CHARACTER, dimension(:), allocatable:: chainid !gets passed in 
   CHARACTER(len=200) :: aline
-  ! CHARACTER :: chainID
+  !CHARACTER :: chainID
   INTEGER :: ires, i, j, jarg, ios, ivoid,dunit,flory
   CHARACTER(len=1000) :: filename=" ",dagfile=" ",parfile=" ",cmfile=" ",hbfile=" ",seamfile=" "
   type(intermediate), POINTER :: gptr          ! points to the global intermediate
@@ -55,9 +56,9 @@ PROGRAM geofold
   type(contact),dimension(:),allocatable :: contacts
   real :: w,T
   logical :: all_seams = .true.
-  ! character(len=3) :: aa
-  !------------------------------ COMMAND LINE ----------------
 
+  !! character(len=3) :: aa
+  !!=============== COMMAND LINE ================
   ires = 0
   jarg = iargc() ! get the number of command line arguments
   IF ( jarg < 3 ) THEN
@@ -85,11 +86,12 @@ PROGRAM geofold
   call getarg(1, filename) ! get the name of input pdb from command line
   call getarg(2, dagfile) ! get the name of output file
   call getarg(3, parfile) ! get the name of parameters file
+
   !!=============== READ PARAMETERS FILE ================
   dunit = pickunit(20)
   open(dunit,file=parfile,status='old',form='formatted',iostat=ios)
   if (ios/=0) stop 'geofold.f90:: parameters file not found.'
-!  write(0,*) 'Reading parameters'
+  !write(0,*) 'Reading parameters'
   call geofold_readparameter(dunit,"HINGECUT",hcutoff,low=0.0,high=1.0,default=hcutoff)
   call geofold_readparameter(dunit,"PIVOTCUT",pcutoff,low=0.0,high=1.0,default=pcutoff)
   call geofold_readparameter(dunit,"BREAKCUT",bcutoff,low=0.0,high=1.0,default=bcutoff)
@@ -109,8 +111,9 @@ PROGRAM geofold
   call geofold_readparameter(dunit,"SEAMCUT",scutoff,low=0.0,high=1.0,default=scutoff)
   call geofold_readparameter(dunit,"ALLSEAMS",all_seams,default=.true.)
   close(dunit)
-!  write(0,*) 'Read parameters'
-  !------------------------------ READ INPUT PDB and other FILEs ---------
+  !write(0,*) 'Read parameters'
+
+  !!=============== READ INPUT PDB and other FILEs  ================
   dunit = pickunit(10)
   open(dunit, file=filename, form="formatted", status="old", iostat=ierr)
   IF (ierr > 0 ) STOP "geofold:: Error! File not found!"
@@ -122,12 +125,13 @@ PROGRAM geofold
   !write(0,*) 'geofold_masker_read'
   call geofold_masker_read(cmfile)
   write(0,'("hbfile: ",a)') hbfile
-!  write(0,*) "TESTING............."
+  !write(0,*) "TESTING............."
   !write(0,*) 'geofold_hbonds_read'
   call geofold_hbonds_read(hbfile)
   !write(0,*) 'geofold_seams_read'
   call geofold_seams_read(seamfile)
-  !------------------------------ INITIALIZE   ----------------
+
+  !!=============== INITIALIZE ================
   nres = geofold_nres 
   Native%iflag = masterchains  
   Native%idnum = 1
@@ -149,12 +153,12 @@ PROGRAM geofold
   !------------------------------ FINISH UP   ----------------
   !write(0,*) 'dag_write'
   call dag_write(dagfile,ounit=dunit) 
-!  write(0,*) 'geofold_seams_write'
+  !write(0,*) 'geofold_seams_write'
   call geofold_seams_write(ounit=dunit)
   close(dunit)
-!  write(0,*) 'cleanuplists'
+  !write(0,*) 'cleanuplists'
   call cleanuplists()
-!  close(45)
+  !close(45)
 CONTAINS
 
 !!====================================================================================
@@ -256,8 +260,9 @@ RECURSIVE SUBROUTINE getcutpoints( f ,contacts,flory,T)
 !  write(0,*) 'getbreaks'
   call getbreaks(f,allu1,allentropy,nbreak,contacts,flory)
   if (verbose.and.nbreak > 0) write(*,*) '============>>> found ',nbreak,' BREAKs'
-  breakloop: DO ibreak=1,nbreak
 !  SAN MPI Start <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+  !$OMP PARALLEL DO
+  breakloop: DO ibreak=1,nbreak
      entropy = allentropy(ibreak)
      u1%iflag = allu1(ibreak)%iflag
      f%axis = allu1(ibreak)%axis
@@ -271,6 +276,7 @@ RECURSIVE SUBROUTINE getcutpoints( f ,contacts,flory,T)
 !     write(0,*) 'calling savetstate from break'
      CALL savetstate(f,u1,u2=u2,t=cuttype, ent=entropy)
   enddo breakloop
+  !$OMP END PATALLEL DO 
 !  SAN MPI Barrier<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
   if (nbreak > 0) return
   !!------------- PIVOTS ----------------
@@ -278,8 +284,9 @@ RECURSIVE SUBROUTINE getcutpoints( f ,contacts,flory,T)
   call getpivots(f,allu1,allentropy,npivot,contacts,flory)
 !  write(0,*) 'got pivots'
   if (verbose.and.npivot > 0) write(*,*) '============>>> found ',npivot,' PIVOTS'
-  pivotloop: DO ipivot=1,npivot 
 !  SAN MPI Start <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+  !$OMP PARALLEL DO
+  pivotloop: DO ipivot=1,npivot 
 !     write(0,*) 'in pivotloop'
      entropy = allentropy(ipivot)
      u1%iflag = allu1(ipivot)%iflag
@@ -294,6 +301,7 @@ RECURSIVE SUBROUTINE getcutpoints( f ,contacts,flory,T)
 !     write(0,*) 'p savetstate'
      CALL savetstate(f,u1,u2=u2,t=cuttype, ent=entropy)
   enddo pivotloop
+  !$OMP END PATALLEL DO 
 !  SAN MPI Barrier <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 !  write(0,*) 'out of pivot loop'
 !  write(0,'(i3," pivo/home/cynthia/Downloads/Package Control.sublime-packagets found.")') npivot
