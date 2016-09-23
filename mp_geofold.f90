@@ -45,6 +45,13 @@ PROGRAM geofold
   USE geofold_flory     !! geofold_flory.f90
 
   implicit none
+  ! Initializa MPI
+  call MPI_Init ( ierr )
+  ! Get the number of processors
+  call MPI_Comm_size (MPI_COMM_WORLD, procs, ierr)
+  ! Get the rank of current processor
+  call MPI_Comm_rank (MPI_COMM_WORLD, rank, ierr)
+
   INTEGER :: nres, ierr !number of residues
   CHARACTER, dimension(:), allocatable:: chainid !gets passed in 
   CHARACTER(len=200) :: aline
