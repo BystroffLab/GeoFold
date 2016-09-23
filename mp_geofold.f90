@@ -45,6 +45,9 @@ PROGRAM geofold
   USE geofold_flory     !! geofold_flory.f90
 
   implicit none
+  integer ( kind = 4 ) ierr
+  integer ( kind = 4 ) procs
+  integer ( kind = 4 ) rank
   ! Initializa MPI
   call MPI_Init ( ierr )
   ! Get the number of processors
@@ -166,6 +169,8 @@ PROGRAM geofold
   !write(0,*) 'cleanuplists'
   call cleanuplists()
   !close(45)
+  call MPI_Finalize (ierr)
+  stop
 CONTAINS
 
 !!====================================================================================
