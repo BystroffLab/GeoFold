@@ -1,6 +1,5 @@
-Program main
+program main
 	use mpi
-	implicit none
 	! Initializa MPI
 	integer ( kind = 4 ) ierr
 	integer ( kind = 4 ) procs
@@ -11,4 +10,6 @@ Program main
 	! Get the rank of current processor
 	call MPI_Comm_rank (MPI_COMM_WORLD, rank, ierr)
 	write( *, '(a)') rank
+	call MPI_Finalize (ierr)
+	stop
 end
