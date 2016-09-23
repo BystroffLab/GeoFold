@@ -179,6 +179,8 @@ RECURSIVE SUBROUTINE getcutpoints( f ,contacts,flory,T)
   !! If not, if the chain is greater than length 1, then melt
   !! If not, then it is length 1, return.
   !!
+  use mpi
+  use omp_lib
   implicit none
   type(intermediate), POINTER :: f
   type(intermediate), target :: child1, child2
@@ -285,7 +287,7 @@ RECURSIVE SUBROUTINE getcutpoints( f ,contacts,flory,T)
 !  write(0,*) 'got pivots'
   if (verbose.and.npivot > 0) write(*,*) '============>>> found ',npivot,' PIVOTS'
 !  SAN MPI Start <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-  !$OMP PARALLEL DO
+!$OMP PARALLEL DO
   pivotloop: DO ipivot=1,npivot 
 !     write(0,*) 'in pivotloop'
      entropy = allentropy(ipivot)
