@@ -111,75 +111,78 @@ omegaRange, LName, paramFilename, thermal, doIT = readArg(argFile)
 
 # chunk size calculated of omegaRange
 #
-chunk_size = math.ceil(float(omegaRange/n))
+if size >= len(omegaRange):
+	chunk_size = 1
+else:
+	chunk_size = math.ceil(float(len(omegaRange)/size))
 
 def Range():
-	if rank != n-1:
+	if rank != size-1:
 		# 0 < rank < n-1
-		start = (rank-1)*size
-		end = rank*size
+		start = rank*size
+		end = (rank+1)*size
 	else:
 		# rank == n-1
-		start = (rank-1)*size
+		start = rank*size
 		end = len(omegaRange)
 	return start, end
 
-if rank == 0:
-	"""
-	Wait for gather
-	"""
+comm.Barrier()  
 
+start, end = Range()
+nn = start
+for value in range(start, end):
+	nn += 1
+	cp = "cp %s/%s.dag %s/%s_%s.dag" %(tmpDir,LName,tmpDir,LName,nn)
+	commands.getstatusoutput(cp)
+	if not thermal:
+	  sed = "sed -e \"s/^OMEGA .*/OMEGA %s/\" %s > %s.1" %(value,paramFilename,paramFilename)
+	else:
+	  sed = "sed -e \"s/^TEMPERATURE .*/TEMPERATURE %s/\" %s > %s.1"%(value, paramFilename,paramFilename)
+	status, output = commands.getstatusoutput(sed)
+	logFile = "%s/%s_%s.log" %(tmpDir,LName,nn)
+	if not thermal:
+	  print("============= run %s omega = %s =============" %(nn,value))
+	  tmpWrite.write("============= run %s omega = %s =============<br>" %(nn,value))
+	  writeOut("============= run %s omega = %s =============\n" %(nn,value))
+	else:
+	  print("============= run %s temp = %s K =============" %(nn,value))
+	  tmpWrite.write("============= run %s temp = %s K =============<br>" %(nn,value))
+	  writeOut("============= run %s temp = %s K =============\n" %(nn,value))
+	writeTime = "Time before running UNFOLDSIM "+time.strftime("%c") +'<br>'
+	tmpWrite.write(writeTime)
+	writeOut(writeTime)
+	unfoldsim = "%s/xunfoldsim %s/%s_%s.dag %s.1 > %s" %(gDir, tmpDir, LName, nn, paramFilename, logFile)
+	tmpWrite.write(unfoldsim+'<br>')
+	runProgram(unfoldsim)
+	writeTime = "Time after running UNFOLDSIM "+time.strftime("%c")+'<br>'
+	tmpWrite.write(writeTime)
+	writeOut(writeTime)
+	tmpWrite.write("<p><pre><br>")
+	# grep = "grep ^\"TIMECOURSE\" %s | tail -1 >> %s" %(logFile,htmlTmp)
+	log = open(logFile,'r')
+	lines = []
+	for line in log:
+	  linesplit = line.split()
+	  if len(linesplit) != 0 and linesplit[0]=='TIMECOURSE':
+	    lines.append(line)
+	if len(lines) == 0:
+	  sys.stderr.write("No timecourse data\n")
+	  tmpWrite.write("No timecourse data\n")
+	  runProgram("error")
+	tmpWrite.write(lines[len(lines)-1])
+	log.close()
+	if debug:
+	  tmpWrite.close()
+	  makeCopy(htmlTmp,htmlOut)
+	  tmpWrite = open(htmlTmp,'a')
+	  outWrite = open(htmlOut,'a')
+	  outWrite.write('</pre></body></html>\n')
+	  outWrite.close()
+	check = 1
 
-else： 
-	start, end = Range()
-	nn = start
-    for value in range(start, end):
-		nn += 1
-		cp = "cp %s/%s.dag %s/%s_%s.dag" %(tmpDir,LName,tmpDir,LName,nn)
-		commands.getstatusoutput(cp)
-		if not thermal:
-		  sed = "sed -e \"s/^OMEGA .*/OMEGA %s/\" %s > %s.1" %(value,paramFilename,paramFilename)
-		else:
-		  sed = "sed -e \"s/^TEMPERATURE .*/TEMPERATURE %s/\" %s > %s.1"%(value, paramFilename,paramFilename)
-		status,output=commands.getstatusoutput(sed)
-		logFile = "%s/%s_%s.log" %(tmpDir,LName,nn)
-		if not thermal:
-		  print("============= run %s omega = %s =============" %(nn,value))
-		  tmpWrite.write("============= run %s omega = %s =============<br>" %(nn,value))
-		  writeOut("============= run %s omega = %s =============\n" %(nn,value))
-		else:
-		  print("============= run %s temp = %s K =============" %(nn,value))
-		  tmpWrite.write("============= run %s temp = %s K =============<br>" %(nn,value))
-		  writeOut("============= run %s temp = %s K =============\n" %(nn,value))
-		writeTime = "Time before running UNFOLDSIM "+time.strftime("%c") +'<br>'
-		tmpWrite.write(writeTime)
-		writeOut(writeTime)
-		unfoldsim = "%s/xunfoldsim %s/%s_%s.dag %s.1 > %s" %(gDir,tmpDir,LName,nn,paramFilename,logFile)
-		tmpWrite.write(unfoldsim+'<br>')
-		runProgram(unfoldsim)
-		writeTime = "Time after running UNFOLDSIM "+time.strftime("%c")+'<br>'
-		tmpWrite.write(writeTime)
-		writeOut(writeTime)
-		tmpWrite.write("<p><pre><br>")
-		# grep = "grep ^\"TIMECOURSE\" %s | tail -1 >> %s" %(logFile,htmlTmp)
-		log = open(logFile,'r')
-		lines = []
-		for line in log:
-		  linesplit = line.split()
-		  if len(linesplit) != 0 and linesplit[0]=='TIMECOURSE':
-		    lines.append(line)
-		if len(lines)==0:
-		  sys.stderr.write("No timecourse data\n")
-		  tmpWrite.write("No timecourse data\n")
-		  runProgram("error")
-		tmpWrite.write(lines[len(lines)-1])
-		log.close()
-		if debug:
-		  tmpWrite.close()
-		  makeCopy(htmlTmp,htmlOut)
-		  tmpWrite = open(htmlTmp,'a')
-		  outWrite = open(htmlOut,'a')
-		  outWrite.write('</pre></body></html>\n')
-		  outWrite.close()
+comm.Reduce(None, [check, MPI.INT], op = MPI,SUM, root = MPI.ROOT)	  
 
-	  
+if check == len(omegaRange):
+	end_time = MPI.Wtime 
+

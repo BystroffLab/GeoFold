@@ -45,25 +45,32 @@ PROGRAM geofold
   USE geofold_flory     !! geofold_flory.f90
 
   implicit none
-  integer ( kind = 4 ) ierr
-  integer ( kind = 4 ) procs
-  integer ( kind = 4 ) rank
-  ! Initializa MPI
-  call MPI_Init ( ierr )
-  ! Get the number of processors
-  call MPI_Comm_size (MPI_COMM_WORLD, procs, ierr)
-  ! Get the rank of current processor
-  call MPI_Comm_rank (MPI_COMM_WORLD, rank, ierr)
+
+  ! TYPE intermediate
+  !   INTEGER :: idnum                          ! unique number identifier of the intermediate state
+  !   CHARACTER, dimension(maxres) :: iflag     ! flags that define the intermediate
+  !   TYPE (intermediate), POINTER :: next       ! next intermediate
+  !   INTEGER :: state                           ! breakflag, pivotflag, hingeflag or meltflag
+  !   integer :: sym                             ! copy number for symmetric proteins
+  !   integer :: axis                            ! index of vectorball
+  !   integer, dimension(MAXBARREL) :: barrel    ! Array of barrels (when protein has barrels)
+  !  END TYPE intermediate
+
+  ! type :: contact
+  !   integer :: cost = 9999
+  !   integer :: path = 0
+  !   integer,dimension(:),allocatable :: contacts
+  ! end type contact
 
   INTEGER :: nres, ierr !number of residues
   CHARACTER, dimension(:), allocatable:: chainid !gets passed in 
-  CHARACTER(len=200) :: aline
+  CHARACTER (len = 200) :: aline
   !CHARACTER :: chainID
   INTEGER :: ires, i, j, jarg, ios, ivoid,dunit,flory
-  CHARACTER(len=1000) :: filename=" ",dagfile=" ",parfile=" ",cmfile=" ",hbfile=" ",seamfile=" "
-  type(intermediate), POINTER :: gptr          ! points to the global intermediate
-  type(intermediate), TARGET :: Native
-  type(contact),dimension(:),allocatable :: contacts
+  CHARACTER (len = 1000) :: filename = " ", dagfile = " ", parfile = " ", cmfile = " ", hbfile = " ", seamfile = " "
+  type (intermediate), POINTER :: gptr          ! points to the global intermediate
+  type (intermediate), TARGET :: Native
+  type (contact), dimension(:), allocatable :: contacts
   real :: w,T
   logical :: all_seams = .true.
 
@@ -169,7 +176,6 @@ PROGRAM geofold
   !write(0,*) 'cleanuplists'
   call cleanuplists()
   !close(45)
-  call MPI_Finalize (ierr)
   stop
 CONTAINS
 
@@ -181,7 +187,7 @@ CONTAINS
 !recurses until unfolded
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-RECURSIVE SUBROUTINE getcutpoints( f ,contacts,flory,T)
+RECURSIVE SUBROUTINE getcutpoints( f, contacts, flory, T)
   !! ------- cut point algorithm ---------
   !! 
   !! If the intermediate is multichain, break if possible.
@@ -194,27 +200,38 @@ RECURSIVE SUBROUTINE getcutpoints( f ,contacts,flory,T)
   use mpi
   use omp_lib
   implicit none
-  type(intermediate), POINTER :: f
-  type(intermediate), target :: child1, child2
-  type(intermediate), pointer :: u1, u2
-  type(contact),dimension(:),allocatable,intent(in) :: contacts
+
+  integer ( kind = 4 ) ierr
+  integer ( kind = 4 ) procs
+  integer ( kind = 4 ) myRank
+  ! Initializa MPI
+  call MPI_Init ( ierr )
+  ! Get the number of processors
+  call MPI_Comm_size (MPI_COMM_WORLD, procs, ierr)
+  ! Get the rank of current processor
+  call MPI_Comm_rank (MPI_COMM_WORLD, myRank, ierr)
+
+  type (intermediate), pointer :: f
+  type (intermediate), target :: child1, child2
+  type (intermediate), pointer :: u1, u2
+  type (contact), dimension(:), allocatable, intent(in) :: contacts
   INTEGER :: lastpos,lastbreak,lasthinge
   INTEGER :: interval
   INTEGER :: flag,ios=0
   integer :: flory
   INTEGER :: cuttype, nchain, nres, mres, nseam
-  integer :: nbreak,ibreak,npivot,ipivot,nhinge,ihinge, iseam, nmove
+  integer :: nbreak, ibreak, npivot, ipivot, nhinge, ihinge, iseam, nmove
   REAL :: entropy
   real,intent(in) :: T
   ! logical,optional,intent(out) :: done
   ! logical :: u1done,u2done
   character,dimension(MAXCHAIN) :: uniqchains
-  type(intermediate),dimension(:),allocatable :: allu1
+  type (intermediate), dimension(:), allocatable :: allu1
   real,dimension(:),allocatable :: allentropy
   type (seammove_type), pointer :: seammove (:)
   !-----------
-  nullify(u1, u2)
-  nullify(seammove)
+  nullify (u1, u2)
+  nullify (seammove)
   if (allocated(allentropy)) deallocate(allentropy)
   allocate(allentropy(maxsplit+1),stat=ios)
   if (ios/=0) stop 'geofold:: getcutpoints: error allocating allentropy'
@@ -262,36 +279,43 @@ RECURSIVE SUBROUTINE getcutpoints( f ,contacts,flory,T)
   u2%iflag = '.'
   u1%axis = 0
   u2%axis = 0
-  u1%barrel=f%barrel
-  u2%barrel=f%barrel
+  u1%barrel = f%barrel
+  u2%barrel = f%barrel
   NULLIFY(u1%next)
   NULLIFY(u2%next)
   !! Split the pathway 
+  !! in global:
+  !!  integer,save :: maxsplit=8
+  !!  real,parameter ::  FULSPLITDEPTH=4.  !! recursion depth limit for maximum splitting.
+  !!  integer,parameter :: MAXBARREL=8
   geofold_split = nint(real(maxsplit)/(f%state / FULSPLITDEPTH ) )
-  if (geofold_split==0) geofold_split = 1
-  if (geofold_split>maxsplit) geofold_split = maxsplit
+  if (geofold_split == 0) geofold_split = 1
+  if (geofold_split > maxsplit) geofold_split = maxsplit
   !!------------- BREAKS ----------------
 !  write(0,*) 'getbreaks'
-  call getbreaks(f,allu1,allentropy,nbreak,contacts,flory)
-  if (verbose.and.nbreak > 0) write(*,*) '============>>> found ',nbreak,' BREAKs'
+  call getbreaks(f, allu1, allentropy, nbreak, contacts, flory)
+  if (verbose .and. nbreak > 0) write(*, *) '============>>> found ',nbreak,' BREAKs'
 !  SAN MPI Start <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+  
+  integer :: rootHt = 0
   !$OMP PARALLEL DO
-  breakloop: DO ibreak=1,nbreak
+  breakloop: DO ibreak = 1, nbreak
      entropy = allentropy(ibreak)
      u1%iflag = allu1(ibreak)%iflag
      f%axis = allu1(ibreak)%axis
 !     write(0,*) 'calling getcutpoints from break u1'
      CALL getcutpoints(u1,contacts,flory,T)   !!  recusrively find cutpoints
      u2%iflag = f%iflag
-     where (u1%iflag/='.') u2%iflag = '.'
+     where (u1%iflag /= '.') u2%iflag = '.'
 !     write(0,*) 'calling getcutpoints from break u2'
-     CALL getcutpoints(u2,contacts,flory,T)
+     CALL getcutpoints(u2, contacts, flory, T)
      cuttype = breakflag
 !     write(0,*) 'calling savetstate from break'
      CALL savetstate(f,u1,u2=u2,t=cuttype, ent=entropy)
   enddo breakloop
   !$OMP END PATALLEL DO 
 !  SAN MPI Barrier<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
   if (nbreak > 0) return
   !!------------- PIVOTS ----------------
 !  write(0,*) 'getpivots'
@@ -453,7 +477,7 @@ SUBROUTINE getbreaks(f,allu1,allentropy,nbreak,contacts,flory)
   do while (bpoint<mbreak)
     call geofold_getnextbreak(f=f,calpha=allcoords,chainid=f%iflag,u1=u1%iflag,u2=u2%iflag, &
                             nres=nres,breakpoint=bpoint,entropy=entropy,bvec=bvec)
-    if(entropy /=-1) &
+    if (entropy /=-1) &
       entropy = entropy + geofold_flory_calc_entropy(flory,f,u1,u2,contacts,w,T)
     if (entropy>bcutoff) then
       call geofold_masker_energy(u1,u1energy)
@@ -462,7 +486,7 @@ SUBROUTINE getbreaks(f,allu1,allentropy,nbreak,contacts,flory)
       if (nbreak<nsplit) nbreak = nbreak + 1
       ibreak = nbreak + 1
       !!do while (entropy>allentropy(ibreak-1))
-      do while (energy>allenergy(ibreak-1))
+      do while (energy > allenergy(ibreak-1))
         allenergy(ibreak) = allenergy(ibreak-1)
         allentropy(ibreak) = allentropy(ibreak-1)
         allu1(ibreak)%iflag = allu1(ibreak-1)%iflag
@@ -708,7 +732,7 @@ recursive subroutine getmelting(f,force)
   type(intermediate), pointer :: u1, u2
   type(intermediate), POINTER :: ihead
   integer :: found, i, id, n, z1,z2, check
-  logical,parameter :: veryverbose=.true.
+  logical, parameter :: veryverbose=.true.
   !!
   if (.not.associated(ilistroot)) stop 'geofold.f90:: getmelting BUG 1'
   IF ( count(f%iflag(1:geofold_nres) /= '.') == 0 ) RETURN ! empty
@@ -761,10 +785,10 @@ recursive subroutine getmelting(f,force)
   u2%state = f%state + 1
   u1%barrel = f%barrel
   u2%barrel = f%barrel
-  if (found==1) then
-    do i=1,geofold_nres
+  if (found == 1) then
+    do i = 1, geofold_nres
       u1%iflag(i) = ihead%iflag(i)
-      if (f%iflag(i)/='.' .and. ihead%iflag(i)=='.') then
+      if (f%iflag(i) /= '.' .and. ihead%iflag(i) == '.') then
         u2%iflag(i) = f%iflag(i)
       endif
     enddo
