@@ -9,7 +9,7 @@ program main
 	call MPI_Comm_size (MPI_COMM_WORLD, procs, ierr)
 	! Get the rank of current processor
 	call MPI_Comm_rank (MPI_COMM_WORLD, rank, ierr)
-	write( *, '(a)') rank
+	write( *, *) rank
 	call MPI_Finalize (ierr)
 	stop
 end
