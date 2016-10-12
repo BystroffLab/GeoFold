@@ -172,7 +172,7 @@ CONTAINS
      ELSE
         masterchains(ires) = ChainID
      END IF
-     read( aline(31:54),'(3f8.3)' ), allcoords(1:3, ires)
+     read( aline(31:54),'(3f8.3)' ) allcoords(1:3, ires)
      aa = aline(18:20)
      seq(ires) = aa2num(aa)
      read( aline(23:26),'(i4)' ) resseq(ires)
