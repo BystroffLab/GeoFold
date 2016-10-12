@@ -5,6 +5,8 @@ program test_eco
 
     call test_printArray()
     call test_isCovalent()
+    call test_addValue()
+    call test_inArray()
 
 
 contains
@@ -48,5 +50,33 @@ subroutine test_isCovalent()
     write(*,*) "test_isCovalent passed!"
     deallocate(geofold_ss)
 end subroutine test_isCovalent
+
+subroutine test_addValue()
+    implicit none
+    integer,dimension(:),allocatable :: array
+
+    write(*,*) 'allocating a 10 by 1 array'
+    allocate(array(10))
+    array = 0
+    array(1) = 5
+    write(*,*) "adding 7 to array.  Should be added to array(2)"
+    call addValue(7,array,10)
+    write(*,*) "array(2)",array(2)
+    deallocate(array)
+end subroutine test_addValue
+
+subroutine test_inArray()
+    implicit none
+    integer,dimension(:),allocatable :: array
+
+    allocate(array(10))
+    array = 0
+    array(1:6) = 2
+    array(7) = 5
+    if(.not. inArray(5,array,10)) stop '5 should be in array'
+    if(inArray(7,array,10)) stop '7 should not be in array'
+    write(*,*) "test_inArray successful!"
+    deallocate(array)
+end subroutine test_inArray
 
 end program test_eco

@@ -101,6 +101,7 @@ contains
         enddo
     end subroutine getsubcontacts
 
+    !works
     subroutine addValue(a, array, size)
         implicit none
         integer,intent(in) :: a,size
@@ -312,6 +313,7 @@ contains
         enddo
     end subroutine printArray
 
+    !works
     logical function inArray(a,array,arraySize) result(answer)
         implicit none
         integer,intent(in) :: a,arraySize
