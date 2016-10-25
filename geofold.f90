@@ -42,119 +42,160 @@ PROGRAM geofold
   USE geofold_hbonds    !! geofold_global.f90
   USE geofold_seams     !! geofold_seams.f90
   USE geofold_flory     !! geofold_flory.f90
-
+  ! mpi added by SAN
+  use mpi
   implicit none
+  ! omp added by SAN
+  include 'omp_lib.h'
+  
+
+  INTEGER :: n_procs, mpierr, proc_id
+  
   INTEGER :: nres, ierr !number of residues
   CHARACTER, dimension(:), allocatable:: chainid !gets passed in 
   CHARACTER(len=200) :: aline
   ! CHARACTER :: chainID
-  INTEGER :: ires, i, j, jarg, ios, ivoid,dunit,flory
+  INTEGER :: ires, i, j, jarg, ios, ivoid, dunit, flory
   CHARACTER(len=1000) :: filename=" ",dagfile=" ",parfile=" ",cmfile=" ",hbfile=" ",seamfile=" "
   type(intermediate), POINTER :: gptr          ! points to the global intermediate
   type(intermediate), TARGET :: Native
   type(contact),dimension(:),allocatable :: contacts
   real :: w,T
   logical :: all_seams = .true.
+  ! variables added by san
+  CHARACTER(len=1000) :: timerfile=" ", msg = " "
+  DOUBLE PRECISION :: timer, start_timer, end_timer
   ! character(len=3) :: aa
   !------------------------------ COMMAND LINE ----------------
-
+  ! mpi added by SAN
+  !  Initialize MPI.
+  call MPI_INIT ( mpierr )
+  !  Get the number of processors.
+  call MPI_COMM_SIZE ( MPI_COMM_WORLD, n_procs, mpierr )
+  !  Get the rank of this processor.
+  call MPI_COMM_RANK ( MPI_COMM_WORLD, proc_id, mpierr )
+  
   ires = 0
   jarg = iargc() ! get the number of command line arguments
   IF ( jarg < 3 ) THEN
-     write(*,*) "Usage: xgeofold <input PDB> <output DAG> <parameter file>"
-     ! write(*,*) "Usage: xgeofold <inputpdb> <mas file> <hbond file> <outputdag> [<minhinge> <minpivot> <minbreak>]" ! write usage line
-     write(*,*) "<inputpdb> Pre-processed input coordinates in PDB format (xGetChain), including Void atoms(Voidmask)."
-     write(*,*) "<outputdag> Output directed acyclic graph, for input to xUnfoldSim"
-     write(*,*) "<parameter file> Keyworded file containing the following keywords (others keywords ignored)"
-     write(*,*) "  CONTACTS <filename> -- Buried surface areas from Masker program ContactMask.f90"
-     write(*,*) "  HBONDS <Hbond file> H-bond file from the utility pdb2hb.f90"
-     write(*,*) "  HINGECUT <hcutoff> Minimum possible hinge rotation as a fraction of", 2*MAXHINGEANG, &
-                "   degrees. default=",hcutoff," [optional]"
-     write(*,*) "  PIVOTCUT <pcutoff> Minimum number of possible pivot axes as a fraction of", NVB,&
-                "   default=",pcutoff," [optional]"
-     write(*,*) "  BREAKCUT <bcutoff> Minimum number of possible translation vectors as a fraction of", NVB,&
-                " default=",bcutoff," [optional]"
-     write(*,*) "  SEAMCUT <scutoff> Minimum number of possible translation vectors as a fraction of", NVB,&
-                " default=",scutoff," [optional]"
-     write(*,*) "  MAXSPLIT <n> n={2,4,6,8} is the maximum number of children for each parent."
-     write(*,*) "  default=",maxsplit
-     write(*,*) "  MINSEG <n> n={2..20} is the Minimum size of a terminal fragment to unfold."
-     write(*,*) "  default=",pivottail
-     stop 'geofold.f90 v.  Wed Sep 30 12:00:57 EDT 2009'
+  	IF ( proc_id == 0 ) THEN
+        write(*,*) "Usage: xgeofold <input PDB> <output DAG> <parameter file>"
+        ! write(*,*) "Usage: xgeofold <inputpdb> <mas file> <hbond file> <outputdag> [<minhinge> <minpivot> <minbreak>]" ! write usage line
+        write(*,*) "<inputpdb> Pre-processed input coordinates in PDB format (xGetChain), including Void atoms(Voidmask)."
+        write(*,*) "<outputdag> Output directed acyclic graph, for input to xUnfoldSim"
+        write(*,*) "<parameter file> Keyworded file containing the following keywords (others keywords ignored)"
+        write(*,*) "  CONTACTS <filename> -- Buried surface areas from Masker program ContactMask.f90"
+        write(*,*) "  HBONDS <Hbond file> H-bond file from the utility pdb2hb.f90"
+        write(*,*) "  HINGECUT <hcutoff> Minimum possible hinge rotation as a fraction of", 2*MAXHINGEANG, &
+                    "   degrees. default=",hcutoff," [optional]"
+        write(*,*) "  PIVOTCUT <pcutoff> Minimum number of possible pivot axes as a fraction of", NVB,&
+                    "   default=",pcutoff," [optional]"
+        write(*,*) "  BREAKCUT <bcutoff> Minimum number of possible translation vectors as a fraction of", NVB,&
+                    " default=",bcutoff," [optional]"
+        write(*,*) "  SEAMCUT <scutoff> Minimum number of possible translation vectors as a fraction of", NVB,&
+                    " default=",scutoff," [optional]"
+        write(*,*) "  MAXSPLIT <n> n={2,4,6,8} is the maximum number of children for each parent."
+        write(*,*) "  default=",maxsplit
+        write(*,*) "  MINSEG <n> n={2..20} is the Minimum size of a terminal fragment to unfold."
+        write(*,*) "  default=",pivottail
+        stop 'geofold.f90 v.  Wed Sep 30 12:00:57 EDT 2009'
+    END IF
   END IF
   call getarg(1, filename) ! get the name of input pdb from command line
   call getarg(2, dagfile) ! get the name of output file
   call getarg(3, parfile) ! get the name of parameters file
   !!=============== READ PARAMETERS FILE ================
   dunit = pickunit(20)
-  open(dunit,file=parfile,status='old',form='formatted',iostat=ios)
-  if (ios/=0) stop 'geofold.f90:: parameters file not found.'
-!  write(0,*) 'Reading parameters'
-  call geofold_readparameter(dunit,"HINGECUT",hcutoff,low=0.0,high=1.0,default=hcutoff)
-  call geofold_readparameter(dunit,"PIVOTCUT",pcutoff,low=0.0,high=1.0,default=pcutoff)
-  call geofold_readparameter(dunit,"BREAKCUT",bcutoff,low=0.0,high=1.0,default=bcutoff)
-  call geofold_readparameter(dunit,"CONTACTS",cmfile,required=1)
-  call geofold_readparameter(dunit,"HBONDS",hbfile,required=1)
-  call geofold_readparameter(dunit,"SEAMS",seamfile,required=1)
-  call geofold_readparameter(dunit,"MINSEG",pivottail,default=pivottail)
-  call geofold_readparameter(dunit,"VERBOSE",verbose,default=.false.)
-  call geofold_readparameter(dunit,"MAXSPLIT",maxsplit,default=maxsplit)
-  call geofold_readparameter(dunit,"HBONDENERGY",geofold_hbonds_eperbond,low=0.00,default=100.)
-  call geofold_readparameter(dunit,"OMEGA",geofold_masker_omega,low=0.00,default=1.)
-  call geofold_readparameter(dunit,"SIDECHAINENTROPY",geofold_masker_lambdaweight,low=0.00,default=1.)
-  call geofold_readparameter(dunit,"VOIDENTROPY",geofold_masker_spervoid,low=0.0,default=0.0)
-  call geofold_readparameter(dunit,"FLORY",flory,default=0)
-  call geofold_readparameter(dunit,"FLORYW",w,default=1.)
-  call geofold_readparameter(dunit,"TEMPERATURE",T,default=300.)
-  call geofold_readparameter(dunit,"SEAMCUT",scutoff,low=0.0,high=1.0,default=scutoff)
-  call geofold_readparameter(dunit,"ALLSEAMS",all_seams,default=.true.)
-  close(dunit)
-!  write(0,*) 'Read parameters'
-  !------------------------------ READ INPUT PDB and other FILEs ---------
-  dunit = pickunit(10)
-  open(dunit, file=filename, form="formatted", status="old", iostat=ierr)
-  IF (ierr > 0 ) STOP "geofold:: Error! File not found!"
-  !write(0,*) 'geofold_readpdb'
-  call geofold_readpdb(dunit)
-  !write(0,*) 'geofold_masker_readvoids'
-  call geofold_masker_readvoids(dunit)   !! read from same PDB file
-  close(dunit)
-  !write(0,*) 'geofold_masker_read'
-  call geofold_masker_read(cmfile)
-  write(0,'("hbfile: ",a)') hbfile
-!  write(0,*) "TESTING............."
-  !write(0,*) 'geofold_hbonds_read'
-  call geofold_hbonds_read(hbfile)
-  !write(0,*) 'geofold_seams_read'
-  call geofold_seams_read(seamfile)
-  !------------------------------ INITIALIZE   ----------------
-  nres = geofold_nres 
-  Native%iflag = masterchains  
-  Native%idnum = 1
-  Native%state = 1 
-  Native%axis = 0  
-  Native%barrel = 0
-  NULLIFY(Native%next)
-  gptr => Native
-  nullify(ilistroot)
-  !write(0,*) 'initpivot'
-  CALL geofold_initpivot(allcoords,nres,chainid=masterchains)
-  !write(0,*) 'geofold_masker_setvoids()'
-  CALL geofold_masker_setvoids()
-  !write(0,*) 'geofold_flory_all_contacts'
-  call geofold_flory_all_contacts(hbfile,cmfile,contacts,geofold_nres)
-  !------------------------------ WORK   ----------------
-  !write(0,*) 'getcutpoints'
-  call getcutpoints(gptr,contacts,flory,T)
-  !------------------------------ FINISH UP   ----------------
-  !write(0,*) 'dag_write'
-  call dag_write(dagfile,ounit=dunit) 
-!  write(0,*) 'geofold_seams_write'
-  call geofold_seams_write(ounit=dunit)
-  close(dunit)
-!  write(0,*) 'cleanuplists'
-  call cleanuplists()
-!  close(45)
+  ! MPI I/O added by San
+ 
+  IF ( proc_id == 0 ) THEN
+	  !call MPI_BARRIER(MPI_COMM_WORLD, mpierr)
+	  !call MPI_FILE_OPEN(MPI_COMM_WORLD, parfile, MPI_MODE_RDONLY, MPI_INFO_NULL, dunit, mpierr)
+	  open(dunit, file=parfile, status='old', form='formatted', iostat=ios)
+	  IF (ios/=0) STOP 'geofold.f90:: parameters file not found.'
+	!  write(0,*) 'Reading parameters'
+	  call geofold_readparameter(dunit,"HINGECUT",hcutoff,low=0.0,high=1.0,default=hcutoff)
+	  call geofold_readparameter(dunit,"PIVOTCUT",pcutoff,low=0.0,high=1.0,default=pcutoff)
+	  call geofold_readparameter(dunit,"BREAKCUT",bcutoff,low=0.0,high=1.0,default=bcutoff)
+	  call geofold_readparameter(dunit,"CONTACTS",cmfile,required=1)
+	  call geofold_readparameter(dunit,"HBONDS",hbfile,required=1)
+	  call geofold_readparameter(dunit,"SEAMS",seamfile,required=1)
+	  call geofold_readparameter(dunit,"MINSEG",pivottail,default=pivottail)
+	  call geofold_readparameter(dunit,"VERBOSE",verbose,default=.false.)
+	  call geofold_readparameter(dunit,"MAXSPLIT",maxsplit,default=maxsplit)
+	  call geofold_readparameter(dunit,"HBONDENERGY",geofold_hbonds_eperbond,low=0.00,default=100.)
+	  call geofold_readparameter(dunit,"OMEGA",geofold_masker_omega,low=0.00,default=1.)
+	  call geofold_readparameter(dunit,"SIDECHAINENTROPY",geofold_masker_lambdaweight,low=0.00,default=1.)
+	  call geofold_readparameter(dunit,"VOIDENTROPY",geofold_masker_spervoid,low=0.0,default=0.0)
+	  call geofold_readparameter(dunit,"FLORY",flory,default=0)
+	  call geofold_readparameter(dunit,"FLORYW",w,default=1.)
+	  call geofold_readparameter(dunit,"TEMPERATURE",T,default=300.)
+	  call geofold_readparameter(dunit,"SEAMCUT",scutoff,low=0.0,high=1.0,default=scutoff)
+	  call geofold_readparameter(dunit,"ALLSEAMS",all_seams,default=.true.)
+	  !call MPI_FILE_CLOSE(dunit, mpierr)
+	  close(dunit)
+	!  write(0,*) 'Read parameters'
+	  !------------------------------ READ INPUT PDB and other FILEs ---------
+	  dunit = pickunit(10)
+	  ! MPI I/O added by San
+	  !call MPI_BARRIER(MPI_COMM_WORLD, mpierr)
+	  !call MPI_FILE_OPEN(MPI_COMM_WORLD, filename, MPI_MODE_RDONLY, MPI_INFO_NULL, dunit, mpierr)
+	  open(dunit, file=filename, form="formatted", status="old", iostat=ierr)
+	  IF (ierr > 0 ) STOP "geofold:: Error! File not found!"
+	  !write(0,*) 'geofold_readpdb'
+	  call geofold_readpdb(dunit)
+	  !write(0,*) 'geofold_masker_readvoids'
+	  call geofold_masker_readvoids(dunit)   !! read from same PDB file
+	  !call MPI_FILE_CLOSE(dunit, mpierr)
+	  close(dunit)
+	  !write(0,*) 'geofold_masker_read'
+	  call geofold_masker_read(cmfile)
+	  write(0,'("hbfile: ",a)') hbfile
+
+	!  write(0,*) "TESTING............."
+	  !write(0,*) 'geofold_hbonds_read'
+	  call geofold_hbonds_read(hbfile)
+	  !write(0,*) 'geofold_seams_read'
+	  call geofold_seams_read(seamfile)
+	  !------------------------------ INITIALIZE   ----------------
+	  nres = geofold_nres 
+	  Native%iflag = masterchains  
+	  Native%idnum = 1
+	  Native%state = 1 
+	  Native%axis = 0  
+	  Native%barrel = 0
+	  NULLIFY(Native%next)
+	  gptr => Native
+	  nullify(ilistroot)
+	  !write(0,*) 'initpivot'
+  
+    CALL geofold_initpivot(allcoords,nres,chainid=masterchains)
+    !write(0,*) 'geofold_masker_setvoids()'
+    CALL geofold_masker_setvoids()
+    !write(0,*) 'geofold_flory_all_contacts'
+    call geofold_flory_all_contacts(hbfile,cmfile,contacts,geofold_nres)
+    !------------------------------ WORK   ----------------
+    !write(0,*) 'getcutpoints'
+    !timer_write added by SAN
+    timerfile = "/home/cynthia/Local/GeoFold/tmp/timer.txt"
+    msg = "time used by RECURSIVE SUBROUTINE getcutpoints"
+    start_timer = omp_get_wtime()
+    call getcutpoints(gptr,contacts,flory,T)
+    end_timer = omp_get_wtime()
+    timer = end_timer-start_timer
+  
+    call timer_write(timerfile, msg, timer)
+    !------------------------------ FINISH UP   ----------------
+    !write(0,*) 'dag_write'
+    call dag_write(dagfile,ounit=dunit) 
+    !  write(0,*) 'geofold_seams_write'
+    call geofold_seams_write(ounit=dunit)
+    close(dunit)
+    !  write(0,*) 'cleanuplists'
+    call cleanuplists()
+    !  close(45)
+  END IF
+  call MPI_FINALIZE(mpierr)
 CONTAINS
 
 !!====================================================================================
@@ -256,20 +297,27 @@ RECURSIVE SUBROUTINE getcutpoints( f ,contacts,flory,T)
 !  write(0,*) 'getbreaks'
   call getbreaks(f,allu1,allentropy,nbreak,contacts,flory)
   if (verbose.and.nbreak > 0) write(*,*) '============>>> found ',nbreak,' BREAKs'
+
   breakloop: DO ibreak=1,nbreak
      entropy = allentropy(ibreak)
      u1%iflag = allu1(ibreak)%iflag
      f%axis = allu1(ibreak)%axis
 !     write(0,*) 'calling getcutpoints from break u1'
+
      CALL getcutpoints(u1,contacts,flory,T)   !!  recusrively find cutpoints
+     
      u2%iflag = f%iflag
      where (u1%iflag/='.') u2%iflag = '.'
 !     write(0,*) 'calling getcutpoints from break u2'
+
      CALL getcutpoints(u2,contacts,flory,T)
+
      cuttype = breakflag
 !     write(0,*) 'calling savetstate from break'
+
      CALL savetstate(f,u1,u2=u2,t=cuttype, ent=entropy)
   enddo breakloop
+
   if (nbreak > 0) return
   !!------------- PIVOTS ----------------
 !  write(0,*) 'getpivots'
@@ -1095,6 +1143,18 @@ SUBROUTINE cleanuplists()
 END SUBROUTINE cleanuplists
 
 !!====================================================================================
+
+!!Timer added by SAN
+SUBROUTINE timer_write(ofile, msg, timer)
+  implicit none
+  CHARACTER(len=*) :: ofile, msg 
+  DOUBLE PRECISION :: timer 
+  integer :: out_unit = 8 
+  open (unit = out_unit, file = ofile, action = "write", status = "replace")
+  write (out_unit, '(A, d15.7)') msg, timer
+  close (out_unit)
+END SUBROUTINE timer_write
+
 
 SUBROUTINE dag_write(ofile,ounit)
   implicit none

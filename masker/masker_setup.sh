@@ -1,5 +1,5 @@
-export MASKERDIR=/bach1/home/walcob/geofold/masker
-export DESIGN_HOME=/bach1/home/walcob/geofold/masker
+export MASKERDIR=/home/cynthia/Local/GeoFold/masker
+export DESIGN_HOME=/home/cynthia/Local/GeoFold/masker
 export MSIZE=512
 export DTHETA=9.0
 export MASKLIB=$MASKERDIR/$MSIZE.mask

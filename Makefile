@@ -42,6 +42,7 @@
 CONVERT  = /usr/bin/convert
 
 # The compiler
+MPIFF = mpif90 -g -fno-range-check
 FF = gfortran -g -fno-range-check
 #FF = gfortran -O3
 FFdebug = gfortran -g -fbacktrace
@@ -74,7 +75,9 @@ debug : geofold_pivots.f90 geofold_global.f90 geofold.f90 vectormath.f90 geofold
 	$(FFdebug)  -c geofold_hbonds.f90
 	$(FFdebug)  -c geofold_masker.f90
 	$(FFdebug)  -c geofold_pivots.f90
-	$(FFdebug)  -o xgeofold  geofold.f90 geofold_pivots.o geofold_global.o geofold_hbonds.o geofold_masker.o vectormath.o
+#	$(FFdebug)  -o xgeofold  geofold.f90 geofold_pivots.o geofold_global.o geofold_hbonds.o geofold_masker.o vectormath.o
+#       updated by SAN for openmp
+	$(FFdebug)  -fopenmp -o xgeofold  geofold.f90 geofold_pivots.o geofold_global.o geofold_hbonds.o geofold_masker.o vectormath.o
 
 xgeofold_split2 : geofold_pivots.o
 	sed -e "s/MAXSPLIT=.*/MAXSPLIT=2/" geofold_global.f90 > geofold_global.f90.2
@@ -161,7 +164,7 @@ masker/xcontactmask : masker/masker.o
 	cd masker; make xcontactmask; cd ../
 
 unfoldsim.o : unfoldsim.f90
-	$(FF)  -fno-range-check -c unfoldsim.f90
+	$(MPIFF)  -fno-range-check -c unfoldsim.f90
 
 pdb2hb.o : pdb2hb.f90
 	$(FF) -c pdb2hb.f90
@@ -194,7 +197,8 @@ geofold_flory.o : geofold_flory.f90 geofold_global.o
 	$(FF) -c geofold_flory.f90
 
 xgeofold : geofold.f90 geofold_global.o geofold_flory.o geofold_pivots.o geofold_hbonds.o geofold_seams.o geofold_masker.o vectormath.o vb.incl
-	$(FF) -o xgeofold geofold.f90 geofold_global.o geofold_flory.o geofold_pivots.o geofold_hbonds.o geofold_masker.o vectormath.o \
+#	openmp and mpi added by SAN
+	$(MPIFF) -fopenmp -o xgeofold geofold.f90 geofold_global.o geofold_flory.o geofold_pivots.o geofold_hbonds.o geofold_masker.o vectormath.o \
 	      geofold_seams.o
 
 xsplitseams: splitseams.o geofold_masker.o geofold_hbonds.o geofold_global.o geofold_pivots.o geofold_seams.o vectormath.o
