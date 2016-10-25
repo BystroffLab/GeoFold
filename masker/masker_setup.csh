@@ -1,5 +1,5 @@
- setenv MASKERDIR /home/cynthia/Local/GeoFold/masker
- setenv DESIGN_HOME /home/cynthia/Local/GeoFold/masker
+ setenv MASKERDIR /bach1/home/walcob/geofold/masker
+ setenv DESIGN_HOME /bach1/home/walcob/geofold/masker
  setenv MSIZE   512
  setenv DTHETA  9.0 
  setenv MASKLIB      $MASKERDIR/$MSIZE.mask

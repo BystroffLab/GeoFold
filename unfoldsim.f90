@@ -126,8 +126,6 @@ program unfoldsim
       intermediate, MAXBARREL
   use geofold_seams, only : geofold_seams_read
   use geofold_pivots, only : geofold_pivots_queryinseam
-  ! mpi added by San 
-  use mpi
   implicit none
   real(8),parameter    :: nuk=1000000
   real(8),parameter    :: Rvalue = 8.314  !! J/mol/K

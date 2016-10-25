@@ -644,25 +644,7 @@ conf = "default.conf"
 # thisDir is the directory where you are running this script.
 if len(sys.argv) == 3:
   conf = sys.argv[2]
-#added by SAN
-if conf == 'public':
-    #B. Walcott publicly accessible results
-    thisDir   = os.getcwd()
-    baseDir   = thisDir
-    print thisDir
-    gDir      = baseDir
-    bDir      = baseDir
-    maskerDir = gDir+'/masker'
-    pdbDir    = gDir+'/pdbs'
-    tmpDir    = baseDir+"/tmp"
-    logDir    = baseDir+"/log"
-    htmlDir   = baseDir+"/html"
-    jobDir    = baseDir+"/job"
-    paramTemplate=gDir+'/parameters'
-    #baseURL='http://www.bioinfo.rpi.edu/bystrc/geofold'
-    outputURL='output'
 
-'''
 configuration = readConf(conf)
 thisDir = os.getcwd()
 baseDir = configuration['baseDir']
@@ -680,7 +662,6 @@ outputURL = configuration['outputURL']
 dot = configuration['dot']
 convert = configuration['convert']
 gnuplot = configuration['gnuplot']
-'''
 
 '''
 #Directory settings for server
@@ -876,8 +857,7 @@ else:
   ###PROGRAMS####
   maxTraffic= gDir+"/maxTraffic"
   mtCut= 0.1
-  # removed convert comment by SAN
-  convert = "/usr/bin/convert"
+  #convert = "/usr/bin/convert"
   #dot = "/usr/bin/dot"
 
   try:
@@ -1214,7 +1194,7 @@ else:
     writeTime = "Time before running GEOFOLD "+time.strftime("%c")+'<br>'
     tmpWrite.write(writeTime)
     writeOut(writeTime)
-    geofold = "mpirun -np 4 %s/xgeofold %s/%s.void.pdb %s/%s.dag %s > %s/%s.dag.log" %(gDir,tmpDir,LName,tmpDir,LName,paramFilename,tmpDir,LName)
+    geofold = "%s/xgeofold %s/%s.void.pdb %s/%s.dag %s > %s/%s.dag.log" %(gDir,tmpDir,LName,tmpDir,LName,paramFilename,tmpDir,LName)
     runProgram(geofold)
     writeTime = "Time after running GEOFOLD "+time.strftime("%c")+'<br>'
     tmpWrite.write(writeTime)
@@ -1272,7 +1252,7 @@ else:
         writeTime = "Time before running UNFOLDSIM "+time.strftime("%c") +'<br>'
         tmpWrite.write(writeTime)
         writeOut(writeTime)
-        unfoldsim = "mpirun -np 1 %s/xunfoldsim %s/%s_%s.dag %s.1 > %s" %(gDir,tmpDir,LName,nn,paramFilename,logFile)
+        unfoldsim = "%s/xunfoldsim %s/%s_%s.dag %s.1 > %s" %(gDir,tmpDir,LName,nn,paramFilename,logFile)
         tmpWrite.write(unfoldsim+'<br>')
         runProgram(unfoldsim)
         writeTime = "Time after running UNFOLDSIM "+time.strftime("%c")+'<br>'
