@@ -1,9 +1,9 @@
 module geofold_eco
     use geofold_global
-    ! private
-    public !for testing purposes
+    private
 
-    public :: geofold_eco_AvgECO, getECO !getECO only public for testing purposes
+    public :: geofold_eco_AvgECO
+    public :: test_printArray, test_isCovalent, test_addValue, test_inArray !comment out for production
 
     type :: contact
         integer :: cost = 9999
@@ -380,5 +380,7 @@ contains
         call getbroken(f,u1,contacts,broken,nres,subcontacts)
         avgECO = getAvgECO(contacts,broken,nres)
     end function geofold_eco_AvgECO
+
+    include 'test_ECO_incl.f90'  !comment out for production
 
 end module geofold_eco
