@@ -1,9 +1,15 @@
 module geofold_eco
     use geofold_global
+    ! Only for debugging / testing
+    use vectormath
+    use geofold_seams
+    use geofold_pivots
+    use geofold_hbonds
+    ! Only for debugging / testing
     private
 
     public :: geofold_eco_AvgECO
-    public :: test_printArray, test_isCovalent, test_addValue, test_inArray !comment out for production
+    public :: test_printArray, test_isCovalent, test_addValue, test_inArray,test_getcontacts, test_getsubcontacts, test_getbroken !comment out for production
 
     type :: contact
         integer :: cost = 9999
@@ -12,90 +18,98 @@ module geofold_eco
 
 contains
 
-    subroutine getbroken(f,u1,contacts,broken,nres,subcontacts)
+    subroutine getbroken(f,u1,u2,transition,contacts,broken,subcontacts)
         implicit none
         type(contact),dimension(:),allocatable,intent(in) :: contacts
         type(contact),dimension(:),allocatable,intent(out) :: broken,subcontacts
-        type(intermediate),pointer,intent(in) :: f,u1
-        integer,intent(in) :: nres
+        type(intermediate),pointer,intent(in) :: f,u1,u2
+        type(tstate),pointer,intent(in) :: transition
         integer :: i,j,seam,k
         character,dimension(maxres) :: u1flag,u2flag
 
         if(.not. allocated(barrels_array)) stop 'geofold_eco::getbroken: Error, &
         barrels_array not allocated'
-        call getsubcontacts(contacts,subcontacts,f,nres)
-        !determine which seam is broken
-        do i = 1,maxbarrel
-            if(u1%barrel(i) == 0) cycle
-            seam = u1%barrel(i)
-            exit
-        enddo
-        !set u1flag and u2flag
-        u1flag = barrels_array(i)%seams(seam)%u1flag
-        u2flag = barrels_array(i)%seams(seam)%u2flag
+        call getsubcontacts(contacts,subcontacts,f)
+
+        if(transition%tp == 4) then
+            !determine which seam is broken
+            ! do i = 1,maxbarrel
+            !     if(u1%barrel(i) == 0) cycle
+            !     if(f%barrel(i) /= 0) cycle !If there are multiple seams broken, only take the new one
+            !     seam = u1%barrel(i)
+            !     exit
+            ! enddo
+            seam = transition%seam
+            !set u1flag and u2flag
+            u1flag = barrels_array(i)%seams(seam)%u1flag
+            u2flag = barrels_array(i)%seams(seam)%u2flag
+        else
+            u1flag = u1%iflag
+            u2flag = u2%iflag
+        endif
         !initializations
         if(allocated(broken)) deallocate(broken)
-        allocate(broken(nres))
-        do i = 1,nres
-            allocate(broken(i)%neighbors(nres))
+        allocate(broken(geofold_nres))
+        do i = 1,geofold_nres
+            allocate(broken(i)%neighbors(geofold_nres))
             broken(i)%neighbors = 0
         enddo
         !iterate through f and find the contacts it contains
-        do i = 1,nres
+        do i = 1,geofold_nres
             !check if contact exists in f
-            do j = 1,nres
+            do j = 1,geofold_nres
                 if(subcontacts(i)%neighbors(j) == 0) exit
                 k = subcontacts(i)%neighbors(j)
                 if(u1flag(i) /= '.') then
                     if(u1flag(k) /= '.') cycle
-                    if(.not. inArray(k,broken(i)%neighbors,nres)) then
+                    if(.not. inArray(k,broken(i)%neighbors,geofold_nres)) then
                         if(k /= i-1 .and. k /= i+1)&
-                            call addValue(k,broken(i)%neighbors,nres)
+                            call addValue(k,broken(i)%neighbors,geofold_nres)
                     endif
-                    if(.not. inArray(i,broken(k)%neighbors,nres)) then
+                    if(.not. inArray(i,broken(k)%neighbors,geofold_nres)) then
                         if(k /= i-1 .and. k /= i+1)&
-                            call addValue(i,broken(k)%neighbors,nres)
+                            call addValue(i,broken(k)%neighbors,geofold_nres)
                     endif
                 else if(u2flag(i) /= '.') then
                     if(u2flag(k) /= '.') cycle
-                    if(.not. inArray(k,broken(i)%neighbors,nres)) then
+                    if(.not. inArray(k,broken(i)%neighbors,geofold_nres)) then
                         if(k /= i-1 .and. k /= i+1)&
-                            call addValue(k,broken(i)%neighbors,nres)
+                            call addValue(k,broken(i)%neighbors,geofold_nres)
                     endif
-                    if(.not. inArray(i,broken(k)%neighbors,nres)) then
+                    if(.not. inArray(i,broken(k)%neighbors,geofold_nres)) then
                         if(k /= i-1 .and. k /= i+1)&
-                            call addValue(i,broken(k)%neighbors,nres)
+                            call addValue(i,broken(k)%neighbors,geofold_nres)
                     endif
                 endif
             enddo
         enddo
     end subroutine getbroken
 
-    subroutine getsubcontacts(contacts,subcontacts,f,nres)
+    !works
+    subroutine getsubcontacts(contacts,subcontacts,f)
         implicit none
-        integer,intent(in) :: nres
         integer :: i,j,k
         type(contact),dimension(:),allocatable,intent(in) :: contacts
         type(contact),dimension(:),allocatable,intent(out) :: subcontacts
         type(intermediate),pointer,intent(in) :: f
 
         if(.not. allocated(subcontacts)) then
-            allocate(subcontacts(nres))
-            do i = 1,nres
-                allocate(subcontacts(i)%neighbors(nres))
+            allocate(subcontacts(geofold_nres))
+            do i = 1,geofold_nres
+                allocate(subcontacts(i)%neighbors(geofold_nres))
                 subcontacts(i)%neighbors = 0
             enddo
         endif
-        do i = 1,nres
+        do i = 1,geofold_nres
             if(f%iflag(i) == '.') cycle
-            do j = 1, nres
+            do j = 1, geofold_nres
                 if(contacts(i)%neighbors(j) == 0) exit
                 k = contacts(i)%neighbors(j)
                 if(f%iflag(k) == '.') cycle
-                if(.not. inArray(k,subcontacts(i)%neighbors,nres))&
-                    call addValue(k,subcontacts(i)%neighbors,nres)
-                if(.not. inArray(i,subcontacts(k)%neighbors,nres))&
-                    call addValue(i,subcontacts(k)%neighbors,nres)
+                if(.not. inArray(k,subcontacts(i)%neighbors,geofold_nres))&
+                    call addValue(k,subcontacts(i)%neighbors,geofold_nres)
+                if(.not. inArray(i,subcontacts(k)%neighbors,geofold_nres))&
+                    call addValue(i,subcontacts(k)%neighbors,geofold_nres)
                 k = 0
             enddo
         enddo
@@ -115,59 +129,49 @@ contains
         enddo
     end subroutine addValue
 
-    subroutine getcontacts(mfile,cijfile,contacts,nres)
+    !works
+    subroutine getcontacts(cijfile,contacts)
         implicit none
         type(contact),dimension(:),allocatable,intent(out) :: contacts
-        character (len=*),intent(in) :: mfile,cijfile
-        integer :: res1,res2,ierr,dunit,nres,i,j
+        character (len=*),intent(in) :: cijfile
+        integer :: res1,res2,ierr,dunit,i,j
         real :: tmp
         character (len=3) :: datom, aatom
         character (len=1) :: bond
         character (len=200) :: aline
 
-        !determine nres
-        !open mfile (hbonds file)
-        open(newunit=dunit,file=mfile,iostat=ierr,status='old',form='formatted')
-        if(ierr /= 0) stop "geofold_eco::getcontacts: Error opening hbonds file"
-        !find line 8
-        do i = 1,8
-            read(dunit,'(a)') aline
-        enddo
-        !read aline(2:10) as (i9) into nres
-        read(aline(2:10),'(i9)',iostat=ierr) nres
-        if(ierr /= 0) stop 'geofold_eco_getcontacts: Error reading nres'
-        !allocate nres contacts in contacts and allocate nres contacts in each
-        !contacts array
         if(allocated(contacts)) deallocate(contacts)
-        allocate(contacts(nres))
-        do i = 1,nres
-            allocate(contacts(i)%neighbors(nres))
+        allocate(contacts(geofold_nres))
+        do i = 1,geofold_nres
+            allocate(contacts(i)%neighbors(geofold_nres))
             contacts(i)%neighbors = 0
-            !add previous and last i to the contacts array for each entry
-            if(i > 1)  call addValue(i-1,contacts(i)%neighbors,nres)
-            if(i < nres) call addValue(i+1,contacts(i)%neighbors,nres)
         enddo
-        !rewind mfile
-        rewind(dunit)
-        !read through mfile
-        do
-            read(dunit,'(a)',iostat=ierr) aline
-            if(ierr /= 0) exit
-            !ignore comment lines
-            if(aline(1:1) == '!') cycle
-            !ignore empy lines
-            if(trim(aline) == '') cycle
-            !read in res1 datom res2 aatom bond
-            read(aline,*) res1,datom,res2,aatom,bond
-            !add res2 node to res1 contacts
-            if(.not. inArray(res2,contacts(res1)%neighbors,nres))&
-                call addValue(res2,contacts(res1)%neighbors,nres)
+
+        !read through geofold_hb
+        do i = 1, size(geofold_hb,2)
+            res1 = geofold_hb(1,i)
+            res2 = geofold_hb(2,i)
+            if(.not. inArray(res2,contacts(res1)%neighbors,geofold_nres))&
+                call addValue(res2,contacts(res1)%neighbors,geofold_nres)
             !add res1 node to res2 contacts
-            if(.not. inArray(res1,contacts(res2)%neighbors,nres))&
-                call addValue(res1,contacts(res2)%neighbors,nres)
+            if(.not. inArray(res1,contacts(res2)%neighbors,geofold_nres))&
+                call addValue(res1,contacts(res2)%neighbors,geofold_nres)
         enddo
-        !close(mfile)
-        close(dunit)
+
+        !read through geofold_ss
+        do i = 1, geofold_nres
+            if(geofold_ss(i) /= 0) then
+                res1 = i
+                res2 = geofold_ss(res1)
+                if(.not. inArray(res2,contacts(res1)%neighbors,geofold_nres))&
+                    call addValue(res2,contacts(res1)%neighbors,geofold_nres)
+                !add res1 node to res2 contacts
+                if(.not. inArray(res1,contacts(res2)%neighbors,geofold_nres))&
+                    call addValue(res1,contacts(res2)%neighbors,geofold_nres)
+            endif
+        enddo
+
+
         !open cijfile
         open(newunit=dunit,file=cijfile,iostat=ierr,status='old',form='formatted')
         if(ierr /= 0) stop 'geofold_eco::getcontacts: Error opeing cij file.'
@@ -182,11 +186,11 @@ contains
             !read in res1 res2
             read(aline,'(2i6)') res1,res2
             !add res2 to res1 contacts
-            if(.not. inArray(res2,contacts(res1)%neighbors,nres))&
-                call addValue(res2,contacts(res1)%neighbors,nres)
+            if(.not. inArray(res2,contacts(res1)%neighbors,geofold_nres))&
+                call addValue(res2,contacts(res1)%neighbors,geofold_nres)
             !add res1 to res2 contacts
-            if(.not. inArray(res1,contacts(res2)%neighbors,nres))&
-                call addValue(res1,contacts(res2)%neighbors,nres)
+            if(.not. inArray(res1,contacts(res2)%neighbors,geofold_nres))&
+                call addValue(res1,contacts(res2)%neighbors,geofold_nres)
         enddo
         !close(cijfile)
         close(dunit)
@@ -290,11 +294,14 @@ contains
     end function getECO
 
     !works
-    logical function isCovalent(a,b)
+    logical function isCovalent(a,b,Niflag)
         implicit none
         integer, intent(in) :: a,b
+        character, dimension(maxres), intent(in) :: Niflag !Native iflag
 
-        if(abs(a-b) == 1 .or. geofold_ss(a) == b) then
+        if(geofold_ss(a) == b) then
+            isCovalent = .true.
+        else if(abs(a-b) == 1 .and. Niflag(a)==Niflag(b)) then
             isCovalent = .true.
         else
             isCovalent = .false.
@@ -369,15 +376,16 @@ contains
         avgECO = real(sumECO)/real(count)
     end function getAvgECO
 
-    real function geofold_eco_AvgECO(mfile,cijfile,f,u1,nres) result(avgECO)
+    real function geofold_eco_AvgECO(mfile,cijfile,f,u1,u2,transition,nres) result(avgECO)
         implicit none
         type(contact),dimension(:),allocatable :: contacts,broken,subcontacts
         integer,intent(in) :: nres
         character (len=*),intent(in) :: mfile,cijfile
-        type(intermediate),pointer,intent(in) :: f,u1
+        type(intermediate),pointer,intent(in) :: f,u1,u2
+        type(tstate),pointer,intent(in) :: transition
 
-        call getcontacts(mfile,cijfile,contacts,nres)
-        call getbroken(f,u1,contacts,broken,nres,subcontacts)
+        call getcontacts(cijfile,contacts)
+        call getbroken(f,u1,u2,transition,contacts,broken,subcontacts)
         avgECO = getAvgECO(contacts,broken,nres)
     end function geofold_eco_AvgECO
 

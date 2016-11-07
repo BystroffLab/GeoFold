@@ -2,16 +2,16 @@
 !or check subroutine?
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-! FORTRAN90 Geofold 
+! FORTRAN90 Geofold
 ! by Chris Bystroff, Suzanne Matthews, Luis Garreta
-! Latest version: 
+! Latest version:
 !  Tue Jul  1 15:02:32 EDT 2014
 !--------------
-! Based on GEOFOLD by Saeed Salem, 
+! Based on GEOFOLD by Saeed Salem,
 ! Vibin Ramakrishnan, Chris Bystroff and Mohammed Zaki
 ! 2007
 !-------------
-! Based on UNFOLD, by Mohammed Zaki, Vinay Nadimpaly, 
+! Based on UNFOLD, by Mohammed Zaki, Vinay Nadimpaly,
 ! Deb Bardham, and Chris Bystroff
 ! 2005
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -21,7 +21,7 @@
 !!
 !!  8-NOV-2008  Read and save H-bond donor acceptor list
 !!              Modified to keep more strict '_'-based object naming.
-!!  
+!!
 !!  Wed Mar 25 17:04:12 EDT 2009 Calculate masker energy as a
 !!              sorting element for selecting pivots, hinges, breaks,
 !!              after passing the entropy cutoff.  C.B.
@@ -41,18 +41,18 @@ PROGRAM geofold
   USE geofold_masker    !! geofold_global.f90
   USE geofold_hbonds    !! geofold_global.f90
   USE geofold_seams     !! geofold_seams.f90
-  USE geofold_flory     !! geofold_flory.f90
+  ! USE geofold_flory     !! geofold_flory.f90
 
   implicit none
   INTEGER :: nres, ierr !number of residues
-  CHARACTER, dimension(:), allocatable:: chainid !gets passed in 
+  CHARACTER, dimension(:), allocatable:: chainid !gets passed in
   CHARACTER(len=200) :: aline
   ! CHARACTER :: chainID
   INTEGER :: ires, i, j, jarg, ios, ivoid,dunit,flory
-  CHARACTER(len=1000) :: filename=" ",dagfile=" ",parfile=" ",cmfile=" ",hbfile=" ",seamfile=" "
+  CHARACTER(len=1000) :: filename=" ",dagfile=" ",parfile=" ",cmfile=" ",hbfile=" ",seamfile=" ",cijfile=""
   type(intermediate), POINTER :: gptr          ! points to the global intermediate
   type(intermediate), TARGET :: Native
-  type(contact),dimension(:),allocatable :: contacts
+  ! type(contact),dimension(:),allocatable :: contacts
   real :: w,T
   logical :: all_seams = .true.
   ! character(len=3) :: aa
@@ -86,8 +86,8 @@ PROGRAM geofold
   call getarg(2, dagfile) ! get the name of output file
   call getarg(3, parfile) ! get the name of parameters file
   !!=============== READ PARAMETERS FILE ================
-  dunit = pickunit(20)
-  open(dunit,file=parfile,status='old',form='formatted',iostat=ios)
+  !dunit = pickunit(20)
+  open(newunit=dunit,file=parfile,status='old',form='formatted',iostat=ios)
   if (ios/=0) stop 'geofold.f90:: parameters file not found.'
 !  write(0,*) 'Reading parameters'
   call geofold_readparameter(dunit,"HINGECUT",hcutoff,low=0.0,high=1.0,default=hcutoff)
@@ -108,6 +108,7 @@ PROGRAM geofold
   call geofold_readparameter(dunit,"TEMPERATURE",T,default=300.)
   call geofold_readparameter(dunit,"SEAMCUT",scutoff,low=0.0,high=1.0,default=scutoff)
   call geofold_readparameter(dunit,"ALLSEAMS",all_seams,default=.true.)
+  call geofold_readparameter(dunit,"CIJFILE",cijfile,required=1)
   close(dunit)
 !  write(0,*) 'Read parameters'
   !------------------------------ READ INPUT PDB and other FILEs ---------
@@ -128,11 +129,11 @@ PROGRAM geofold
   !write(0,*) 'geofold_seams_read'
   call geofold_seams_read(seamfile)
   !------------------------------ INITIALIZE   ----------------
-  nres = geofold_nres 
-  Native%iflag = masterchains  
+  nres = geofold_nres
+  Native%iflag = masterchains
   Native%idnum = 1
-  Native%state = 1 
-  Native%axis = 0  
+  Native%state = 1
+  Native%axis = 0
   Native%barrel = 0
   NULLIFY(Native%next)
   gptr => Native
@@ -142,13 +143,13 @@ PROGRAM geofold
   !write(0,*) 'geofold_masker_setvoids()'
   CALL geofold_masker_setvoids()
   !write(0,*) 'geofold_flory_all_contacts'
-  call geofold_flory_all_contacts(hbfile,cmfile,contacts,geofold_nres)
+  ! call geofold_flory_all_contacts(hbfile,cmfile,contacts,geofold_nres)
   !------------------------------ WORK   ----------------
   !write(0,*) 'getcutpoints'
-  call getcutpoints(gptr,contacts,flory,T)
+  call getcutpoints(gptr,T)
   !------------------------------ FINISH UP   ----------------
   !write(0,*) 'dag_write'
-  call dag_write(dagfile,ounit=dunit) 
+  call dag_write(dagfile,ounit=dunit)
 !  write(0,*) 'geofold_seams_write'
   call geofold_seams_write(ounit=dunit)
   close(dunit)
@@ -165,9 +166,9 @@ CONTAINS
 !recurses until unfolded
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-RECURSIVE SUBROUTINE getcutpoints( f ,contacts,flory,T)
+RECURSIVE SUBROUTINE getcutpoints( f,T)
   !! ------- cut point algorithm ---------
-  !! 
+  !!
   !! If the intermediate is multichain, break if possible.
   !! If not, then if the chain(s) is long enough, pivot if possible.
   !! If not, then if the chain is long enough, hinge if possible.
@@ -179,7 +180,7 @@ RECURSIVE SUBROUTINE getcutpoints( f ,contacts,flory,T)
   type(intermediate), POINTER :: f
   type(intermediate), target :: child1, child2
   type(intermediate), pointer :: u1, u2
-  type(contact),dimension(:),allocatable,intent(in) :: contacts
+  ! type(contact),dimension(:),allocatable,intent(in) :: contacts
   INTEGER :: lastpos,lastbreak,lasthinge
   INTEGER :: interval
   INTEGER :: flag,ios=0
@@ -248,24 +249,24 @@ RECURSIVE SUBROUTINE getcutpoints( f ,contacts,flory,T)
   u2%barrel=f%barrel
   NULLIFY(u1%next)
   NULLIFY(u2%next)
-  !! Split the pathway 
+  !! Split the pathway
   geofold_split = nint(real(maxsplit)/(f%state / FULSPLITDEPTH ) )
   if (geofold_split==0) geofold_split = 1
   if (geofold_split>maxsplit) geofold_split = maxsplit
   !!------------- BREAKS ----------------
 !  write(0,*) 'getbreaks'
-  call getbreaks(f,allu1,allentropy,nbreak,contacts,flory)
+  call getbreaks(f,allu1,allentropy,nbreak)
   if (verbose.and.nbreak > 0) write(*,*) '============>>> found ',nbreak,' BREAKs'
   breakloop: DO ibreak=1,nbreak
      entropy = allentropy(ibreak)
      u1%iflag = allu1(ibreak)%iflag
      f%axis = allu1(ibreak)%axis
 !     write(0,*) 'calling getcutpoints from break u1'
-     CALL getcutpoints(u1,contacts,flory,T)   !!  recusrively find cutpoints
+     CALL getcutpoints(u1,T)   !!  recusrively find cutpoints
      u2%iflag = f%iflag
      where (u1%iflag/='.') u2%iflag = '.'
 !     write(0,*) 'calling getcutpoints from break u2'
-     CALL getcutpoints(u2,contacts,flory,T)
+     CALL getcutpoints(u2,T)
      cuttype = breakflag
 !     write(0,*) 'calling savetstate from break'
      CALL savetstate(f,u1,u2=u2,t=cuttype, ent=entropy)
@@ -273,20 +274,20 @@ RECURSIVE SUBROUTINE getcutpoints( f ,contacts,flory,T)
   if (nbreak > 0) return
   !!------------- PIVOTS ----------------
 !  write(0,*) 'getpivots'
-  call getpivots(f,allu1,allentropy,npivot,contacts,flory)
+  call getpivots(f,allu1,allentropy,npivot)
 !  write(0,*) 'got pivots'
   if (verbose.and.npivot > 0) write(*,*) '============>>> found ',npivot,' PIVOTS'
-  pivotloop: DO ipivot=1,npivot 
+  pivotloop: DO ipivot=1,npivot
 !     write(0,*) 'in pivotloop'
      entropy = allentropy(ipivot)
      u1%iflag = allu1(ipivot)%iflag
      f%axis = allu1(ipivot)%axis
 !     write(0,*) 'pu1 getcutpoints'
-     CALL getcutpoints(u1,contacts,flory,T)   !!  recusrively find cutpoints
+     CALL getcutpoints(u1,T)   !!  recusrively find cutpoints
      u2%iflag = f%iflag
      where (u1%iflag/='.') u2%iflag = '.'
 !     write(0,*) 'pu2 getcutpoints'
-     CALL getcutpoints(u2,contacts,flory,T)
+     CALL getcutpoints(u2,T)
      cuttype = pivotflag
 !     write(0,*) 'p savetstate'
      CALL savetstate(f,u1,u2=u2,t=cuttype, ent=entropy)
@@ -313,7 +314,7 @@ RECURSIVE SUBROUTINE getcutpoints( f ,contacts,flory,T)
   allocate(seammove(nseam),stat=ios); if (ios/=0) stop 'geofold:: getcutpoints: error allocating seammove.'
   seammove(:)%barrel=0;seammove(:)%seam=0;seammove(:)%energy=0;seammove(:)%side=0;
 !  write(0,*) 'getseams'
-  call getseams(f, seammove, nseam,contacts,flory,w,T) 
+  call getseams(f, seammove, nseam,w,T)
   if (verbose.and.nseam > 0) then
      write(*,*) '============>>> found ',nseam,' SEAMS'
      do iseam=1,nseam
@@ -333,7 +334,7 @@ RECURSIVE SUBROUTINE getcutpoints( f ,contacts,flory,T)
      u1%barrel(seammove(iseam)%barrel) = seammove(iseam)%seam !! set flag
      write(*,*) "seamloop:: u1%barrel(seammove(",iseam,")%barrel)=",u1%barrel(seammove(iseam)%barrel)
 !     write(0,*) 'su1 getcutpoints'
-     CALL getcutpoints(u1,contacts,flory,T)   !!  recursively find cutpoints
+     CALL getcutpoints(u1,T)   !!  recursively find cutpoints
      cuttype = seamflag
      !Flory entropy
      !entropy = entropy + geofold_flory_calc_entropy(flory,f,u1,c_list=contacts,w=w,T=T)
@@ -344,7 +345,7 @@ RECURSIVE SUBROUTINE getcutpoints( f ,contacts,flory,T)
   if (nseam > 0) return
   !!------------- HINGES  ----------------
 !  write(0,*) 'gethinges'
-  call gethinges(f,allu1,allentropy,nhinge,contacts,flory)
+  call gethinges(f,allu1,allentropy,nhinge)
   if (verbose.and.nhinge > 0) then
     write(*,*) '============>>> found ',nhinge,' HINGES'
   elseif (verbose) then
@@ -355,11 +356,11 @@ RECURSIVE SUBROUTINE getcutpoints( f ,contacts,flory,T)
      u1%iflag = allu1(ihinge)%iflag
      f%axis = allu1(ihinge)%axis
 !     write(0,*) 'hu1 getcutpoints'
-     CALL getcutpoints(u1,contacts,flory,T)   !!  recusrively find cutpoints
+     CALL getcutpoints(u1,T)   !!  recusrively find cutpoints
      u2%iflag = '.'
      where (f%iflag/='.'.and.u1%iflag=='.') u2%iflag = f%iflag
 !     write(0,*) 'hu2 getcutpoints'
-     CALL getcutpoints(u2,contacts,flory,T)
+     CALL getcutpoints(u2,T)
      cuttype = hingeflag
 !     write(0,*) 'h savetstate'
      CALL savetstate(f,u1,u2=u2,t=cuttype, ent=entropy)
@@ -384,11 +385,11 @@ END SUBROUTINE getcutpoints
 !by simple translation.
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-SUBROUTINE getbreaks(f,allu1,allentropy,nbreak,contacts,flory)
+SUBROUTINE getbreaks(f,allu1,allentropy,nbreak)
   implicit none
   integer,intent(out) :: nbreak
   type(intermediate), POINTER :: f
-  type(contact),dimension(:),allocatable,intent(in) :: contacts
+  ! type(contact),dimension(:),allocatable,intent(in) :: contacts
   type(intermediate),dimension(:),intent(out) :: allu1   !! changed to assumed-shape 5/3/10
   real,dimension(:),intent(out) :: allentropy   !! changed to assumed-shape 5/3/10
   type(intermediate),pointer :: u1, u2
@@ -423,8 +424,8 @@ SUBROUTINE getbreaks(f,allu1,allentropy,nbreak,contacts,flory)
   do while (bpoint<mbreak)
     call geofold_getnextbreak(f=f,calpha=allcoords,chainid=f%iflag,u1=u1%iflag,u2=u2%iflag, &
                             nres=nres,breakpoint=bpoint,entropy=entropy,bvec=bvec)
-    if(entropy /=-1) &
-      entropy = entropy + geofold_flory_calc_entropy(flory,f,u1,u2,contacts,w,T)
+    ! if(entropy /=-1) &
+    !   entropy = entropy + geofold_flory_calc_entropy(flory,f,u1,u2,contacts,w,T)
     if (entropy>bcutoff) then
       call geofold_masker_energy(u1,u1energy)
       call geofold_masker_energy(u2,u2energy)
@@ -456,11 +457,11 @@ END SUBROUTINE getbreaks
 ! free rotation of the N-term versus the C-term
 ! Separate chains are distributed to N or C-term all possible ways.
 !
-SUBROUTINE getpivots(f,allu1,allentropy,npivot,contacts,flory)
+SUBROUTINE getpivots(f,allu1,allentropy,npivot)
   implicit none
   integer,intent(out) :: npivot
   type(intermediate), POINTER :: f
-  type(contact),dimension(:),allocatable,intent(in) :: contacts
+  ! type(contact),dimension(:),allocatable,intent(in) :: contacts
   type(intermediate),dimension(:),intent(out) :: allu1   !! assumed shape 5/3/10
   real,dimension(:),intent(out) :: allentropy   !! assumed shape 5/3/10
   type(intermediate),pointer :: u1, u2
@@ -492,8 +493,8 @@ SUBROUTINE getpivots(f,allu1,allentropy,npivot,contacts,flory)
     write(0,*) 'geofold_getnextpivot'
     call geofold_getnextpivot(f=f,calpha=allcoords,chainid=f%iflag,u1=u1%iflag,u2=u2%iflag, &
                              nres=nres,pivotpoint=bpoint,entropy=entropy,bvec=bvec)
-    if(entropy /= -1)&
-      entropy = entropy + geofold_flory_calc_entropy(flory,f,u1,u2,contacts,w,T)
+    ! if(entropy /= -1)&
+    !   entropy = entropy + geofold_flory_calc_entropy(flory,f,u1,u2,contacts,w,T)
     if (entropy<pcutoff) then
       write(0,*) 'entropy too low...'
       if(associated(u1)) deallocate(u1)
@@ -520,7 +521,7 @@ SUBROUTINE getpivots(f,allu1,allentropy,npivot,contacts,flory)
       enddo
       allenergy(ipivot) = energy
       allentropy(ipivot) = entropy
-      allu1(ipivot)%iflag = u1%iflag 
+      allu1(ipivot)%iflag = u1%iflag
       allu1(ipivot)%axis = bvec
     endif
   enddo
@@ -534,9 +535,9 @@ END SUBROUTINE getpivots
 ! same chain that permit the rotation around the
 ! hinge axis of the segment between the hine points.
 !
-SUBROUTINE gethinges(f,allu1,allentropy,nhinge,contacts,flory)
+SUBROUTINE gethinges(f,allu1,allentropy,nhinge)
   implicit none
-  type(contact),dimension(:),allocatable,intent(in) :: contacts
+  ! type(contact),dimension(:),allocatable,intent(in) :: contacts
   integer,intent(out) :: nhinge
   type(intermediate), POINTER :: f
   type(intermediate),dimension(:),intent(out) :: allu1   !! assumed shape 5/3/10
@@ -568,8 +569,8 @@ SUBROUTINE gethinges(f,allu1,allentropy,nhinge,contacts,flory)
   do while (lasti<nres)
    call geofold_getnexthinge(f=f,calpha=allcoords,chainid=f%iflag,u1=u1%iflag,u2=u2%iflag, &
                              nres=nres,hinge1=lasti,hinge2=lastj,entropy=entropy)
-    if(entropy /= -1)&
-      entropy = entropy + geofold_flory_calc_entropy(flory,f,u1,u2,contacts,w,T)
+    ! if(entropy /= -1)&
+    !   entropy = entropy + geofold_flory_calc_entropy(flory,f,u1,u2,contacts,w,T)
     if (entropy<hcutoff) then
       if(associated(u1)) deallocate(u1)
       if(associated(u2)) deallocate(u2)
@@ -592,7 +593,7 @@ SUBROUTINE gethinges(f,allu1,allentropy,nhinge,contacts,flory)
       enddo
       allenergy(ihinge) = energy
       allentropy(ihinge) = entropy
-      !! NOTE: we use u2 from geofold_getnexthinge because it has new flags, 
+      !! NOTE: we use u2 from geofold_getnexthinge because it has new flags,
       !! while u1 retains flags from f. New flags are needed in calling
       !! routine, getcutpoints.
       allu1(ihinge)%iflag = u2%iflag
@@ -610,9 +611,9 @@ END SUBROUTINE gethinges
 !---------------------------------------------------------------------------------
 
 !!  Need to modify this to play nice with Flory
-subroutine getseams (f, seammove, nMove,contacts,flory,w,T)
+subroutine getseams (f, seammove, nMove,w,T)
   implicit none
-      type(contact),dimension(:),allocatable,intent(in) :: contacts
+    !   type(contact),dimension(:),allocatable,intent(in) :: contacts
       type (intermediate), POINTER         :: f,u1
       type (seammove_type), pointer        :: seammove (:)
       integer,intent (inout)               :: nMove
@@ -620,7 +621,7 @@ subroutine getseams (f, seammove, nMove,contacts,flory,w,T)
       type (seammove_type)                 :: tmpMove
       type (seam_type),pointer             :: aseam
       real                                 :: energy
-      integer, intent(in)                  :: flory
+    !   integer, intent(in)                  :: flory
       real, intent(in)                     :: w,T
     CHARACTER, dimension(1600) :: flags     ! flags that define the intermediate
 !testing something out here...  This will make it more consistent with everything else
@@ -641,21 +642,19 @@ subroutine getseams (f, seammove, nMove,contacts,flory,w,T)
       tmpMove%seam   = iSeam
       tmpMove%energy = energy
 
-      if(flory /= 0) then
-        allocate(u1)
-        u1%idnum = 0
-        u1%iflag = f%iflag
-        nullify(u1%next)
-        u1%state = seamflag
-        u1%sym = 0
-        u1%axis = iSeam
-        u1%barrel = f%barrel
-        u1%barrel(iBarrel)=iSeam      
-        tmpMove%energy = tmpMove%energy - &
-        T*geofold_flory_calc_entropy(flory,f,u1,c_list=contacts,w=w,T=T)
-        if(associated(u1)) deallocate(u1)
-        energy = tmpMove%energy
-      endif
+      allocate(u1)
+      u1%idnum = 0
+      u1%iflag = f%iflag
+      nullify(u1%next)
+      u1%state = seamflag
+      u1%sym = 0
+      u1%axis = iSeam
+      u1%barrel = f%barrel
+      u1%barrel(iBarrel)=iSeam
+      tmpMove%energy = tmpMove%energy
+      if(associated(u1)) deallocate(u1)
+      energy = tmpMove%energy
+
       if (energy < maxval(seammove(1:nseam)%energy,dim=1)) then
         i = maxloc(seammove(1:nseam)%energy,dim=1)
 !      if(energy > minval(seammove(1:nseam)%energy,dim=1)) then
@@ -739,7 +738,7 @@ recursive subroutine getmelting(f,force)
       endif
     enddo
     ! call getmelting(u1)  !! not necessary since u1 = ihead
-  else  
+  else
     !  write(0,*) "Melting by one character  n= ", n
     !! no existing subsets in the intermediate list. peel one residue.
     u2%iflag = f%iflag
@@ -764,13 +763,13 @@ recursive subroutine getmelting(f,force)
     if(u2%idnum == 0) call saveintermediate(u2)
     call savetstate(f,u1,u2=u2,t=meltflag, ent=0.1)
   endif
-  !!  
+  !!
 end subroutine getmelting
 
 !!====================================================================================
 
 !!====================================================================================
-! Changed u2 to optional. For seams 
+! Changed u2 to optional. For seams
 !!====================================================================================
 ! savetstate adds  one elemental subsystem, composed
 ! of segment f and segments u1 and u2, to a lnked list of
@@ -892,7 +891,7 @@ SUBROUTINE saveintermediate(f)
   IF (.NOT. ASSOCIATED(ilistroot)) THEN
      ALLOCATE (ilistroot)
      NULLIFY(ilistroot%next)
-     itail => ilistroot   !! empty root 
+     itail => ilistroot   !! empty root
   END IF
   ALLOCATE(itail%next)
   NULLIFY(itail%next%next)
@@ -906,7 +905,7 @@ SUBROUTINE saveintermediate(f)
      do i=1,geofold_nres
        tmpstr = trim(tmpstr)//f%iflag(i)
      enddo
-     write(0,'(a,i4,a,a,$)') "Intermediate ",f%idnum," ",trim(tmpstr) 
+     write(0,'(a,i4,a,a,$)') "Intermediate ",f%idnum," ",trim(tmpstr)
      write(0,'(a,i4,$)') " depth",f%state
      if (f%sym/=0) write(0,'(a,i2,$)') " sym=",f%sym
      if (any(f%barrel(:)/=0)) write(0,'(a,$)') " seams: "
@@ -932,8 +931,8 @@ SUBROUTINE printintermediates
 END SUBROUTINE printintermediates
 !!====================================================================================
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-! check to see whether f is already in 
-! the intermediates list. 
+! check to see whether f is already in
+! the intermediates list.
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 INTEGER FUNCTION oldintermediate(f)
   type(intermediate), POINTER :: f
@@ -954,7 +953,7 @@ INTEGER FUNCTION oldintermediate(f)
     return
   endif
   n = 0
-  DO while ( associated(ihead%next) ) 
+  DO while ( associated(ihead%next) )
      ihead => ihead%next
      thesame = .false.
      IF ( checkflags(ihead%iflag,f%iflag) ) THEN
@@ -1001,9 +1000,9 @@ END FUNCTION oldintermediate
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !determine if newf, oldf are equivalent
 !return true or false based on result
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 logical FUNCTION checkflags(newf, oldf)
-  CHARACTER, dimension(maxres) :: newf, oldf 
+  CHARACTER, dimension(maxres) :: newf, oldf
   CHARACTER, dimension(maxres) :: symf
   integer :: nsym, isym, nres
   nres = geofold_nres
@@ -1023,7 +1022,7 @@ END FUNCTION checkflags
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! countsyms()
 ! count how many syms there are of a given intermediate
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 integer FUNCTION countsyms(flags,nres)
   integer,intent(in) :: nres
   CHARACTER, dimension(nres),intent(in) :: flags
@@ -1176,7 +1175,7 @@ SUBROUTINE dag_write(ofile,ounit)
                                        tptr%child2, tptr%entropy, cutchar, 0
        case default
          cutchar ='u'
-       end select 
+       end select
     END DO outloop
   endif
   !!
@@ -1209,7 +1208,6 @@ END SUBROUTINE dag_write
     if (present(sce)) sce = scentropy
     energy = sasa*geofold_masker_omega + nhbonds*geofold_hbonds_eperbond -  &
              T*(scentropy*geofold_masker_lambdaweight)
-  end function getEnergySeam 
+  end function getEnergySeam
 !-----------------------------------------------------------------------------------------------
 END PROGRAM geofold
-

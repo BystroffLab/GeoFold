@@ -193,8 +193,8 @@ geofold_pivots.o : geofold_pivots.f90 geofold_global.o vectormath.o geofold_seam
 geofold_flory.o : geofold_flory.f90 geofold_global.o
 	$(FF) -c geofold_flory.f90
 
-xgeofold : geofold.f90 geofold_global.o geofold_flory.o geofold_pivots.o geofold_hbonds.o geofold_seams.o geofold_masker.o vectormath.o vb.incl
-	$(FF) -o xgeofold geofold.f90 geofold_global.o geofold_flory.o geofold_pivots.o geofold_hbonds.o geofold_masker.o vectormath.o \
+xgeofold : geofold.f90 geofold_global.ogeofold_pivots.o geofold_hbonds.o geofold_seams.o geofold_masker.o vectormath.o vb.incl
+	$(FF) -o xgeofold geofold.f90 geofold_global.o geofold_pivots.o geofold_hbonds.o geofold_masker.o vectormath.o \
 	      geofold_seams.o
 
 xsplitseams: splitseams.o geofold_masker.o geofold_hbonds.o geofold_global.o geofold_pivots.o geofold_seams.o vectormath.o
@@ -288,3 +288,9 @@ checkin :
 	cp geofold_pivots.f90 geofold_pivots.f90.bck
 	cp geofold_global.f90 geofold_global.f90.bck
 	cp unfoldsim.f90 unfoldsim.f90.bck
+
+geofold_eco.o : geofold_eco.f90 test_eco_incl.f90 geofold_global.o vectormath.o geofold_seams.o geofold_pivots.o geofold_hbonds.o
+	$(FF) -c geofold_eco.f90
+
+xtest_eco : test_eco.f90 test_eco_incl.f90 geofold_global.o vectormath.o geofold_seams.o geofold_pivots.o geofold_hbonds.o geofold_eco.o
+	$(FFdebug) -o xtest_eco geofold_global.o vectormath.o geofold_seams.o geofold_pivots.o geofold_hbonds.o geofold_eco.o test_eco.f90

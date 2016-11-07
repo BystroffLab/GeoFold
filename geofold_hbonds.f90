@@ -37,7 +37,7 @@ MODULE geofold_hbonds
           !neither residue is in u1flag
           if(aseam%u1flag(jres)/=seamchar) cycle
           !neither u1flag nor u2flag contain ires
-          if(aseam%u2flag(ires)/=seamchar) cycle          
+          if(aseam%u2flag(ires)/=seamchar) cycle
         !u1flag contains ires, but u2flag doesn't have jres
         elseif(aseam%u2flag(jres)/=seamchar) then
           cycle
@@ -64,12 +64,12 @@ MODULE geofold_hbonds
         if(aseam%u1flag(ires)=="." .and. aseam%u2flag(ires)==".") cycle
         !both residues are in u2flag
         if(aseam%u1flag(ires)=="." .and. aseam%u1flag(jres)==".") cycle
-        !both residues are in u1flag 
+        !both residues are in u1flag
         if(aseam%u2flag(ires)=="." .and. aseam%u2flag(jres)==".") cycle
         n = n + 1
       enddo
     endif
-!    
+!
 !      do ires=1,geofold_nres
 !        if (aseam%u1flag(ires)==".") cycle
 !        do da=1,2
@@ -143,11 +143,13 @@ MODULE geofold_hbonds
   maxres = -999
   nhbonds = 0
   if (allocated(geofold_hb)) deallocate(geofold_hb)
+  if (allocated(geofold_ss)) deallocate(geofold_ss)
   allocate(geofold_ss(geofold_nres),stat=ierr)
   if (ierr/=0) stop 'read_hbonds:: error allocating geofold_ss'
-  dunit = pickunit(dunit)
-  write(0,'("dunit ",i3,", mfile ",a,", ierr ",i3)') dunit,mfile,ierr
-  open(dunit, file = mfile, iostat=ierr, status="old", form="formatted")
+  ! dunit = pickunit(dunit)
+  ! write(0,'("dunit ",i3,", mfile ",a,", ierr ",i3)') dunit,mfile,ierr
+  ! write(*,*) "mfile =",mfile,"END MFILE"
+  open(newunit=dunit, file = mfile, iostat=ierr, status="old", form="formatted")
   IF (ierr /= 0 ) STOP "geofold:: geofold_hbonds_read:  error opening file!"
   do
     read(dunit, '(a)', iostat=ierr) aline
@@ -161,12 +163,13 @@ MODULE geofold_hbonds
       nhbonds = nhbonds+1
     endif
   enddo
+  write (*,*) "nhbonds",nhbonds
   allocate(geofold_hb(2,nhbonds),stat=ierr)
   if(ierr/=0) stop 'read_hbonds:: error allocating geofold_hb'
   rewind(dunit)
 
-  geofold_hb = 0.
-  geofold_ss = 0.
+  geofold_hb = 0
+  geofold_ss = 0
   n = 1
   ss = 1
   DO
