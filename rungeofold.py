@@ -648,25 +648,8 @@ conf = "default.conf"
 # thisDir is the directory where you are running this script.
 if len(sys.argv) == 3:
   conf = sys.argv[2]
-#added by SAN
-if conf == 'public':
-    #B. Walcott publicly accessible results
-    thisDir   = os.getcwd()
-    baseDir   = thisDir
-    print thisDir
-    gDir      = baseDir
-    bDir      = baseDir
-    maskerDir = gDir+'/masker'
-    pdbDir    = gDir+'/pdbs'
-    tmpDir    = baseDir+"/tmp"
-    logDir    = baseDir+"/log"
-    htmlDir   = baseDir+"/html"
-    jobDir    = baseDir+"/job"
-    paramTemplate=gDir+'/parameters'
-    #baseURL='http://www.bioinfo.rpi.edu/bystrc/geofold'
-    outputURL='output'
 
-'''
+
 configuration = readConf(conf)
 thisDir = os.getcwd()
 baseDir = configuration['baseDir']
@@ -684,7 +667,7 @@ outputURL = configuration['outputURL']
 dot = configuration['dot']
 convert = configuration['convert']
 gnuplot = configuration['gnuplot']
-'''
+
 
 '''
 #Directory settings for server
