@@ -9,12 +9,12 @@
 #| make clean
 #| make all
 #|
-#| To test, use 
-#| make test 
+#| To test, use
+#| make test
 #|
 #| To install MASKER programs only, use
-#| make masker 
-#| 
+#| make masker
+#|
 #| To run:
 #|  ./RUNGEOFOLD.csh PDBFILE chaincode
 #|
@@ -24,13 +24,13 @@
 #|
 #| C.Bystroff  14 NOV 2008
 #| www.bioinfo.rpi.edu/bystrc/
-#| plase cite: Ramakrishnan V, Salem SM, Zaki MJ , Matthews SJ, 
-#| Srinivasan S, Colon W, & Bystroff C. (2009) Developing 
-#| a detailed mechanistic model for protein unfolding. 
-#| Ramakrishnan V, Srinivasan S, Salaem SM, Zaki MJ , Matthews SJ, 
-#| Colon W, & Bystroff C. (2012) GeoFold: Topology-based protein 
-#| unfolding pathways capture the effects of engineered disulfides 
-#| on kinetic stability. Proteins 80(3):920-934. 
+#| plase cite: Ramakrishnan V, Salem SM, Zaki MJ , Matthews SJ,
+#| Srinivasan S, Colon W, & Bystroff C. (2009) Developing
+#| a detailed mechanistic model for protein unfolding.
+#| Ramakrishnan V, Srinivasan S, Salaem SM, Zaki MJ , Matthews SJ,
+#| Colon W, & Bystroff C. (2012) GeoFold: Topology-based protein
+#| unfolding pathways capture the effects of engineered disulfides
+#| on kinetic stability. Proteins 80(3):920-934.
 #|-------------------------------------------------------------------
 #|    MODIFY  these settings to fit your system         --------------
 #| Modification:
@@ -40,14 +40,16 @@
 ##---- ImageMagick convert
 # CONVERT  = /ext2/www/html/applications/hybrid/bin/convert
 CONVERT  = /usr/bin/convert
+DOT = /usr/bin/dot
 
 # The compiler
-FF = gfortran -g -fno-range-check 
+MPIFF = mpif90 -g -fno-range-check
+FF = gfortran -g -fno-range-check
 #FF = gfortran -O3
 FFdebug = gfortran -g -fbacktrace
 #FCFLAGS = -g -fbacktrace
 ##---- FORTRAN 90 compiler (preferably g95)
-# FF = g95 -O2 
+# FF = g95 -O2
 # FF = /home/bystrc/src/g95-install/bin/i686-suse-linux-gnu-g95 -O2
 ##---- C++ compiler
 CPP = g++
@@ -59,48 +61,50 @@ SCRIPT = RUNGEOFOLD.csh
 help :
 	more INSTALL
 
-bin32 : 
+bin32 :
 	make all
 
-bin64 : 
+bin64 :
 	make maxTraffic
 
 all  : xgeofold xvoidmask xunfoldsim xcontactmask xgetchain xrenumber_one xpdb2cij \
        xageplot xpathway2ps x3to1 xpdb2hb xfit_poly maxTraffic xsplitseams seams/xpdb2seams
-	
+
 debug : geofold_pivots.f90 geofold_global.f90 geofold.f90 vectormath.f90 geofold_masker.f90 geofold_hbonds.f90
 	$(FFdebug)  -c vectormath.f90
 	$(FFdebug)  -c geofold_global.f90
 	$(FFdebug)  -c geofold_hbonds.f90
 	$(FFdebug)  -c geofold_masker.f90
 	$(FFdebug)  -c geofold_pivots.f90
-	$(FFdebug)  -o xgeofold  geofold.f90 geofold_pivots.o geofold_global.o geofold_hbonds.o geofold_masker.o vectormath.o 
+#	$(FFdebug)  -o xgeofold  geofold.f90 geofold_pivots.o geofold_global.o geofold_hbonds.o geofold_masker.o vectormath.o
+#       updated by SAN for openmp
+	$(FFdebug)  -fopenmp -o xgeofold  geofold.f90 geofold_pivots.o geofold_global.o geofold_hbonds.o geofold_masker.o vectormath.o
 
-xgeofold_split2 : geofold_pivots.o 
+xgeofold_split2 : geofold_pivots.o
 	sed -e "s/MAXSPLIT=.*/MAXSPLIT=2/" geofold_global.f90 > geofold_global.f90.2
 	mv geofold_global.f90.2 geofold_global.f90
 	make xgeofold
 	cp xgeofold xgeofold_split2
 
-xgeofold_split4 : geofold_pivots.o 
+xgeofold_split4 : geofold_pivots.o
 	sed -e "s/MAXSPLIT=.*/MAXSPLIT=4/" geofold_global.f90 > geofold_global.f90.2
 	mv geofold_global.f90.2 geofold_global.f90
 	make xgeofold
 	cp xgeofold xgeofold_split4
 
-xgeofold_split8 : geofold_pivots.o 
+xgeofold_split8 : geofold_pivots.o
 	sed -e "s/MAXSPLIT=.*/MAXSPLIT=8/" geofold_global.f90 > geofold_global.f90.2
 	mv geofold_global.f90.2 geofold_global.f90
 	make xgeofold
 	cp xgeofold xgeofold_split8
 
-xgeofold_split16 : geofold_pivots.o 
+xgeofold_split16 : geofold_pivots.o
 	sed -e "s/MAXSPLIT=.*/MAXSPLIT=16/" geofold_global.f90 > geofold_global.f90.2
 	mv geofold_global.f90.2 geofold_global.f90
 	make xgeofold
 	cp xgeofold xgeofold_split16
 
-xgeofold_split32 : geofold_pivots.o 
+xgeofold_split32 : geofold_pivots.o
 	sed -e "s/MAXSPLIT=.*/MAXSPLIT=32/" geofold_global.f90 > geofold_global.f90.2
 	mv geofold_global.f90.2 geofold_global.f90
 	make xgeofold
@@ -160,8 +164,8 @@ masker/xvoidmask : masker/masker.o
 masker/xcontactmask : masker/masker.o
 	cd masker; make xcontactmask; cd ../
 
-unfoldsim.o : unfoldsim.f90 
-	$(FF)  -fno-range-check -c unfoldsim.f90
+unfoldsim.o : unfoldsim.f90
+	$(MPIFF)  -fno-range-check -c unfoldsim.f90
 
 pdb2hb.o : pdb2hb.f90
 	$(FF) -c pdb2hb.f90
@@ -169,8 +173,8 @@ pdb2hb.o : pdb2hb.f90
 xunfoldsim : unfoldsim.o geofold_global.o geofold_pivots.o geofold_seams.o vectormath.o
 	$(FF)  -fno-range-check -o xunfoldsim unfoldsim.o geofold_global.o geofold_pivots.o geofold_seams.o vectormath.o
 
-xpdb2hb : pdb2hb.o 
-	$(FF) -o xpdb2hb pdb2hb.o 
+xpdb2hb : pdb2hb.o
+	$(FF) -o xpdb2hb pdb2hb.o
 
 vectormath.o : vectormath.f90
 	$(FF) -c vectormath.f90
@@ -184,44 +188,45 @@ geofold_hbonds.o : geofold_hbonds.f90 vectormath.o geofold_pivots.o
 geofold_masker.o : geofold_masker.f90 geofold_seams.o vectormath.o
 	$(FF) -c geofold_masker.f90
 
-geofold_seams.o: geofold_seams.f90 geofold_global.o 
-	$(FF) -c geofold_seams.f90 
-	
+geofold_seams.o: geofold_seams.f90 geofold_global.o
+	$(FF) -c geofold_seams.f90
+
 geofold_pivots.o : geofold_pivots.f90 geofold_global.o vectormath.o geofold_seams.o
-	$(FF) -c geofold_pivots.f90 
-	
+	$(FF) -c geofold_pivots.f90
+
 geofold_flory.o : geofold_flory.f90 geofold_global.o
 	$(FF) -c geofold_flory.f90
 
-xgeofold : geofold.f90 geofold_global.o geofold_flory.o geofold_pivots.o geofold_hbonds.o geofold_seams.o geofold_masker.o vectormath.o vb.incl 
-	$(FF) -o xgeofold geofold.f90 geofold_global.o geofold_flory.o geofold_pivots.o geofold_hbonds.o geofold_masker.o vectormath.o \
-	      geofold_seams.o 
+xgeofold : geofold.f90 geofold_global.o geofold_flory.o geofold_pivots.o geofold_hbonds.o geofold_seams.o geofold_masker.o vectormath.o vb.incl
+#	openmp and mpi added by SAN
+	$(MPIFF) -fopenmp -o xgeofold geofold.f90 geofold_global.o geofold_flory.o geofold_pivots.o geofold_hbonds.o geofold_masker.o vectormath.o \
+	      geofold_seams.o
 
 xsplitseams: splitseams.o geofold_masker.o geofold_hbonds.o geofold_global.o geofold_pivots.o geofold_seams.o vectormath.o
 	$(FF) -o xsplitseams splitseams.o geofold_seams.o geofold_masker.o geofold_global.o geofold_hbonds.o geofold_pivots.o vectormath.o
 
 splitseams.o: splitseams.f90
-	$(FF)  -c splitseams.f90 
+	$(FF)  -c splitseams.f90
 
 xmakemask : masker.o
 	cp masker/xmakemask .
 
 maxTraffic : maxTraffic.cpp graph.h token.h
-	$(CPP) -o maxTraffic maxTraffic.cpp 
+	$(CPP) -o maxTraffic maxTraffic.cpp
 
 ## TEST function. Run GeoFold programs starting from just a PDB file.
 ## Last step (convert) requires ImageMagick http://www.imagemagick.org/
 
-test : xgeofold xvoidmask xunfoldsim x3to1 xcontactmask xageplot 
+test : xgeofold xvoidmask xunfoldsim x3to1 xcontactmask xageplot
 	cp parameters  $(TESTPDB)$(TESTCHN).par
 	./xgetchain $(TESTCHN) < $(TESTPDB).pdb > $(TESTPDB)$(TESTCHN).pdb
-	./xrenumber_one $(TESTPDB)$(TESTCHN).pdb junk.pdb ; mv junk.pdb $(TESTPDB)$(TESTCHN).pdb 
+	./xrenumber_one $(TESTPDB)$(TESTCHN).pdb junk.pdb ; mv junk.pdb $(TESTPDB)$(TESTCHN).pdb
 	./x3to1 "?" < $(TESTPDB)$(TESTCHN).pdb > $(TESTPDB)$(TESTCHN).seq
 	./xpdb2cij $(TESTPDB)$(TESTCHN).pdb 8. > $(TESTPDB)$(TESTCHN).cij
 	./xpdb2hb $(TESTPDB)$(TESTCHN).par $(TESTPDB)$(TESTCHN).pdb  > $(TESTPDB)$(TESTCHN).hb
-	echo "HBONDS $(TESTPDB)$(TESTCHN).hb" >> $(TESTPDB)$(TESTCHN).par 
+	echo "HBONDS $(TESTPDB)$(TESTCHN).hb" >> $(TESTPDB)$(TESTCHN).par
 	source masker/masker_setup.sh; masker/xcontactmask $(TESTPDB)$(TESTCHN).pdb $(TESTPDB)$(TESTCHN).sas 1.4
-	echo "CONTACTS $(TESTPDB)$(TESTCHN).sas" >> $(TESTPDB)$(TESTCHN).par 
+	echo "CONTACTS $(TESTPDB)$(TESTCHN).sas" >> $(TESTPDB)$(TESTCHN).par
 	source masker/masker_setup.sh; masker/xvoidmask $(TESTPDB)$(TESTCHN).pdb $(TESTPDB)$(TESTCHN).void 1.4 1.2 1.4
 	./xgeofold $(TESTPDB)$(TESTCHN).void $(TESTPDB)$(TESTCHN).dag $(TESTPDB)$(TESTCHN).par
 	./xunfoldsim $(TESTPDB)$(TESTCHN).dag $(TESTPDB)$(TESTCHN).par
@@ -252,7 +257,7 @@ package : masker.tgz
 		 geofold/seams/*.f90
 
 clean :
-	rm -vf *.o xgeofold *.mod *.o
+	rm -vrf *.o xgeofold *.mod *.o *.dSYM
 
 cleaner :
 	rm -vf x* *.o *.mod masker.tgz masker/*.o masker/*.mod masker/x*
@@ -268,22 +273,22 @@ test3 : xgeofold
 test4 : xgeofold
 	./xgeofold 1ten.void 1ten.sas 1ten.dag
 
-test5 : xunfoldsim 
+test5 : xunfoldsim
 	./xunfoldsim 1ten.dag
 
-test6 : xunfoldsim 
+test6 : xunfoldsim
 	./xunfoldsim 1csp_.dag
 
 setup :
 	./setupgeofold.csh
 
-checkout : 
+checkout :
 	cp geofold.f90.bck geofold.f90
 	cp geofold_global.f90.bck geofold_global.f90
 	cp geofold_pivots.f90.bck geofold_pivots.f90
 	cp unfoldsim.f90.bck unfoldsim.f90
 
-checkin : 
+checkin :
 	cp geofold.f90 geofold.f90.bck
 	cp geofold_pivots.f90 geofold_pivots.f90.bck
 	cp geofold_global.f90 geofold_global.f90.bck

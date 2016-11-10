@@ -1,0 +1,116 @@
+xunfoldsim /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p_1.dag 2b3p.par.1
+LNAME 2b3p
+EMAIL sanw@rpi.edu
+PDBCODE 2B3P
+OMEGA 5.
+REMARK omega set to      5.000
+INTERMEDIATE 0
+REMARK following intermediate number     0
+BARRELMOVES 1
+ORANGE 5.
+RUNGEOFOLD 1
+BREAKCUT 0.05
+PIVOTCUT 0.01
+HINGECUT 0.5
+SEAMCUT 10
+BREAKPOINTENTROPY 90.
+REMARK break entropy set to   90.000
+HINGEPOINTENTROPY 30.
+REMARK hinge entropy set to   30.000
+TEMPERATURE 300.
+REMARK system temperature set to  300.000
+CONCENTRATION 1.
+REMARK total protein concentration    1.00000
+VOIDENTROPY 0.
+REMARK each void counts for    0.00000 kj/mol/deg
+SOLIDITY 1000.
+REMARK solidity parameter= 1000.00000
+HBONDENERGY 1000.
+REMARK each Hbond counts for 1000.00000 kj/mol
+HAMMONDSCALE 1000.
+REMARK transition state placement parameter= 1000.00000
+SIDECHAINENTROPY 1.
+REMARK side chain entropy scale factor =    1.00000
+HINGEBARRIER 0.
+REMARK transition state barrier for hinges=    0.00000
+PIVOTBARRIER 0.
+REMARK transition state barrier for pivots=    0.00000
+WATER 30.
+MAXSPLIT 4
+MAXTIME 10.
+REMARK maximum simulation time    10.00000
+MINSEG 4
+CAVITATION 0.000001
+SUBMIT submit
+CHAIN A
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p.split
+
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+         796  t-states allocated.
+         695  intermediates allocated.
+        1 native state node initialized to conc =   1.000M
+       55 leaf nodes initialized to conc =   0.000M
+CPU_TIME spent reading input files   =   0.0120 seconds.
+         417  of          796  transitions are diffusion controlled.
+CPU_TIME spent initializing params   =   0.0040 seconds.
+TIMECOURSE   0.10001E-6 100.00000   0.00000   0.00000  0.00000E+0  0.00  1.00  0.00  0.00
+TIMECOURSE   0.30003E-6 100.00000   0.00000   0.00000  0.00000E+0  0.00  1.00  0.00  0.00
+TIMECOURSE   0.70007E-6 100.00000   0.00000   0.00000  0.00000E+0  0.00  1.00  0.00  0.00
+TIMECOURSE   0.15001E-5 100.00000   0.00000   0.00000  0.00000E+0  0.00  1.00  0.00  0.00
+TIMECOURSE   0.31003E-5 100.00000   0.00000   0.00000  0.00000E+0  0.00  1.00  0.00  0.00
+TIMECOURSE   0.63006E-5 100.00000   0.00000   0.00000  0.00000E+0  0.00  1.00  0.00  0.00
+TIMECOURSE   0.12701E-4 100.00000   0.00000   0.00000  0.00000E+0  0.00  1.00  0.00  0.00
+TIMECOURSE   0.25503E-4 100.00000   0.00000   0.00000  0.00000E+0  0.00  1.00  0.00  0.00
+TIMECOURSE   0.51105E-4 100.00000   0.00000   0.00000  0.00000E+0  0.00  1.00  0.00  0.00
+TIMECOURSE   0.10231E-3  99.99999   0.00001   0.00000  0.00000E+0  0.00  1.00  0.00  0.00
+TIMECOURSE   0.20472E-3  99.99999   0.00001   0.00000  0.00000E+0  0.00  1.00  0.00  0.00
+TIMECOURSE   0.40954E-3  99.99998   0.00002   0.00000  0.00000E+0  0.00  1.00  0.00  0.00
+TIMECOURSE   0.81918E-3  99.99995   0.00005   0.00000  0.00000E+0  0.00  1.00  0.00  0.00
+CPU_TIME spent simulating            =  25.1040 seconds.     6.09% calculating dc    93.74% bookkeeping
+TIMECOURSE   0.10001E-2  99.99994   0.00006   0.00000  0.00000E+0
+         796  t-states allocated.
+         695  intermediates allocated.
+ Traffic and final concentration values sent to output DAG file /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p_1.dag.out
+CPU_TIME spent reporting results     =   0.0200 seconds.

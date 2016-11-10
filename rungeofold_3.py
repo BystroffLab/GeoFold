@@ -37,15 +37,14 @@ import commands
 import time
 import math
 from georansac import fit
+
+#added by SAN
 from launch import launch
 from runmpi import get_mpirun
 from get_cpu_num import get_cpu_num
 from shell import shell
 from mpunfoldsim import mpunfoldsim
 from test_mpunfoldsim import test_mpunfoldsim
-from mpi4py import MPI
-
-
 
 def readConf(confFile):
   output = {}
@@ -624,22 +623,6 @@ def findParam (paramFile, target):
           return [0,s[1]]
 
   return [1, '']
-# San
-# set comm, rank & size
-try :
-  comm  = MPI.COMM_WORLD
-  rank = comm.Get_rank()
-  size = comm.Get_size()
-  name = MPI.Get_processor_name()
-
-except Exception as e :
-    traceback.print_exc ()
-    print "error : %s" % e
-    sys.exit (1)
-"""
-readConf(confFile) method from original version of GeoFold
-bach_sanw.conf saved at the home directory
-"""
 
 # Setting global variables
 global tmpWrite
@@ -653,7 +636,8 @@ global gnuplot
 debug = False
 parameters = {}
 
-conf = "bach_sanw.conf"
+conf = "default.conf"
+
 ########################## DIRECTORIES #############################
 ### SET THESE DIRECTORIES AS FOLLOWS:
 # gDir is the geofold directory created by tar -zxvf geofold.tgz
@@ -1247,6 +1231,27 @@ else:
   outWrite.close()
   ##SKIPGEOFOLD
   LNamePDB = "%s/%s.pdb" %(tmpDir,LName)
+
+  #tmp par file added by San
+  tmp_par_file = "%s/tmp_par_file.txt" %(tmpDir)
+  try:
+    parWrite = open(tmp_par_file, 'w+')
+  except IOError:
+    parWrite.close()
+    sys.exit("Couldn't open file %s"%(tmp_par_file))
+  parWrite.write('omegaRange:\n')
+  for value in omegaRange:
+    parWrite.write("%s\n" %(value))
+  parWrite.write('LName:\n')
+  parWrite.write("%s\n" %(LName))
+  parWrite.write('paramFilename:\n')
+  parWrite.write("%s\n" %(paramFilename))
+  parWrite.write('thermal:\n')
+  parWrite.write("%s\n" %(thermal))
+  parWrite.write('doIT:\n')
+  parWrite.write("%s\n" %(doIT))
+  parWrite.close()
+
   if doIt != 3:
       print(doIt == 3)
       print(doIt)
@@ -1256,6 +1261,19 @@ else:
       writeOut("============= UNFOLDSIM =============\n")
       nn = 0
       for value in omegaRange:
+        nn += 1
+        cp = "cp %s/%s.dag %s/%s_%s.dag" %(tmpDir,LName,tmpDir,LName,nn)
+        commands.getstatusoutput(cp)
+        
+      command = this_dir + "mpunfoldsim.py" 
+      status, output = launch(command, runcmd=MPIRUN, hostfile = None, nproc=proc_num, pipe=False)
+
+      
+
+
+  """
+      for value in omegaRange:
+        nn = 0
         nn += 1
         cp = "cp %s/%s.dag %s/%s_%s.dag" %(tmpDir,LName,tmpDir,LName,nn)
         commands.getstatusoutput(cp)
@@ -1303,6 +1321,7 @@ else:
           outWrite = open(htmlOut,'a')
           outWrite.write('</pre></body></html>\n')
           outWrite.close()
+  """
   print("============= PATHWAY2PS =============")
   tmpWrite.write("============= PATHWAY2PS =============<br>")
   writeOut("============= PATHWAY2PS =============\n")

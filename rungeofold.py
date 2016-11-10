@@ -38,6 +38,10 @@ import time
 import math
 from georansac import fit
 
+#added by SAN
+from launch import launch
+from runmpi import get_mpirun
+
 def readConf(confFile):
   output = {}
   conf = open(confFile,'r')
@@ -644,7 +648,25 @@ conf = "default.conf"
 # thisDir is the directory where you are running this script.
 if len(sys.argv) == 3:
   conf = sys.argv[2]
+#added by SAN
+if conf == 'public':
+    #B. Walcott publicly accessible results
+    thisDir   = os.getcwd()
+    baseDir   = thisDir
+    print thisDir
+    gDir      = baseDir
+    bDir      = baseDir
+    maskerDir = gDir+'/masker'
+    pdbDir    = gDir+'/pdbs'
+    tmpDir    = baseDir+"/tmp"
+    logDir    = baseDir+"/log"
+    htmlDir   = baseDir+"/html"
+    jobDir    = baseDir+"/job"
+    paramTemplate=gDir+'/parameters'
+    #baseURL='http://www.bioinfo.rpi.edu/bystrc/geofold'
+    outputURL='output'
 
+'''
 configuration = readConf(conf)
 thisDir = os.getcwd()
 baseDir = configuration['baseDir']
@@ -662,6 +684,7 @@ outputURL = configuration['outputURL']
 dot = configuration['dot']
 convert = configuration['convert']
 gnuplot = configuration['gnuplot']
+'''
 
 '''
 #Directory settings for server
@@ -857,8 +880,9 @@ else:
   ###PROGRAMS####
   maxTraffic= gDir+"/maxTraffic"
   mtCut= 0.1
-  #convert = "/usr/bin/convert"
-  #dot = "/usr/bin/dot"
+  # removed convert and comment by SAN
+  convert = "/usr/bin/convert"
+  dot = "/usr/bin/dot"
 
   try:
     tmpWrite = open(htmlTmp, 'w+')
@@ -1194,7 +1218,7 @@ else:
     writeTime = "Time before running GEOFOLD "+time.strftime("%c")+'<br>'
     tmpWrite.write(writeTime)
     writeOut(writeTime)
-    geofold = "%s/xgeofold %s/%s.void.pdb %s/%s.dag %s > %s/%s.dag.log" %(gDir,tmpDir,LName,tmpDir,LName,paramFilename,tmpDir,LName)
+    geofold = "mpirun -np 4 %s/xgeofold %s/%s.void.pdb %s/%s.dag %s > %s/%s.dag.log" %(gDir,tmpDir,LName,tmpDir,LName,paramFilename,tmpDir,LName)
     runProgram(geofold)
     writeTime = "Time after running GEOFOLD "+time.strftime("%c")+'<br>'
     tmpWrite.write(writeTime)
@@ -1223,6 +1247,35 @@ else:
   outWrite.close()
   ##SKIPGEOFOLD
   LNamePDB = "%s/%s.pdb" %(tmpDir,LName)
+
+  #tmp par file added by San
+  tmp_par_file = "%s/tmp_par_file.txt" %(tmpDir)
+  try:
+    parWrite = open(tmp_par_file, 'w+')
+  except IOError:
+    parWrite.close()
+    sys.exit("Couldn't open file %s"%(tmp_par_file))
+  parWrite.write('omegaRange:\n')
+  for value in omegaRange:
+    parWrite.write("%s\n" %(value))
+  parWrite.write('LName:\n')
+  parWrite.write("%s\n" %(LName))
+  parWrite.write('paramFilename:\n')
+  parWrite.write("%s\n" %(paramFilename))
+  parWrite.write('thermal:\n')
+  parWrite.write("%s\n" %(thermal))
+  parWrite.write('doIt:\n')
+  parWrite.write("%s\n" %(doIt))
+  parWrite.write('debug:\n')
+  parWrite.write("%s\n" %(debug))
+  parWrite.write('gDir:\n')
+  parWrite.write("%s\n" %(gDir))
+  parWrite.write('htmlTmp:\n')
+  parWrite.write("%s\n" %(htmlTmp))
+  parWrite.write('htmlOut:\n')
+  parWrite.write("%s\n" %(htmlOut))
+  parWrite.close()
+
   if doIt != 3:
       print(doIt == 3)
       print(doIt)
@@ -1232,9 +1285,13 @@ else:
       writeOut("============= UNFOLDSIM =============\n")
       nn = 0
       for value in omegaRange:
-        nn += 1
-        cp = "cp %s/%s.dag %s/%s_%s.dag" %(tmpDir,LName,tmpDir,LName,nn)
-        commands.getstatusoutput(cp)
+          nn += 1
+          cp = "cp %s/%s.dag %s/%s_%s.dag" %(tmpDir,LName,tmpDir,LName,nn)
+          commands.getstatusoutput(cp)
+      MPIRUN = get_mpirun()
+      command = thisDir + "/mpunfoldsim.py " + tmpDir
+      status, output = launch(command, runcmd=MPIRUN, hostfile = None, nproc=3, pipe=False)
+      """
         if not thermal:
           sed = "sed -e \"s/^OMEGA .*/OMEGA %s/\" %s > %s.1" %(value,paramFilename,paramFilename)
         else:
@@ -1252,7 +1309,7 @@ else:
         writeTime = "Time before running UNFOLDSIM "+time.strftime("%c") +'<br>'
         tmpWrite.write(writeTime)
         writeOut(writeTime)
-        unfoldsim = "%s/xunfoldsim %s/%s_%s.dag %s.1 > %s" %(gDir,tmpDir,LName,nn,paramFilename,logFile)
+        unfoldsim = "mpirun -np 1 %s/xunfoldsim %s/%s_%s.dag %s.1 > %s" %(gDir,tmpDir,LName,nn,paramFilename,logFile)
         tmpWrite.write(unfoldsim+'<br>')
         runProgram(unfoldsim)
         writeTime = "Time after running UNFOLDSIM "+time.strftime("%c")+'<br>'
@@ -1279,6 +1336,7 @@ else:
           outWrite = open(htmlOut,'a')
           outWrite.write('</pre></body></html>\n')
           outWrite.close()
+      """
   print("============= PATHWAY2PS =============")
   tmpWrite.write("============= PATHWAY2PS =============<br>")
   writeOut("============= PATHWAY2PS =============\n")

@@ -1,0 +1,989 @@
+MASKER SAS contact data found for residue range        1     228
+Last data point       227     228 475.0010
+ !-----------------------------------------------------!                                                                                                                                                 
+ ! pdb2hb.f90 : This program extracts Hbonding infor-  !                                                                                                                                                 
+ !            mation to stdout                         !                                                                                                                                                 
+ !            C.Bystroff 8-NOV-2008                    !                                                                                                                                                 
+ !-----------------------------------------------------!                                                                                                                                                 
+ ! donor acceptor H-or-S                                                                                                                                                                                 
+ ! pdb file = /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.pdb                                                                                                                                              
+ !      228 residues in PDB file.                                                                                                                                                                        
+       1 N         4 OE1  H                                                                                                                                                                              
+       4 N         1 O    H                                                                                                                                                                              
+       4 N         2 O    H                                                                                                                                                                              
+       6 N         3 O    H                                                                                                                                                                              
+       7 N         4 O    H                                                                                                                                                                              
+       8 OG1       5 O    H                                                                                                                                                                              
+      11 N        34 O    H                                                                                                                                                                              
+      13 N        32 O    H                                                                                                                                                                              
+      14 N       115 O    H                                                                                                                                                                              
+      15 N        30 O    H                                                                                                                                                                              
+      16 N       117 O    H                                                                                                                                                                              
+      17 N        28 O    H                                                                                                                                                                              
+      18 N       119 O    H                                                                                                                                                                              
+      19 N        26 O    H                                                                                                                                                                              
+      20 N       121 O    H                                                                                                                                                                              
+      21 N        24 O    H                                                                                                                                                                              
+      22 N       123 O    H                                                                                                                                                                              
+      22 ND2     126 O    H                                                                                                                                                                              
+      23 N        20 OD1  H                                                                                                                                                                              
+      24 N        21 O    H                                                                                                                                                                              
+      24 ND1      21 O    H                                                                                                                                                                              
+      24 ND1      22 O    H                                                                                                                                                                              
+      25 N        23 O    H                                                                                                                                                                              
+      26 N        19 O    H                                                                                                                                                                              
+      27 N        49 OG1  H                                                                                                                                                                              
+      27 OG       18 OD1  H                                                                                                                                                                              
+      27 OG       26 O    H                                                                                                                                                                              
+      28 N        17 O    H                                                                                                                                                                              
+      29 N        46 O    H                                                                                                                                                                              
+      29 NE       31 OE1  H                                                                                                                                                                              
+      29 NH1      31 OE1  H                                                                                                                                                                              
+      29 NH2      16 OE1  H                                                                                                                                                                              
+      30 N        15 O    H                                                                                                                                                                              
+      31 N        44 O    H                                                                                                                                                                              
+      32 N        13 O    H                                                                                                                                                                              
+      33 N        42 O    H                                                                                                                                                                              
+      34 N        11 O    H                                                                                                                                                                              
+      35 N        40 O    H                                                                                                                                                                              
+      37 N        35 OD1  H                                                                                                                                                                              
+      38 N        35 O    H                                                                                                                                                                              
+      38 N        35 OD1  H                                                                                                                                                                              
+      38 ND2      35 OD2  H                                                                                                                                                                              
+      39 N        35 O    H                                                                                                                                                                              
+      39 N        36 O    H                                                                                                                                                                              
+      40 N        35 O    H                                                                                                                                                                              
+      41 N       218 O    H                                                                                                                                                                              
+      42 N        33 O    H                                                                                                                                                                              
+      42 OG1      33 O    H                                                                                                                                                                              
+      43 N       216 O    H                                                                                                                                                                              
+      44 N        31 O    H                                                                                                                                                                              
+      44 NZ      206 OD2  H                                                                                                                                                                              
+      44 NZ      209 OE2  H                                                                                                                                                                              
+      45 N       214 O    H                                                                                                                                                                              
+      46 N        29 O    H                                                                                                                                                                              
+      47 N       212 O    H                                                                                                                                                                              
+      48 N        27 O    H                                                                                                                                                                              
+      48 N        46 O    H                                                                                                                                                                              
+      48 OG1      27 O    H                                                                                                                                                                              
+      49 N        47 O    H                                                                                                                                                                              
+      52 N       212 OD2  H                                                                                                                                                                              
+      54 N        52 O    H                                                                                                                                                                              
+      56 NE1     212 OD1  H                                                                                                                                                                              
+      56 NE1     213 O    H                                                                                                                                                                              
+      58 N        55 O    H                                                                                                                                                                              
+      58 OG1      55 O    H                                                                                                                                                                              
+      58 OG1     102 OH   H                                                                                                                                                                              
+      59 N        56 O    H                                                                                                                                                                              
+      59 N        57 O    H                                                                                                                                                                              
+      60 N        57 O    H                                                                                                                                                                              
+      62 N        59 O    H                                                                                                                                                                              
+      63 N        59 O    H                                                                                                                                                                              
+      63 N        60 O    H                                                                                                                                                                              
+      66 N        64 O    H                                                                                                                                                                              
+      67 N        64 O    H                                                                                                                                                                              
+      67 N        65 O    H                                                                                                                                                                              
+      68 N        65 O    H                                                                                                                                                                              
+      68 OG       65 O    H                                                                                                                                                                              
+      69 N       220 O    H                                                                                                                                                                              
+      70 N        68 O    H                                                                                                                                                                              
+      73 N        72 OD2  H                                                                                                                                                                              
+      73 ND1     225 O    H                                                                                                                                                                              
+      74 N        71 O    H                                                                                                                                                                              
+      74 N        72 O    H                                                                                                                                                                              
+      75 N        71 O    H                                                                                                                                                                              
+      75 NZ        4 OE2  H                                                                                                                                                                              
+      76 NH2     193 OD2  H                                                                                                                                                                              
+      77 N        74 O    H                                                                                                                                                                              
+      77 N        75 O    H                                                                                                                                                                              
+      77 ND1      74 O    H                                                                                                                                                                              
+      77 NE2     193 OD2  H                                                                                                                                                                              
+      78 N        75 O    H                                                                                                                                                                              
+      78 N        76 O    H                                                                                                                                                                              
+      79 N        77 O    H                                                                                                                                                                              
+      80 N        78 OD1  H                                                                                                                                                                              
+      81 N        78 OD1  H                                                                                                                                                                              
+      81 NZ       68 O    H                                                                                                                                                                              
+      81 NZ       78 OD2  H                                                                                                                                                                              
+      82 N        78 O    H                                                                                                                                                                              
+      82 N        79 O    H                                                                                                                                                                              
+      82 OG       78 O    H                                                                                                                                                                              
+      83 N        79 O    H                                                                                                                                                                              
+      84 N        81 O    H                                                                                                                                                                              
+      87 N        83 O    H                                                                                                                                                                              
+      88 N       108 O    H                                                                                                                                                                              
+      89 N       182 O    H                                                                                                                                                                              
+      90 N       106 O    H                                                                                                                                                                              
+      91 N       180 O    H                                                                                                                                                                              
+      92 N       104 O    H                                                                                                                                                                              
+      92 NE      179 OE1  H                                                                                                                                                                              
+      92 NH1      61 O    H                                                                                                                                                                              
+      92 NH2     179 OE1  H                                                                                                                                                                              
+      93 N       178 O    H                                                                                                                                                                              
+      94 N       102 O    H                                                                                                                                                                              
+      95 N       176 O    H                                                                                                                                                                              
+      96 N       100 O    H                                                                                                                                                                              
+      97 N       173 OE1  H                                                                                                                                                                              
+      97 N       174 O    H                                                                                                                                                                              
+      99 N        96 O    H                                                                                                                                                                              
+     100 N        99 OD1  H                                                                                                                                                                              
+     101 N       124 O    H                                                                                                                                                                              
+     101 OG1     100 O    H                                                                                                                                                                              
+     102 N        94 O    H                                                                                                                                                                              
+     102 OH       58 OG1  H                                                                                                                                                                              
+     103 N       122 O    H                                                                                                                                                                              
+     104 N        92 O    H                                                                                                                                                                              
+     105 N       120 O    H                                                                                                                                                                              
+     105 NH1     107 OE2  H                                                                                                                                                                              
+     105 NH2     107 OE2  H                                                                                                                                                                              
+     106 N        90 O    H                                                                                                                                                                              
+     107 N       118 O    H                                                                                                                                                                              
+     108 N        88 O    H                                                                                                                                                                              
+     109 N       116 O    H                                                                                                                                                                              
+     109 NZ      107 OE1  H                                                                                                                                                                              
+     110 N        85 O    H                                                                                                                                                                              
+     111 N       114 O    H                                                                                                                                                                              
+     114 N       111 O    H                                                                                                                                                                              
+     115 N        12 O    H                                                                                                                                                                              
+     116 N       109 O    H                                                                                                                                                                              
+     117 N        14 O    H                                                                                                                                                                              
+     117 ND2      62 O    H                                                                                                                                                                              
+     117 ND2      63 O    H                                                                                                                                                                              
+     118 N       107 O    H                                                                                                                                                                              
+     118 NH1      16 OE2  H                                                                                                                                                                              
+     118 NH2     111 OE1  H                                                                                                                                                                              
+     119 N        16 O    H                                                                                                                                                                              
+     120 N       105 O    H                                                                                                                                                                              
+     121 N        18 O    H                                                                                                                                                                              
+     122 N       103 O    H                                                                                                                                                                              
+     123 N        20 O    H                                                                                                                                                                              
+     124 N       101 O    H                                                                                                                                                                              
+     125 N        22 OD1  H                                                                                                                                                                              
+     126 N        22 OD1  H                                                                                                                                                                              
+     127 N        99 OD1  H                                                                                                                                                                              
+     127 NZ       98 OD1  H                                                                                                                                                                              
+     130 N       127 O    H                                                                                                                                                                              
+     134 N       130 O    H                                                                                                                                                                              
+     135 N       132 O    H                                                                                                                                                                              
+     135 ND1     133 O    H                                                                                                                                                                              
+     136 N       131 O    H                                                                                                                                                                              
+     136 NZ      129 O    H                                                                                                                                                                              
+     136 NZ      129 OD1  H                                                                                                                                                                              
+     138 N       166 O    H                                                                                                                                                                              
+     139 OH      204 O    H                                                                                                                                                                              
+     140 N       138 O    H                                                                                                                                                                              
+     140 ND2     138 OE1  H                                                                                                                                                                              
+     142 ND2     164 O    H                                                                                                                                                                              
+     142 ND2     166 OD1  H                                                                                                                                                                              
+     144 N       199 O    H                                                                                                                                                                              
+     144 N       199 OG1  H                                                                                                                                                                              
+     144 ND1     142 O    H                                                                                                                                                                              
+     146 N       197 O    H                                                                                                                                                                              
+     147 N       160 O    H                                                                                                                                                                              
+     148 N       195 O    H                                                                                                                                                                              
+     149 N       158 O    H                                                                                                                                                                              
+     149 OG1     194 OD1  H                                                                                                                                                                              
+     150 N       149 OG1  H                                                                                                                                                                              
+     151 N       156 O    H                                                                                                                                                                              
+     154 N       151 O    H                                                                                                                                                                              
+     155 N       151 O    H                                                                                                                                                                              
+     155 N       152 O    H                                                                                                                                                                              
+     156 N       151 O    H                                                                                                                                                                              
+     157 N       181 O    H                                                                                                                                                                              
+     158 N       149 O    H                                                                                                                                                                              
+     159 N       179 O    H                                                                                                                                                                              
+     160 N       147 O    H                                                                                                                                                                              
+     161 N       177 O    H                                                                                                                                                                              
+     163 N       175 O    H                                                                                                                                                                              
+     164 NH2     143 O    H                                                                                                                                                                              
+     165 N       173 O    H                                                                                                                                                                              
+     165 NE2      57 O    H                                                                                                                                                                              
+     167 N       171 O    H                                                                                                                                                                              
+     168 N       136 O    H                                                                                                                                                                              
+     170 N       167 O    H                                                                                                                                                                              
+     170 N       168 O    H                                                                                                                                                                              
+     171 N       169 OD2  H                                                                                                                                                                              
+     171 OG      169 OD2  H                                                                                                                                                                              
+     173 N       165 O    H                                                                                                                                                                              
+     173 NE2     131 OD1  H                                                                                                                                                                              
+     174 N       173 OE1  H                                                                                                                                                                              
+     175 N       163 O    H                                                                                                                                                                              
+     176 N        95 O    H                                                                                                                                                                              
+     177 N       161 O    H                                                                                                                                                                              
+     177 ND1     175 O    H                                                                                                                                                                              
+     177 NE2      61 OG1  H                                                                                                                                                                              
+     178 N        93 O    H                                                                                                                                                                              
+     179 N       159 O    H                                                                                                                                                                              
+     179 NE2      65 OE1  H                                                                                                                                                                              
+     179 NE2      90 OE1  H                                                                                                                                                                              
+     179 NE2     181 OD1  H                                                                                                                                                                              
+     180 N        91 O    H                                                                                                                                                                              
+     181 N       157 O    H                                                                                                                                                                              
+     181 ND2      90 OE1  H                                                                                                                                                                              
+     182 N        89 O    H                                                                                                                                                                              
+     184 N        87 O    H                                                                                                                                                                              
+     186 N        86 OE1  H                                                                                                                                                                              
+     195 N       148 O    H                                                                                                                                                                              
+     195 ND1     193 O    H                                                                                                                                                                              
+     195 NE2      70 OH   H                                                                                                                                                                              
+     196 N       223 O    H                                                                                                                                                                              
+     197 N       146 O    H                                                                                                                                                                              
+     198 N       221 O    H                                                                                                                                                                              
+     199 N       144 O    H                                                                                                                                                                              
+     199 OG1     144 O    H                                                                                                                                                                              
+     200 N       219 O    H                                                                                                                                                                              
+     200 NE2     198 O    H                                                                                                                                                                              
+     200 NE2     198 OG   H                                                                                                                                                                              
+     201 OG      218 OE1  H                                                                                                                                                                              
+     202 N       217 O    H                                                                                                                                                                              
+     204 N       215 O    H                                                                                                                                                                              
+     205 NZ      213 O    H                                                                                                                                                                              
+     208 N       206 OD1  H                                                                                                                                                                              
+     209 N       206 O    H                                                                                                                                                                              
+     209 N       206 OD1  H                                                                                                                                                                              
+     210 N       209 OE1  H                                                                                                                                                                              
+     211 N       209 OE1  H                                                                                                                                                                              
+     211 NE      209 OE1  H                                                                                                                                                                              
+     211 NH1     209 OE2  H                                                                                                                                                                              
+     213 N       212 OD1  H                                                                                                                                                                              
+     213 ND1     211 O    H                                                                                                                                                                              
+     213 NE2     206 O    H                                                                                                                                                                              
+     214 N        45 O    H                                                                                                                                                                              
+     215 N       204 O    H                                                                                                                                                                              
+     216 N        43 O    H                                                                                                                                                                              
+     217 N       202 O    H                                                                                                                                                                              
+     218 N        41 O    H                                                                                                                                                                              
+     219 N       200 O    H                                                                                                                                                                              
+     220 N        39 O    H                                                                                                                                                                              
+     221 N       198 O    H                                                                                                                                                                              
+     222 N        69 O    H                                                                                                                                                                              
+     223 N       196 O    H                                                                                                                                                                              
+     223 N       196 O    H                                                                                                                                                                              
+ !-----------------------------------------------------!                                                                                                                                                 
+ ! pdb2hb.f90 : This program extracts Hbonding infor-  !                                                                                                                                                 
+ !            mation to stdout                         !                                                                                                                                                 
+ !            C.Bystroff 8-NOV-2008                    !                                                                                                                                                 
+ !-----------------------------------------------------!                                                                                                                                                 
+ ! donor acceptor H-or-S                                                                                                                                                                                 
+ ! pdb file = /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.pdb                                                                                                                                              
+ !      228 residues in PDB file.                                                                                                                                                                        
+       1 N         4 OE1  H                                                                                                                                                                              
+       4 N         1 O    H                                                                                                                                                                              
+       4 N         2 O    H                                                                                                                                                                              
+       6 N         3 O    H                                                                                                                                                                              
+       7 N         4 O    H                                                                                                                                                                              
+       8 OG1       5 O    H                                                                                                                                                                              
+      11 N        34 O    H                                                                                                                                                                              
+      13 N        32 O    H                                                                                                                                                                              
+      14 N       115 O    H                                                                                                                                                                              
+      15 N        30 O    H                                                                                                                                                                              
+      16 N       117 O    H                                                                                                                                                                              
+      17 N        28 O    H                                                                                                                                                                              
+      18 N       119 O    H                                                                                                                                                                              
+      19 N        26 O    H                                                                                                                                                                              
+      20 N       121 O    H                                                                                                                                                                              
+      21 N        24 O    H                                                                                                                                                                              
+      22 N       123 O    H                                                                                                                                                                              
+      22 ND2     126 O    H                                                                                                                                                                              
+      23 N        20 OD1  H                                                                                                                                                                              
+      24 N        21 O    H                                                                                                                                                                              
+      24 ND1      21 O    H                                                                                                                                                                              
+      24 ND1      22 O    H                                                                                                                                                                              
+      25 N        23 O    H                                                                                                                                                                              
+      26 N        19 O    H                                                                                                                                                                              
+      27 N        49 OG1  H                                                                                                                                                                              
+      27 OG       18 OD1  H                                                                                                                                                                              
+      27 OG       26 O    H                                                                                                                                                                              
+      28 N        17 O    H                                                                                                                                                                              
+      29 N        46 O    H                                                                                                                                                                              
+      29 NE       31 OE1  H                                                                                                                                                                              
+      29 NH1      31 OE1  H                                                                                                                                                                              
+      29 NH2      16 OE1  H                                                                                                                                                                              
+      30 N        15 O    H                                                                                                                                                                              
+      31 N        44 O    H                                                                                                                                                                              
+      32 N        13 O    H                                                                                                                                                                              
+      33 N        42 O    H                                                                                                                                                                              
+      34 N        11 O    H                                                                                                                                                                              
+      35 N        40 O    H                                                                                                                                                                              
+      37 N        35 OD1  H                                                                                                                                                                              
+      38 N        35 O    H                                                                                                                                                                              
+      38 N        35 OD1  H                                                                                                                                                                              
+      38 ND2      35 OD2  H                                                                                                                                                                              
+      39 N        35 O    H                                                                                                                                                                              
+      39 N        36 O    H                                                                                                                                                                              
+      40 N        35 O    H                                                                                                                                                                              
+      41 N       218 O    H                                                                                                                                                                              
+      42 N        33 O    H                                                                                                                                                                              
+      42 OG1      33 O    H                                                                                                                                                                              
+      43 N       216 O    H                                                                                                                                                                              
+      44 N        31 O    H                                                                                                                                                                              
+      44 NZ      206 OD2  H                                                                                                                                                                              
+      44 NZ      209 OE2  H                                                                                                                                                                              
+      45 N       214 O    H                                                                                                                                                                              
+      46 N        29 O    H                                                                                                                                                                              
+      47 N       212 O    H                                                                                                                                                                              
+      48 N        27 O    H                                                                                                                                                                              
+      48 N        46 O    H                                                                                                                                                                              
+      48 OG1      27 O    H                                                                                                                                                                              
+      49 N        47 O    H                                                                                                                                                                              
+      52 N       212 OD2  H                                                                                                                                                                              
+      54 N        52 O    H                                                                                                                                                                              
+      56 NE1     212 OD1  H                                                                                                                                                                              
+      56 NE1     213 O    H                                                                                                                                                                              
+      58 N        55 O    H                                                                                                                                                                              
+      58 OG1      55 O    H                                                                                                                                                                              
+      58 OG1     102 OH   H                                                                                                                                                                              
+      59 N        56 O    H                                                                                                                                                                              
+      59 N        57 O    H                                                                                                                                                                              
+      60 N        57 O    H                                                                                                                                                                              
+      62 N        59 O    H                                                                                                                                                                              
+      63 N        59 O    H                                                                                                                                                                              
+      63 N        60 O    H                                                                                                                                                                              
+      66 N        64 O    H                                                                                                                                                                              
+      67 N        64 O    H                                                                                                                                                                              
+      67 N        65 O    H                                                                                                                                                                              
+      68 N        65 O    H                                                                                                                                                                              
+      68 OG       65 O    H                                                                                                                                                                              
+      69 N       220 O    H                                                                                                                                                                              
+      70 N        68 O    H                                                                                                                                                                              
+      73 N        72 OD2  H                                                                                                                                                                              
+      73 ND1     225 O    H                                                                                                                                                                              
+      74 N        71 O    H                                                                                                                                                                              
+      74 N        72 O    H                                                                                                                                                                              
+      75 N        71 O    H                                                                                                                                                                              
+      75 NZ        4 OE2  H                                                                                                                                                                              
+      76 NH2     193 OD2  H                                                                                                                                                                              
+      77 N        74 O    H                                                                                                                                                                              
+      77 N        75 O    H                                                                                                                                                                              
+      77 ND1      74 O    H                                                                                                                                                                              
+      77 NE2     193 OD2  H                                                                                                                                                                              
+      78 N        75 O    H                                                                                                                                                                              
+      78 N        76 O    H                                                                                                                                                                              
+      79 N        77 O    H                                                                                                                                                                              
+      80 N        78 OD1  H                                                                                                                                                                              
+      81 N        78 OD1  H                                                                                                                                                                              
+      81 NZ       68 O    H                                                                                                                                                                              
+      81 NZ       78 OD2  H                                                                                                                                                                              
+      82 N        78 O    H                                                                                                                                                                              
+      82 N        79 O    H                                                                                                                                                                              
+      82 OG       78 O    H                                                                                                                                                                              
+      83 N        79 O    H                                                                                                                                                                              
+      84 N        81 O    H                                                                                                                                                                              
+      87 N        83 O    H                                                                                                                                                                              
+      88 N       108 O    H                                                                                                                                                                              
+      89 N       182 O    H                                                                                                                                                                              
+      90 N       106 O    H                                                                                                                                                                              
+      91 N       180 O    H                                                                                                                                                                              
+      92 N       104 O    H                                                                                                                                                                              
+      92 NE      179 OE1  H                                                                                                                                                                              
+      92 NH1      61 O    H                                                                                                                                                                              
+      92 NH2     179 OE1  H                                                                                                                                                                              
+      93 N       178 O    H                                                                                                                                                                              
+      94 N       102 O    H                                                                                                                                                                              
+      95 N       176 O    H                                                                                                                                                                              
+      96 N       100 O    H                                                                                                                                                                              
+      97 N       173 OE1  H                                                                                                                                                                              
+      97 N       174 O    H                                                                                                                                                                              
+      99 N        96 O    H                                                                                                                                                                              
+     100 N        99 OD1  H                                                                                                                                                                              
+     101 N       124 O    H                                                                                                                                                                              
+     101 OG1     100 O    H                                                                                                                                                                              
+     102 N        94 O    H                                                                                                                                                                              
+     102 OH       58 OG1  H                                                                                                                                                                              
+     103 N       122 O    H                                                                                                                                                                              
+     104 N        92 O    H                                                                                                                                                                              
+     105 N       120 O    H                                                                                                                                                                              
+     105 NH1     107 OE2  H                                                                                                                                                                              
+     105 NH2     107 OE2  H                                                                                                                                                                              
+     106 N        90 O    H                                                                                                                                                                              
+     107 N       118 O    H                                                                                                                                                                              
+     108 N        88 O    H                                                                                                                                                                              
+     109 N       116 O    H                                                                                                                                                                              
+     109 NZ      107 OE1  H                                                                                                                                                                              
+     110 N        85 O    H                                                                                                                                                                              
+     111 N       114 O    H                                                                                                                                                                              
+     114 N       111 O    H                                                                                                                                                                              
+     115 N        12 O    H                                                                                                                                                                              
+     116 N       109 O    H                                                                                                                                                                              
+     117 N        14 O    H                                                                                                                                                                              
+     117 ND2      62 O    H                                                                                                                                                                              
+     117 ND2      63 O    H                                                                                                                                                                              
+     118 N       107 O    H                                                                                                                                                                              
+     118 NH1      16 OE2  H                                                                                                                                                                              
+     118 NH2     111 OE1  H                                                                                                                                                                              
+     119 N        16 O    H                                                                                                                                                                              
+     120 N       105 O    H                                                                                                                                                                              
+     121 N        18 O    H                                                                                                                                                                              
+     122 N       103 O    H                                                                                                                                                                              
+     123 N        20 O    H                                                                                                                                                                              
+     124 N       101 O    H                                                                                                                                                                              
+     125 N        22 OD1  H                                                                                                                                                                              
+     126 N        22 OD1  H                                                                                                                                                                              
+     127 N        99 OD1  H                                                                                                                                                                              
+     127 NZ       98 OD1  H                                                                                                                                                                              
+     130 N       127 O    H                                                                                                                                                                              
+     134 N       130 O    H                                                                                                                                                                              
+     135 N       132 O    H                                                                                                                                                                              
+     135 ND1     133 O    H                                                                                                                                                                              
+     136 N       131 O    H                                                                                                                                                                              
+     136 NZ      129 O    H                                                                                                                                                                              
+     136 NZ      129 OD1  H                                                                                                                                                                              
+     138 N       166 O    H                                                                                                                                                                              
+     139 OH      204 O    H                                                                                                                                                                              
+     140 N       138 O    H                                                                                                                                                                              
+     140 ND2     138 OE1  H                                                                                                                                                                              
+     142 ND2     164 O    H                                                                                                                                                                              
+     142 ND2     166 OD1  H                                                                                                                                                                              
+     144 N       199 O    H                                                                                                                                                                              
+     144 N       199 OG1  H                                                                                                                                                                              
+     144 ND1     142 O    H                                                                                                                                                                              
+     146 N       197 O    H                                                                                                                                                                              
+     147 N       160 O    H                                                                                                                                                                              
+     148 N       195 O    H                                                                                                                                                                              
+     149 N       158 O    H                                                                                                                                                                              
+     149 OG1     194 OD1  H                                                                                                                                                                              
+     150 N       149 OG1  H                                                                                                                                                                              
+     151 N       156 O    H                                                                                                                                                                              
+     154 N       151 O    H                                                                                                                                                                              
+     155 N       151 O    H                                                                                                                                                                              
+     155 N       152 O    H                                                                                                                                                                              
+     156 N       151 O    H                                                                                                                                                                              
+     157 N       181 O    H                                                                                                                                                                              
+     158 N       149 O    H                                                                                                                                                                              
+     159 N       179 O    H                                                                                                                                                                              
+     160 N       147 O    H                                                                                                                                                                              
+     161 N       177 O    H                                                                                                                                                                              
+     163 N       175 O    H                                                                                                                                                                              
+     164 NH2     143 O    H                                                                                                                                                                              
+     165 N       173 O    H                                                                                                                                                                              
+     165 NE2      57 O    H                                                                                                                                                                              
+     167 N       171 O    H                                                                                                                                                                              
+     168 N       136 O    H                                                                                                                                                                              
+     170 N       167 O    H                                                                                                                                                                              
+     170 N       168 O    H                                                                                                                                                                              
+     171 N       169 OD2  H                                                                                                                                                                              
+     171 OG      169 OD2  H                                                                                                                                                                              
+     173 N       165 O    H                                                                                                                                                                              
+     173 NE2     131 OD1  H                                                                                                                                                                              
+     174 N       173 OE1  H                                                                                                                                                                              
+     175 N       163 O    H                                                                                                                                                                              
+     176 N        95 O    H                                                                                                                                                                              
+     177 N       161 O    H                                                                                                                                                                              
+     177 ND1     175 O    H                                                                                                                                                                              
+     177 NE2      61 OG1  H                                                                                                                                                                              
+     178 N        93 O    H                                                                                                                                                                              
+     179 N       159 O    H                                                                                                                                                                              
+     179 NE2      65 OE1  H                                                                                                                                                                              
+     179 NE2      90 OE1  H                                                                                                                                                                              
+     179 NE2     181 OD1  H                                                                                                                                                                              
+     180 N        91 O    H                                                                                                                                                                              
+     181 N       157 O    H                                                                                                                                                                              
+     181 ND2      90 OE1  H                                                                                                                                                                              
+     182 N        89 O    H                                                                                                                                                                              
+     184 N        87 O    H                                                                                                                                                                              
+     186 N        86 OE1  H                                                                                                                                                                              
+     195 N       148 O    H                                                                                                                                                                              
+     195 ND1     193 O    H                                                                                                                                                                              
+     195 NE2      70 OH   H                                                                                                                                                                              
+     196 N       223 O    H                                                                                                                                                                              
+     197 N       146 O    H                                                                                                                                                                              
+     198 N       221 O    H                                                                                                                                                                              
+     199 N       144 O    H                                                                                                                                                                              
+     199 OG1     144 O    H                                                                                                                                                                              
+     200 N       219 O    H                                                                                                                                                                              
+     200 NE2     198 O    H                                                                                                                                                                              
+     200 NE2     198 OG   H                                                                                                                                                                              
+     201 OG      218 OE1  H                                                                                                                                                                              
+     202 N       217 O    H                                                                                                                                                                              
+     204 N       215 O    H                                                                                                                                                                              
+     205 NZ      213 O    H                                                                                                                                                                              
+     208 N       206 OD1  H                                                                                                                                                                              
+     209 N       206 O    H                                                                                                                                                                              
+     209 N       206 OD1  H                                                                                                                                                                              
+     210 N       209 OE1  H                                                                                                                                                                              
+     211 N       209 OE1  H                                                                                                                                                                              
+     211 NE      209 OE1  H                                                                                                                                                                              
+     211 NH1     209 OE2  H                                                                                                                                                                              
+     213 N       212 OD1  H                                                                                                                                                                              
+     213 ND1     211 O    H                                                                                                                                                                              
+     213 NE2     206 O    H                                                                                                                                                                              
+     214 N        45 O    H                                                                                                                                                                              
+     215 N       204 O    H                                                                                                                                                                              
+     216 N        43 O    H                                                                                                                                                                              
+     217 N       202 O    H                                                                                                                                                                              
+     218 N        41 O    H                                                                                                                                                                              
+     219 N       200 O    H                                                                                                                                                                              
+     220 N        39 O    H                                                                                                                                                                              
+     221 N       198 O    H                                                                                                                                                                              
+     222 N        69 O    H                                                                                                                                                                              
+     223 N       196 O    H                                                                                                                                                                              
+     223 N       196 O    H                                                                                                                                                                              
+ Done with getdistancemat
+ ============>>> found            1  PIVOTS
+ ============>>> found no SEAMS
+ ============>>> found            4  HINGES
+ ============>>> found            1  BREAKs
+ ============>>> found            4  PIVOTS
+ ============>>> found            3  PIVOTS
+ ============>>> found            3  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found no SEAMS
+ ============>>> found no HINGES
+ WARNING: No cutpoints found for ...........................................................................................................................AAAAAAAAAAAA.............................................................................................
+ MELTING it.
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            3  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            3  PIVOTS
+ ============>>> found            3  PIVOTS
+ ============>>> found            3  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            3  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            3  PIVOTS
+ ============>>> found            3  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  BREAKs
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  BREAKs
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  BREAKs
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  BREAKs
+ ============>>> found            1  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  BREAKs
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            3  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            3  PIVOTS
+ ============>>> found            3  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  BREAKs
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  BREAKs
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            4  PIVOTS
+ ============>>> found            3  PIVOTS
+ ============>>> found            3  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  BREAKs
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            3  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            4  PIVOTS
+ ============>>> found            3  PIVOTS
+ ============>>> found            3  PIVOTS
+ ============>>> found            1  BREAKs
+ ============>>> found            1  BREAKs
+ ============>>> found            3  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  BREAKs
+ ============>>> found no SEAMS
+ ============>>> found            4  HINGES
+ ============>>> found            1  BREAKs
+ ============>>> found            3  PIVOTS
+ ============>>> found            3  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            3  PIVOTS
+ ============>>> found            3  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  BREAKs
+ ============>>> found            1  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  BREAKs
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  BREAKs
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  BREAKs
+ ============>>> found            1  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            3  PIVOTS
+ ============>>> found            3  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  BREAKs
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  BREAKs
+ ============>>> found            1  BREAKs
+ ============>>> found            3  PIVOTS
+ ============>>> found            3  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found no SEAMS
+ ============>>> found no HINGES
+ WARNING: No cutpoints found for ..............................................................................BBBBBBBBBBBB..........................................................................................................................................
+ MELTING it.
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            3  PIVOTS
+ ============>>> found            1  BREAKs
+ ============>>> found            3  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            3  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found no SEAMS
+ ============>>> found            4  HINGES
+ ============>>> found no SEAMS
+ ============>>> found            3  HINGES
+ ============>>> found            1  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  BREAKs
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  BREAKs
+ ============>>> found            1  BREAKs
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  BREAKs
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  BREAKs
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  BREAKs
+ ============>>> found            2  BREAKs
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  BREAKs
+ ============>>> found            1  BREAKs
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  BREAKs
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  BREAKs
+ ============>>> found            1  BREAKs
+ ============>>> found            1  PIVOTS
+ ============>>> found            3  BREAKs
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  BREAKs
+ ============>>> found            1  BREAKs
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  BREAKs
+ ============>>> found            2  BREAKs
+ ============>>> found            1  BREAKs
+ ============>>> found            1  BREAKs
+ ============>>> found            2  PIVOTS
+ ============>>> found            3  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  BREAKs
+ ============>>> found            1  BREAKs
+ ============>>> found            1  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            3  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  BREAKs
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  BREAKs
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  BREAKs
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  BREAKs
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  BREAKs
+ ============>>> found            1  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  BREAKs
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  BREAKs
+ ============>>> found            1  BREAKs
+ ============>>> found            1  PIVOTS
+ ============>>> found            3  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  BREAKs
+ ============>>> found            1  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            3  PIVOTS
+ ============>>> found            2  BREAKs
+ ============>>> found            1  BREAKs
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  BREAKs
+ ============>>> found            3  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  BREAKs
+ ============>>> found            1  BREAKs
+ ============>>> found            1  BREAKs
+ ============>>> found            1  BREAKs
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            2  BREAKs
+ ============>>> found            1  BREAKs
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  BREAKs
+ ============>>> found            1  BREAKs
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            2  PIVOTS
+ ============>>> found            2  BREAKs
+ ============>>> found            1  BREAKs
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            1  BREAKs
+ ============>>> found            2  PIVOTS
+ ============>>> found            1  PIVOTS
+ ============>>> found            3  PIVOTS

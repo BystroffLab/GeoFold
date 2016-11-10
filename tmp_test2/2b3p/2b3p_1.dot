@@ -1,0 +1,45 @@
+#CREATED_BY maxTraffic.cpp v.  Thu Aug  1 15:20:02 EDT 2013 
+#Input DAG file  (argv[1]) =/home/cynthia/Local/GeoFold/tmp/2b3p/2b3p_1.dag.out
+#Minimum traffic to show (argv[2]) =0.1
+#No output URL file 
+#starting maxTraffic algorithm...
+#number of nodes in maxTraffic: 7
+#Traffic cutoff used: 0.1
+digraph FILENAME
+{
+size="15, 25"n1 [label="1", fillcolor="orange", style="bold, filled",  shape=circle, height=1.3, fontsize=50, URL="../isegment.cgi?iseg=n1&dag=2b3p/2b3p_1.dag.out&"];
+tp796 [label="", fillcolor="red", style="bold, filled",  shape=diamond, height=1.2, width=1.2, fontsize=20, URL="../isegment.cgi?iseg=tp796&dag=2b3p/2b3p_1.dag.out&"];
+n1 -> tp796[style="setlinewidth(16)", color=green, weight="60"];
+tp796 [label="", fillcolor="red", style="bold, filled", shape=diamond, height=1.2, width=1.2, fontsize=20, URL="../isegment.cgi?iseg=tp796&dag=2b3p/2b3p_1.dag.out&"];
+n2 [label="", fillcolor="orange", style="bold, filled",  shape=circle, height=1.3, fontsize=20, URL="../isegment.cgi?iseg=n2&dag=2b3p/2b3p_1.dag.out&"];
+tp796 -> n2[style="setlinewidth(16)", color=green, weight="60"];
+tp796 [label="", fillcolor="red", style="bold, filled", shape=diamond, height=1.2, width=1.2, fontsize=20, URL="../isegment.cgi?iseg=tp796&dag=2b3p/2b3p_1.dag.out&"];
+n5 [label="", fillcolor="orange", style="bold, filled",  shape=circle, height=1.3, fontsize=20, URL="../isegment.cgi?iseg=n5&dag=2b3p/2b3p_1.dag.out&"];
+tp796 -> n5[style="setlinewidth(16)", color=green, weight="60"];
+n5 [label="5", fillcolor="orange", style="bold, filled",  shape=circle, height=1.3, fontsize=50, URL="../isegment.cgi?iseg=n5&dag=2b3p/2b3p_1.dag.out&"];
+th130 [label="", fillcolor="red", style="bold, filled",  shape=diamond, height=1.2, width=1.2, fontsize=20, URL="../isegment.cgi?iseg=th130&dag=2b3p/2b3p_1.dag.out&"];
+n5 -> th130[style="setlinewidth(16)", color=green, weight="60"];
+th130 [label="", fillcolor="black", style="bold, filled", shape=diamond, height=1.2, width=1.2, fontsize=20, URL="../isegment.cgi?iseg=th130&dag=2b3p/2b3p_1.dag.out&"];
+n6 [label="", fillcolor="orange", style="bold, filled",  shape=circle, height=1.3, fontsize=20, URL="../isegment.cgi?iseg=n6&dag=2b3p/2b3p_1.dag.out&"];
+th130 -> n6[style="setlinewidth(16)", color=green, weight="60"];
+th130 [label="", fillcolor="black", style="bold, filled", shape=diamond, height=1.2, width=1.2, fontsize=20, URL="../isegment.cgi?iseg=th130&dag=2b3p/2b3p_1.dag.out&"];
+n163 [label="", fillcolor="orange", style="bold, filled",  shape=circle, height=1.3, fontsize=20, URL="../isegment.cgi?iseg=n163&dag=2b3p/2b3p_1.dag.out&"];
+th130 -> n163[style="setlinewidth(16)", color=green, weight="60"];
+n5 [label="5", fillcolor="orange", style="bold, filled",  shape=circle, height=1.3, fontsize=50, URL="../isegment.cgi?iseg=n5&dag=2b3p/2b3p_1.dag.out&"];
+th277 [label="", fillcolor=".0 .5 1.0",  shape=diamond, style="bold, filled", 
+ URL="../isegment.cgi?iseg=th277&dag=2b3p/2b3p_1.dag.out&"];
+n5 -> th277
+[style="setlinewidth(3)", color=gray, weight="10"];
+th277 [label="", fillcolor="0.0 0.0 0.1",  shape=diamond, style="bold, filled", 
+ URL="../isegment.cgi?iseg=th277&dag=2b3p/2b3p_1.dag.out&"];
+n166 [label="", fillcolor=".1 .5 1.0",  shape=circle, style="bold, filled", 
+ URL="../isegment.cgi?iseg=n166&dag=2b3p/2b3p_1.dag.out&"];
+th277 -> n166
+[style="setlinewidth(3)", color=gray, weight="10"];
+th277 [label="", fillcolor="0.0 0.0 0.1",  shape=diamond, style="bold, filled", 
+ URL="../isegment.cgi?iseg=th277&dag=2b3p/2b3p_1.dag.out&"];
+n272 [label="", fillcolor=".1 .5 1.0",  shape=circle, style="bold, filled", 
+ URL="../isegment.cgi?iseg=n272&dag=2b3p/2b3p_1.dag.out&"];
+th277 -> n272
+[style="setlinewidth(3)", color=gray, weight="10"];
+}
