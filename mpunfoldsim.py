@@ -199,8 +199,8 @@ def readArg(argFile):
     """
     LName = parList['LName']
     paramFilename = parList['paramFilename']
-    thermal = parList['thermal']
-    debug = parList['debug']
+    thermal = str2bool(parList['thermal'])
+    debug = str2bool(parList['debug'])
     gDir = parList['gDir']
     htmlTmp = parList['htmlTmp']
     htmlOut = parList['htmlOut']
