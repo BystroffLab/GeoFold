@@ -149,7 +149,7 @@ def readArg(argFile):
             if len(line) > 2:
                 if line[0] == 'omegaRange':
                     for i in range(1, len(line)):
-                        omegaRange.append(int(line[i]))
+                        omegaRange.append(float(line[i]))
                 else:
                     line[1] = " ".join(line[1:])
             if len(line) == 2:
