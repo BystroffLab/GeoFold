@@ -177,7 +177,7 @@ PROGRAM geofold
     !------------------------------ WORK   ----------------
     !write(0,*) 'getcutpoints'
     !timer_write added by SAN
-    timerfile = "/home/cynthia/Local/tmp/timer.txt"
+    timerfile = "/bach1/home/sanw/GeoFold/tmp/timer.txt"
     msg = "time used by RECURSIVE SUBROUTINE getcutpoints"
     start_timer = omp_get_wtime()
     call getcutpoints(gptr,contacts,flory,T)

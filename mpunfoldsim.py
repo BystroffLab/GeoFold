@@ -135,12 +135,28 @@ def readArg(argFile):
     	argRead = open(argFile, 'r')
     except IOError:
     	sys.exit("Couldn't open file %s"%(argFile))
-
-    output = {}
+    
+    """
     STATUSES = ('omegaRange:', 'LName:', 'paramFilename:', 'thermal:', 'doIt:', 'debug:', 'gDir:', 'htmlTmp:', 'htmlOut:')
     statuses = iter(STATUSES)
     states = {}
-    omegaRange = []
+    """
+    parList = {}
+    omegaRange = [] 
+    for line in argRead:
+        if line[0] != "#":
+            line = line.split()
+            if len(line) > 2:
+                if line[0] == 'omegaRange':
+                    curr_line = line.split(' ')
+                    for i in range(1, len(curr_line)):
+                        omegaRange.append(int(curr_line[i]))
+                else:
+                    line[1] = " ".join(line[1:])
+            if len(line) == 2:
+                parList[line[0]] = line[1]
+    argRead.close()
+    """
     for line in argRead:
         # match all words in each line
         columns = re.findall("[^\s]+", line.strip())
@@ -185,7 +201,15 @@ def readArg(argFile):
         elif status == 'htmlOut:':
 	    htmlOut = columns[0]
 	    continue
-
+    """
+    LName = parList['LName']
+    paramFilename = parList['paramFilename']
+    thermal = parList['thermal']
+    doIt = parList['doIt']
+    debug = parList['debug']
+    gDir = parList['gDir']
+    htmlTmp = parList['htmlTmp']
+    htmlOut = parList['htmlOut']
     return omegaRange, LName, paramFilename, thermal, doIt, debug, gDir, htmlTmp, htmlOut
 
 ##++++++++++++++++++++++++++++++++++++++++++
