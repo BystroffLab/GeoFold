@@ -664,10 +664,12 @@ jobDir = configuration['jobDir']
 paramTemplate = configuration['paramTemplate']
 baseURL = configuration['baseURL']
 outputURL = configuration['outputURL']
+# revised by San for debug
+"""
 dot = configuration['dot']
 convert = configuration['convert']
 gnuplot = configuration['gnuplot']
-
+"""
 
 '''
 #Directory settings for server

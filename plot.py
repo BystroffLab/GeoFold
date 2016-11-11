@@ -1,7 +1,7 @@
 import commands
 #make .plot in proper format
 LName = "1VH0"
-gnuplot = "/bach1/home/walcob/usr/bin/gnuplot"
+gnuplot = "/bach1/home/sanw/usr/bin/gnuplot"
 nn = 5
 #list of colors to use
 colors = ['black','red','orange','yellow','green','blue','violet','cyan','magenta','pink','gold']

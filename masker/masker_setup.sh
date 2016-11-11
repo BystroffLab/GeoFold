@@ -1,5 +1,5 @@
-export MASKERDIR=/Users/wenyinsan/GitHub/GeoFold/masker
-export DESIGN_HOME=/Users/wenyinsan/GitHub/GeoFold/masker
+export MASKERDIR=/bach1/home/sanw/GeoFold/masker
+export DESIGN_HOME=/bach1/home/sanw/GeoFold/masker
 export MSIZE=512
 export DTHETA=9.0
 export MASKLIB=$MASKERDIR/$MSIZE.mask
