@@ -148,9 +148,8 @@ def readArg(argFile):
             line = line.split()
             if len(line) > 2:
                 if line[0] == 'omegaRange':
-                    curr_line = line.split(' ')
-                    for i in range(1, len(curr_line)):
-                        omegaRange.append(int(curr_line[i]))
+                    for i in range(1, len(line)):
+                        omegaRange.append(int(line[i]))
                 else:
                     line[1] = " ".join(line[1:])
             if len(line) == 2:
