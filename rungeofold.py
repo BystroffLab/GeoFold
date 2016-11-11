@@ -1242,12 +1242,11 @@ else:
     sys.exit("Couldn't open file %s"%(tmp_par_file))
   parWrite.write('omegaRange ')
   for value in omegaRange:
-    parWrite.write("%s" %(value))
+    parWrite.write("%s " %(value))
   parWrite.write('\n')
   parWrite.write('LName %s\n' %(LName))
   parWrite.write('paramFilename %s\n' %(paramFilename))
   parWrite.write('thermal %s\n' %(thermal))
-  parWrite.write('doIt %s\n' %(doIt))
   parWrite.write('debug %s\n' %(debug))
   parWrite.write('gDir %s\n' %(gDir))
   parWrite.write('htmlTmp %s\n' %(htmlTmp))

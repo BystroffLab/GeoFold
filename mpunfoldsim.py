@@ -182,10 +182,6 @@ def readArg(argFile):
 	    #thermal = bool(columns[0])
 	    continue
 
-    	elif status == 'doIt:':
-	    doIt = int(columns[0])
-	    continue
- 
         elif status == 'debug:':
 	    doIt = str2bool(columns[0])
 	    continue
@@ -205,12 +201,11 @@ def readArg(argFile):
     LName = parList['LName']
     paramFilename = parList['paramFilename']
     thermal = parList['thermal']
-    doIt = parList['doIt']
     debug = parList['debug']
     gDir = parList['gDir']
     htmlTmp = parList['htmlTmp']
     htmlOut = parList['htmlOut']
-    return omegaRange, LName, paramFilename, thermal, doIt, debug, gDir, htmlTmp, htmlOut
+    return omegaRange, LName, paramFilename, thermal, debug, gDir, htmlTmp, htmlOut
 
 ##++++++++++++++++++++++++++++++++++++++++++
 ##++++++++++++++++++++++++++++++++++++++++++
@@ -243,12 +238,11 @@ def main():
     LName = " "
     paramFilename = " "
     thermal = False
-    doIt = 0
     debug = False
     gDir = " "
     htmlTmp = " "
     htmlOut = " "
-    omegaRange, LName, paramFilename, thermal, doIt, debug, gDir, htmlTmp, htmlOut = readArg(tmp_par_file)
+    omegaRange, LName, paramFilename, thermal, debug, gDir, htmlTmp, htmlOut = readArg(tmp_par_file)
 
     if rank == 0:
 	"""
