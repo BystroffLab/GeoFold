@@ -670,7 +670,8 @@ dot = configuration['dot']
 convert = configuration['convert']
 gnuplot = configuration['gnuplot']
 """
-
+#global gnuplot added by san
+gnuplot = "/bach1/home/sanw/usr/bin/gnuplot"
 '''
 #Directory settings for server
 if Username == "bystrc":
