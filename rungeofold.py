@@ -1267,7 +1267,7 @@ else:
           cp = "cp %s/%s.dag %s/%s_%s.dag" %(tmpDir,LName,tmpDir,LName,nn)
           commands.getstatusoutput(cp)
       MPIRUN = get_mpirun()
-      command = "bach1"+thisDir + "/mpunfoldsim.py " + tmpDir
+      command = "/bach1"+thisDir + "/mpunfoldsim.py " + tmpDir
       status, output = launch(command, runcmd=MPIRUN, hostfile = None, nproc=3, pipe=False)
       """
         if not thermal:
