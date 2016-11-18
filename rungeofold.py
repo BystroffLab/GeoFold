@@ -1268,7 +1268,7 @@ else:
           commands.getstatusoutput(cp)
       MPIRUN = get_mpirun()
       command = "/bach1"+thisDir + "/mpunfoldsim.py " + tmpDir
-      status, output = launch(command, runcmd=MPIRUN, hostfile = None, nproc=1, pipe=False)
+      status, output = launch(command, runcmd=MPIRUN, hostfile = None, nproc=4, pipe=False)
       """
         if not thermal:
           sed = "sed -e \"s/^OMEGA .*/OMEGA %s/\" %s > %s.1" %(value,paramFilename,paramFilename)
