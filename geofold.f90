@@ -64,7 +64,7 @@ PROGRAM geofold
   logical :: all_seams = .true.
   ! variables added by san
   CHARACTER(len=1000) :: timerfile=" ", msg = " "
-  DOUBLE PRECISION :: timer, start_timer, end_timer
+  real (kind = 8) :: timer, start_timer, end_timer
   ! character(len=3) :: aa
   !------------------------------ COMMAND LINE ----------------
   ! mpi added by SAN
@@ -177,7 +177,7 @@ PROGRAM geofold
     !------------------------------ WORK   ----------------
     !write(0,*) 'getcutpoints'
     !timer_write added by SAN
-    timerfile = "/bach1/home/sanw/GeoFold/tmp/timer.txt"
+    timerfile = "./tmp/timer.txt"
     msg = "time used by RECURSIVE SUBROUTINE getcutpoints"
     start_timer = omp_get_wtime()
     call getcutpoints(gptr,contacts,flory,T)
