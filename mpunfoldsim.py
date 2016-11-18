@@ -203,7 +203,7 @@ def main():
             end = rank+chunk_size
         else:
             end = len(omegaRange)
-        for i in range (start, end):
+        for i in range (int(start), int(end)):
             tmpWrite = open(htmlTmp,'a')
             value = omegaRange[i]
             if not thermal:
