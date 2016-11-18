@@ -25,59 +25,7 @@ except Exception as e :
     traceback.print_exc ()
     print "error : %s" % e
     sys.exit (1)
-"""
-readConf(confFile) method from original version of GeoFold
-bach_sanw.conf saved at the home directory
 
-conf = "bach_sanw.conf"
-
-
-def readConf(confFile):
-  output = {}
-  conf = open(confFile,'r')
-  for line in conf:
-    if line[0] != "#":
-      line = line.split()
-      if len(line) > 2:
-        line[1] = " ".join(line[1:])
-      if len(line) == 2:
-        output[line[0]] = line[1]
-  conf.close()
-  return output
-#added by SAN
-#B. Walcott publicly accessible results
-thisDir   = os.getcwd()
-baseDir   = thisDir
-gDir      = baseDir
-bDir      = baseDir
-maskerDir = gDir+'/masker'
-pdbDir    = gDir+'/pdbs'
-tmpDir    = baseDir+"/tmp"
-logDir    = baseDir+"/log"
-htmlDir   = baseDir+"/html"
-jobDir    = baseDir+"/job"
-paramTemplate=gDir+'/parameters'
-#baseURL='http://www.bioinfo.rpi.edu/bystrc/geofold'
-outputURL='output'
-
-configuration = readConf(conf)
-thisDir = os.getcwd()
-baseDir = configuration['baseDir']
-gDir = configuration['gDir']
-bDir = configuration['bDir']
-maskerDir = configuration['maskerDir']
-tmpDir = configuration['tmpDir']
-pdbDir = configuration['pdbDir']
-logDir = configuration['logDir']
-htmlDir = configuration['htmlDir']
-jobDir = configuration['jobDir']
-paramTemplate = configuration['paramTemplate']
-baseURL = configuration['baseURL']
-outputURL = configuration['outputURL']
-dot = configuration['dot']
-convert = configuration['convert']
-gnuplot = configuration['gnuplot']
-"""
 def str2bool(v):
   return v.lower() in ("yes", "true", "t", "1")
 

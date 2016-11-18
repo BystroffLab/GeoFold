@@ -23,9 +23,9 @@ def launch(command, runcmd = "mpirun -np", hostfile = None, nproc=None, output=N
     if nproc == None:
         nproc = get_cpu_num()
     if hostfile == None:
-        hostfile = "hosts" 
+        hostfile = "./hosts" 
 
-    cmd = runcmd + " " + str(nproc) +' --hostfile ' + hostfile + " python " + command
+    cmd = runcmd + " " + str(nproc) +' -hostfile ' + hostfile + " python " + command
     #cmd = runcmd + " " + str(nproc) + " python " + command
     if output != None:
         cmd = cmd + " > "+output
