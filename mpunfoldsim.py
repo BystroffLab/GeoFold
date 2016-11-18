@@ -211,23 +211,23 @@ def main():
             else:
                 sed = "sed -e \"s/^TEMPERATURE .*/TEMPERATURE %s/\" %s > %s.1"%(value, paramFilename,paramFilename)
             status,output=commands.getstatusoutput(sed)
-            logFile = "%s/%s_%s.log" %(tmpDir,LName,rank)
+            logFile = "%s/%s_%s.log" %(tmpDir,LName,i+1)
             #print("Thermal is %s:" %(thermal))
             if not thermal:
-                print("============= run %s omega = %s =============" %(rank,value))
-                tmpWrite.write("============= run %s omega = %s =============<br>" %(rank,value))
-                writeOut("============= run %s omega = %s =============\n" %(rank,value))
+                print("============= run %s omega = %s =============" %(i+1,value))
+                tmpWrite.write("============= run %s omega = %s =============<br>" %(i+1,value))
+                writeOut("============= run %s omega = %s =============\n" %(i+1,value))
             else:
-                print("============= run %s temp = %s K =============" %(rank,value))
-                tmpWrite.write("============= run %s temp = %s K =============<br>" %(rank,value))
-                writeOut("============= run %s temp = %s K =============\n" %(rank,value))
-            writeTime = "Time before running UNFOLDSIM at node"+str(rank)+time.strftime("%c") +'<br>'
+                print("============= run %s temp = %s K =============" %(i+1,value))
+                tmpWrite.write("============= run %s temp = %s K =============<br>" %(i+1,value))
+                writeOut("============= run %s temp = %s K =============\n" %(i+1,value))
+            writeTime = "Time before running UNFOLDSIM at node "+str(i+1)+time.strftime("%c") +'<br>'
             tmpWrite.write(writeTime)
             writeOut(writeTime)
-            unfoldsim = "%s/xunfoldsim %s/%s_%s.dag %s.1 > %s" %(gDir,tmpDir,LName,rank,paramFilename,logFile)
+            unfoldsim = "%s/xunfoldsim %s/%s_%s.dag %s.1 > %s" %(gDir,tmpDir,LName,i+1,paramFilename,logFile)
             tmpWrite.write(unfoldsim+'<br>')
             runProgram(unfoldsim)
-            writeTime = "Time after running UNFOLDSIM at node"+str(rank)+time.strftime("%c")+'<br>'
+            writeTime = "Time after running UNFOLDSIM at node "+str(i+1)+time.strftime("%c")+'<br>'
             tmpWrite.write(writeTime)
             writeOut(writeTime)
             tmpWrite.write("<p><pre><br>")
