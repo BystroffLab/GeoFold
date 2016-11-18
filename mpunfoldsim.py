@@ -197,7 +197,7 @@ def main():
         if size >= len(omegaRange):
             chunk_size = 1
         else:
-            chunk_size = math.ceil(float(omegaRange/size))
+            chunk_size = math.ceil(float(len(omegaRange)/size))
         start = rank*chunk_size
         if rank != size-1:
             end = rank+chunk_size
