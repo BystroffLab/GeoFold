@@ -173,6 +173,7 @@ def Range():
 		end = len(omegaRange)
 	return start, end
 """
+
 def main():
     global tmpWrite
     global writeOut
@@ -191,18 +192,20 @@ def main():
     htmlOut = " "
     omegaRange, LName, paramFilename, thermal, debug, gDir, htmlTmp, htmlOut = readArg(tmp_par_file)
 
-    if rank == 0:
-	"""
-	Wait for gather
-	"""
-        print "Root rank started"
-
-
-    else:
-        
-        if rank <= len(omegaRange):
+    if rank >= 0:
+	
+        if size >= len(omegaRange):
+            chunk_size = 1
+        else:
+            chunk_size = math.ceil(float(omegaRange/size))
+        start = rank*chunk_size
+        if rank != size-1:
+            end = rank+chunk_size
+        else:
+            end = len(omegaRange)
+        for i in range (start, end):
             tmpWrite = open(htmlTmp,'a')
-            value = omegaRange[rank-1]
+            value = omegaRange[i]
             if not thermal:
                 sed = "sed -e \"s/^OMEGA .*/OMEGA %s/\" %s > %s.1" %(value,paramFilename,paramFilename)
             else:
