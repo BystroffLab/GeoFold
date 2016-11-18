@@ -1205,7 +1205,7 @@ else:
     tmpWrite.write(writeTime)
     writeOut(writeTime)
     geofold = "mpirun -np 4 %s/xgeofold %s/%s.void.pdb %s/%s.dag %s > %s/%s.dag.log" %(gDir,tmpDir,LName,tmpDir,LName,paramFilename,tmpDir,LName)
-    #runProgram(geofold)
+    runProgram(geofold)
     writeTime = "Time after running GEOFOLD "+time.strftime("%c")+'<br>'
     tmpWrite.write(writeTime)
     writeOut(writeTime)
