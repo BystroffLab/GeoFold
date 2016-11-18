@@ -270,13 +270,13 @@ def main():
                 print("============= run %s temp = %s K =============" %(rank,value))
                 tmpWrite.write("============= run %s temp = %s K =============<br>" %(rank,value))
                 writeOut("============= run %s temp = %s K =============\n" %(rank,value))
-            writeTime = "Time before running UNFOLDSIM "+time.strftime("%c") +'<br>'
+            writeTime = "Time before running UNFOLDSIM at node"+str(rank)+time.strftime("%c") +'<br>'
             tmpWrite.write(writeTime)
             writeOut(writeTime)
             unfoldsim = "%s/xunfoldsim %s/%s_%s.dag %s.1 > %s" %(gDir,tmpDir,LName,rank,paramFilename,logFile)
             tmpWrite.write(unfoldsim+'<br>')
             runProgram(unfoldsim)
-            writeTime = "Time after running UNFOLDSIM "+time.strftime("%c")+'<br>'
+            writeTime = "Time after running UNFOLDSIM at node"+str(rank)+time.strftime("%c")+'<br>'
             tmpWrite.write(writeTime)
             writeOut(writeTime)
             tmpWrite.write("<p><pre><br>")
