@@ -28,17 +28,17 @@ CONTAINS
 	!------------------------------------------------------------------------------
 	!------------------------------------------------------------------------------
 	!-------------------------------------------------------------------------------
-	! getBetaResiduesPdb: Returns the beta residues of a protein 
+	! getBetaResiduesPdb: Returns the beta residues of a protein
 	!					Uses an external program which run the "stride" program
 	!-------------------------------------------------------------------------------
-	subroutine getBetaResiduesPdb (pdbFilename, betasArray) 
+	subroutine getBetaResiduesPdb (pdbFilename, betasArray)
 		implicit none
 		character (*), intent (in)			:: pdbFilename
 		integer, allocatable, intent (out)	:: betasArray (:)
 		character (len=200), allocatable	:: outputArray (:)
 		integer								:: n, i
 		character (len=500) :: command, strideDir, homedir, tmpdir
-		
+
 		! Create the stridePath where stride program reside
 		CALL get_environment_variable("GDIR", homedir)
 		if (homedir=="")  then
@@ -47,7 +47,7 @@ CONTAINS
 		else
 			strideDir = trim (homedir)//"/seams"
 		endif
-    
+
     CALL get_environment_variable("TMPDIR",tmpdir)
 
 		command = trim (strideDir)//"/seams_stride.py "// trim(pdbFilename)//" "//trim (tmpdir)
@@ -91,7 +91,7 @@ CONTAINS
 	!------------------------------------------------------------------------------
 	subroutine getContactMapFromCij (cijFilename, contactMatrix)
 		implicit none
-		character (len=*)				  :: cijFilename 
+		character (len=*)				  :: cijFilename
 		integer, allocatable, intent (out):: contactMatrix (:,:)
 		integer, allocatable			  :: contactsArray (:,:)
 		character (len=50)				  :: strLine
@@ -155,7 +155,7 @@ CONTAINS
 		! Write the contact sequence to an Array
 		Cij => Cijroot
 		call createSeq (contactsArray)
-		do 
+		do
 			if (.not.associated(Cij%next))	exit
 			Cij => Cij%next
 			call appendSeq (contactsArray, (/Cij%i, Cij%j/))
@@ -213,7 +213,7 @@ CONTAINS
 			nullify(Cij%next)
 		  enddo
 		enddo
-	endsubroutine 
+	endsubroutine
 	!
 	!------------------------------------------------------------------------------
 	! readpdb: Read the PDB and renumber the residue residures starting to 1
@@ -261,7 +261,7 @@ CONTAINS
 			atoms%ires = L
             !! Note that chain ID is lost.
             !! Thu Jun 19 12:10:06 EDT 2014
-			read(aline(31:54),*) atoms%xyz(1:3)
+			read(aline(31:54),'(3F8.3)') atoms%xyz(1:3)
 			atoms%box(1:3) = int(atoms%xyz(1:3))
 			nullify(atoms%next)
 			!! diagnostic
@@ -269,7 +269,7 @@ CONTAINS
 		enddo
 		close(11)
 		M = L  !! last residue read
-	endsubroutine 
+	endsubroutine
 
 	!------------------------------------------------------------------------------
 	! getSizePdb: Get the number of residues of a PDB file
@@ -312,7 +312,7 @@ CONTAINS
 		write (outputUnit, '((a) (f6.2))') "# Distance:", minCut
 		write (outputUnit, '((a),(i6))'), "# Separation:", minSeparation
 
-		do 
+		do
 			if (.not.associated(Cij%next))	exit
 			Cij => Cij%next
 			!write(*,'(2i6,f5.2)') Cij%i, Cij%j, 1.0
@@ -331,7 +331,7 @@ CONTAINS
 	  implicit none
 	  type (cijtype),pointer :: Cij, cptr
 	  type(atomtype),pointer :: atoms, jatoms
-	  do 
+	  do
 		if (.not.associated(Cij%next))	exit
 		cptr => Cij%next
 		deallocate(Cij)
@@ -347,4 +347,3 @@ CONTAINS
 	  deallocate(atoms)
 	end subroutine cleanup
 endmodule
-
