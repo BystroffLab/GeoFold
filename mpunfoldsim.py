@@ -204,7 +204,7 @@ def main():
             end = len(omegaRange)
         output_total = ''
         msg= ''
-        command_total = ''
+        command = ''
         if rank == 0:
             tmpWrite = open(htmlTmp,'a')
             writeTime = "Time before running UNFOLDSIM "+time.strftime("%c") +'<br>'
