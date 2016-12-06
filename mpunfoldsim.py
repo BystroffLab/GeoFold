@@ -205,8 +205,9 @@ def main():
         output_total = ''
         msg= ''
         command = ''
+        tmpWrite = open(htmlTmp,'a')
         if rank == 0:
-            tmpWrite = open(htmlTmp,'a')
+            
             writeTime = "Time before running UNFOLDSIM "+time.strftime("%c") +'<br>'
             tmpWrite.write(writeTime)
             writeOut(writeTime)
