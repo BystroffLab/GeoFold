@@ -44,14 +44,13 @@ def runProgram(command):
   global htmlOut
   global htmlTmp
   global debug
-  print(command)
+  #print(command)
   if command != "error":
     status,output = commands.getstatusoutput(command)
   else:
     status = 1
     output = ''
   if "error" in output.lower() or "bug" in output.lower() or status != 0:
-
 
     if command != "error":
       tmpWrite.write("Error in %s\n%s: %s"%(command,status,output))
@@ -65,7 +64,7 @@ def runProgram(command):
       outWrite.close()
 
     sys.exit("Error in %s\n%s: %s"%(command,status,output))
-  print(output)
+  #print(output)
   tmpWrite.write(output+'<br>')
   tmpWrite.close()
   if debug:
@@ -206,6 +205,8 @@ def main():
         for i in range (int(start), int(end)):
             tmpWrite = open(htmlTmp,'a')
             value = omegaRange[i]
+            msg1_list = [0]*len(omegaRange)
+            output_list = [0]*len(omegaRange)
             if not thermal:
                 sed = "sed -e \"s/^OMEGA .*/OMEGA %s/\" %s > %s.1" %(value,paramFilename,paramFilename)
             else:
@@ -214,19 +215,28 @@ def main():
             logFile = "%s/%s_%s.log" %(tmpDir,LName,i+1)
             #print("Thermal is %s:" %(thermal))
             if not thermal:
-                print("============= run %s omega = %s =============" %(i+1,value))
-                tmpWrite.write("============= run %s omega = %s =============<br>" %(i+1,value))
-                writeOut("============= run %s omega = %s =============\n" %(i+1,value))
+                msg1 = "============= run %s omega = %s on rank %s=============" %(i+1, value, rank)
+                tmpWrite.write("============= run %s omega = %s on rank %s=============" %(i+1, value, rank))
+                writeOut("============= run %s omega = %s on rank %s=============" %(i+1, value, rank))
             else:
-                print("============= run %s temp = %s K =============" %(i+1,value))
-                tmpWrite.write("============= run %s temp = %s K =============<br>" %(i+1,value))
-                writeOut("============= run %s temp = %s K =============\n" %(i+1,value))
+                msg1 = "============= run %s temp = %s K on rank %s =============" %(i+1,value, rank)
+                tmpWrite.write("============= run %s temp = %s K on rank %s =============" %(i+1,value, rank))
+                writeOut("============= run %s temp = %s K on rank %s =============" %(i+1,value, rank))
             writeTime = "Time before running UNFOLDSIM at node "+str(i+1)+time.strftime("%c") +'<br>'
+            msg1_list[i] = msg1
             tmpWrite.write(writeTime)
             writeOut(writeTime)
             unfoldsim = "%s/xunfoldsim %s/%s_%s.dag %s.1 > %s" %(gDir,tmpDir,LName,i+1,paramFilename,logFile)
             tmpWrite.write(unfoldsim+'<br>')
-            runProgram(unfoldsim)
+            status, output = runProgram(unfoldsim)
+            output_list[i] = output
+            comm.Allreduce(MPI.IN_PLACE, msg1_list, op=MPI.MAX)
+            comm.Allreduce(MPI.IN_PLACE, output_list, op=MPI.MAX)
+            if rank == 0:
+                for i in range(len(omegaRange)):
+                    print msg1_list[i]
+                    print output_list[i]
+
             writeTime = "Time after running UNFOLDSIM at node "+str(i+1)+time.strftime("%c")+'<br>'
             tmpWrite.write(writeTime)
             writeOut(writeTime)
