@@ -236,9 +236,7 @@ def main():
                 writeOut("============= run %s temp = %s K =============\n" %(i+1,value, rank))
                 """
                 msg += ('&&&&'+ "=============  run %s temp = %s K =============" %(i+1, value, rank))
-            else:
 
-            
         
             unfoldsim = "%s/xunfoldsim %s/%s_%s.dag %s.1 > %s" %(gDir,tmpDir,LName,i+1,paramFilename,logFile)
             command += ('&&&&'+unfoldsim)
