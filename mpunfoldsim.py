@@ -273,7 +273,7 @@ def main():
             writeOut(writeTime)
             tmpWrite.write("<p><pre><br>")
         output_total_r = comm.gather(output_total, root = 0)
-        msg_r = comm.gather(output_total, root = 0)
+        msg_r = comm.gather(msg, root = 0)
         command_r = comm.gather(command, root = 0)
 
         if rank == 0:
