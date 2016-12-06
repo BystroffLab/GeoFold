@@ -44,7 +44,7 @@ def runProgram(command):
   global htmlOut
   global htmlTmp
   global debug
-  print(command)
+  #print(command)
   if command != "error":
     status,output = commands.getstatusoutput(command)
   else:
@@ -64,7 +64,7 @@ def runProgram(command):
       outWrite.close()
 
     sys.exit("Error in %s\n%s: %s"%(command,status,output))
-  print(output)
+  #print(output)
   tmpWrite.write(output+'<br>')
   tmpWrite.close()
   if debug:
@@ -202,35 +202,50 @@ def main():
             end = rank+chunk_size
         else:
             end = len(omegaRange)
-        for i in range (int(start), int(end)):
+        output_total = ''
+        msg= ''
+        command_total = ''
+        if rank == 0:
             tmpWrite = open(htmlTmp,'a')
+            writeTime = "Time before running UNFOLDSIM "+time.strftime("%c") +'<br>'
+            tmpWrite.write(writeTime)
+            writeOut(writeTime)
+
+        for i in range (int(start), int(end)):
             value = omegaRange[i]
             if not thermal:
                 sed = "sed -e \"s/^OMEGA .*/OMEGA %s/\" %s > %s.1" %(value,paramFilename,paramFilename)
             else:
                 sed = "sed -e \"s/^TEMPERATURE .*/TEMPERATURE %s/\" %s > %s.1"%(value, paramFilename,paramFilename)
             status,output=commands.getstatusoutput(sed)
+
             logFile = "%s/%s_%s.log" %(tmpDir,LName,i+1)
+
             #print("Thermal is %s:" %(thermal))
             if not thermal:
+                """
                 print("============= run %s omega = %s on rank %s=============" %(i+1, value, rank))
                 tmpWrite.write("============= run %s omega = %s on rank %s=============" %(i+1, value, rank))
                 writeOut("============= run %s omega = %s on rank %s=============" %(i+1, value, rank))
+                """
+                msg += ('&&&&'+ "============= run %s omega = %s on rank %s=============" %(i+1, value, rank))
             else:
+                """
                 print("============= run %s temp = %s K on rank %s =============" %(i+1,value, rank))
                 tmpWrite.write("============= run %s temp = %s K on rank %s =============" %(i+1,value, rank))
                 writeOut("============= run %s temp = %s K =============\n" %(i+1,value, rank))
-            writeTime = "Time before running UNFOLDSIM at node "+str(i+1)+time.strftime("%c") +'<br>'
-            tmpWrite.write(writeTime)
-            writeOut(writeTime)
+                """
+                msg += ('&&&&'+ "=============  run %s temp = %s K =============" %(i+1, value, rank))
+            else:
+
+            
+        
             unfoldsim = "%s/xunfoldsim %s/%s_%s.dag %s.1 > %s" %(gDir,tmpDir,LName,i+1,paramFilename,logFile)
+            command += ('&&&&'+unfoldsim)
             tmpWrite.write(unfoldsim+'<br>')
             status, output = runProgram(unfoldsim)
+            output_total += ('&&&&'+ output)
             
-            writeTime = "Time after running UNFOLDSIM at node "+str(i+1)+time.strftime("%c")+'<br>'
-            tmpWrite.write(writeTime)
-            writeOut(writeTime)
-            tmpWrite.write("<p><pre><br>")
             # grep = "grep ^\"TIMECOURSE\" %s | tail -1 >> %s" %(logFile,htmlTmp)
             log = open(logFile,'r')
             lines = []
@@ -251,6 +266,31 @@ def main():
                 outWrite = open(htmlOut,'a')
                 outWrite.write('</pre></body></html>\n')
                 outWrite.close()
+        
+        comm.Barrier()
+        if rank == 0:
+            writeTime = "Time after running UNFOLDSIM "+time.strftime("%c")+'<br>'
+            tmpWrite.write(writeTime)
+            writeOut(writeTime)
+            tmpWrite.write("<p><pre><br>")
+        output_total_r = comm.gather(output_total, root = 0)
+        msg_r = comm.gather(output_total, root = 0)
+        command_r = comm.gather(command, root = 0)
+
+        if rank == 0:
+            for i in range(size):
+                output_tmp = output_total_r[i]
+                output_tmp = output_tmp.split('&&&&')
+                command_tmp =  command_r[i]
+                command_tmp = command_tmp.split('&&&&')
+                msg_tmp = msg_r[i]
+                msg_tmp = msg_tmp.split('&&&&')
+                for j in len(output_tmp):
+                    print msg_tmp[j]
+                    print command_tmp[j]
+                    print output_tmp[j]
+
+
 
 if __name__ == "__main__":
     main()
