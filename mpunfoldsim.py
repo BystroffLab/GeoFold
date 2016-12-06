@@ -284,7 +284,7 @@ def main():
                 command_tmp = command_tmp.split('&&&&')
                 msg_tmp = msg_r[i]
                 msg_tmp = msg_tmp.split('&&&&')
-                for j in len(output_tmp):
+                for j in range(len(output_tmp)):
                     print msg_tmp[j]
                     print command_tmp[j]
                     print output_tmp[j]
