@@ -44,7 +44,7 @@ def runProgram(command):
   global htmlOut
   global htmlTmp
   global debug
-  #print(command)
+  print(command)
   if command != "error":
     status,output = commands.getstatusoutput(command)
   else:
@@ -64,7 +64,7 @@ def runProgram(command):
       outWrite.close()
 
     sys.exit("Error in %s\n%s: %s"%(command,status,output))
-  #print(output)
+  print(output)
   tmpWrite.write(output+'<br>')
   tmpWrite.close()
   if debug:
@@ -227,17 +227,6 @@ def main():
             tmpWrite.write(unfoldsim+'<br>')
             status, output = runProgram(unfoldsim)
             
-            if (rank == 0) {
-                output;
-                for (i = 1; i < size; i++) {
-                    MPI_Recv(buffer, .... i, ...);
-                    print_col(i);
-                }
-            } else {
-                MPI_Send(data, ..., 0, ...);
-            }
-
-
             writeTime = "Time after running UNFOLDSIM at node "+str(i+1)+time.strftime("%c")+'<br>'
             tmpWrite.write(writeTime)
             writeOut(writeTime)
