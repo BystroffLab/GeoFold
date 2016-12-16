@@ -1,0 +1,19 @@
+#CREATED_BY maxTraffic.cpp v.  Thu Aug  1 15:20:02 EDT 2013 
+#Input DAG file  (argv[1]) =/bach1/home/sanw/GeoFold/tmp/2b3p/2b3p_3.dag.out
+#Minimum traffic to show (argv[2]) =0.1
+#No output URL file 
+#starting maxTraffic algorithm...
+#number of nodes in maxTraffic: 4
+#Traffic cutoff used: 0.1
+digraph FILENAME
+{
+size="15, 25"n1 [label="1", fillcolor="orange", style="bold, filled",  shape=circle, height=1.3, fontsize=50, URL="../isegment.cgi?iseg=n1&dag=2b3p/2b3p_3.dag.out&"];
+tp796 [label="", fillcolor="red", style="bold, filled",  shape=diamond, height=1.2, width=1.2, fontsize=20, URL="../isegment.cgi?iseg=tp796&dag=2b3p/2b3p_3.dag.out&"];
+n1 -> tp796[style="setlinewidth(16)", color=green, weight="60"];
+tp796 [label="", fillcolor="red", style="bold, filled", shape=diamond, height=1.2, width=1.2, fontsize=20, URL="../isegment.cgi?iseg=tp796&dag=2b3p/2b3p_3.dag.out&"];
+n2 [label="", fillcolor="orange", style="bold, filled",  shape=circle, height=1.3, fontsize=20, URL="../isegment.cgi?iseg=n2&dag=2b3p/2b3p_3.dag.out&"];
+tp796 -> n2[style="setlinewidth(16)", color=green, weight="60"];
+tp796 [label="", fillcolor="red", style="bold, filled", shape=diamond, height=1.2, width=1.2, fontsize=20, URL="../isegment.cgi?iseg=tp796&dag=2b3p/2b3p_3.dag.out&"];
+n5 [label="", fillcolor="orange", style="bold, filled",  shape=circle, height=1.3, fontsize=20, URL="../isegment.cgi?iseg=n5&dag=2b3p/2b3p_3.dag.out&"];
+tp796 -> n5[style="setlinewidth(16)", color=green, weight="60"];
+}

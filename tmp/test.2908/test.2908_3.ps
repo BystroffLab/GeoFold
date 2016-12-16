@@ -1,0 +1,198 @@
+%!PS
+% -- Created by eijcij2ps.f90  C.Bystroff, X.Yuan  Aug, 2004  ---- %
+% ---- define box procedure
+/cm {   30 mul } def
+/uptick
+{ newpath moveto 0    0.300 cm rlineto closepath stroke } def 
+/rtick
+{ newpath moveto    0.300 cm 0 rlineto closepath stroke } def 
+% ---- outline procedures
+/boxbottomline
+{ newpath setgray moveto    0.902 cm 0 rlineto 
+     0.180 cm setlinewidth closepath stroke } def
+/boxleftline
+{ newpath setgray moveto 0    0.902 cm rlineto 
+     0.180 cm setlinewidth closepath stroke } def
+/boxrightline
+{ newpath setgray moveto    0.902 cm 0 rmoveto 
+  0    0.902 cm rlineto 
+     0.180 cm setlinewidth closepath stroke } def
+/boxtopline
+{ newpath setgray moveto 0    0.902 cm rmoveto 
+     0.902 cm 0 rlineto 
+     0.180 cm setlinewidth closepath stroke } def
+/box
+{    0.902 cm 0 rlineto
+  0    0.902 cm rlineto
+    -0.902 cm 0 rlineto
+  closepath } def
+/graybox
+{ newpath setgray moveto box fill } def
+/hsbbox
+{ newpath moveto box sethsbcolor fill } def
+/Times_Roman findfont
+   0.300 cm scalefont setfont
+% -- begin eijcij2ps program ---- %
+    9.11 cm    20.23 cm  moveto (10   ) show
+    9.11 cm    19.93 cm  uptick
+   18.13 cm    20.23 cm  moveto (20   ) show
+   18.13 cm    19.93 cm  uptick
+   20.23 cm     9.11 cm  moveto (10   ) show
+   19.93 cm     9.11 cm  rtick
+   20.23 cm    18.13 cm  moveto (20   ) show
+   19.93 cm    18.13 cm  rtick
+  newpath 
+    1.00 cm     1.00 cm  moveto
+   19.03 cm    19.03 cm  lineto
+    1.00 cm    19.03 cm  lineto
+    1.00 cm     1.00 cm  lineto
+  closepath stroke 
+  newpath 
+    1.00 cm     1.00 cm  moveto
+   19.03 cm    19.03 cm  lineto
+   19.03 cm     1.00 cm  lineto
+    1.00 cm     1.00 cm  lineto
+  closepath stroke 
+ 0.335 1.000 1.000    5.51 cm     9.11 cm  hsbbox
+ 0.335 1.000 1.000    5.51 cm    10.02 cm  hsbbox
+ 0.335 1.000 1.000    5.51 cm    12.72 cm  hsbbox
+ 0.000 1.000 1.000    5.51 cm    14.52 cm  hsbbox
+ 0.000 1.000 1.000    2.80 cm    16.33 cm  hsbbox
+ 0.000 1.000 1.000    5.51 cm    16.33 cm  hsbbox
+ 0.000 1.000 1.000    1.90 cm    17.23 cm  hsbbox
+ 0.000 1.000 1.000    2.80 cm    17.23 cm  hsbbox
+ 0.000 1.000 1.000    5.51 cm    17.23 cm  hsbbox
+    4.61 cm     1.00 cm  0.000 graybox
+    5.51 cm     1.90 cm  0.000 graybox
+   17.23 cm     1.90 cm  0.000 graybox
+    6.41 cm     2.80 cm  0.000 graybox
+   16.33 cm     2.80 cm  0.000 graybox
+   17.23 cm     2.80 cm  0.000 graybox
+    7.31 cm     3.70 cm  0.000 graybox
+    1.00 cm     4.61 cm  0.000 boxleftline
+    1.00 cm     4.61 cm  0.000 boxbottomline
+    1.00 cm     4.61 cm  0.000 boxrightline
+    1.00 cm     4.61 cm  0.000 boxtopline
+    8.21 cm     4.61 cm  0.000 graybox
+    1.90 cm     5.51 cm  0.000 boxleftline
+    1.90 cm     5.51 cm  0.000 boxbottomline
+    1.90 cm     5.51 cm  0.000 boxrightline
+    1.90 cm     5.51 cm  0.000 boxtopline
+    9.11 cm     5.51 cm  0.000 graybox
+   10.02 cm     5.51 cm  0.000 graybox
+   12.72 cm     5.51 cm  0.000 graybox
+   14.52 cm     5.51 cm  0.000 graybox
+   16.33 cm     5.51 cm  0.000 graybox
+   17.23 cm     5.51 cm  0.000 graybox
+    2.80 cm     6.41 cm  0.000 boxleftline
+    2.80 cm     6.41 cm  0.000 boxbottomline
+    2.80 cm     6.41 cm  0.000 boxrightline
+    2.80 cm     6.41 cm  0.000 boxtopline
+   10.02 cm     6.41 cm  0.000 graybox
+    3.70 cm     7.31 cm  0.000 boxleftline
+    3.70 cm     7.31 cm  0.000 boxbottomline
+    3.70 cm     7.31 cm  0.000 boxrightline
+    3.70 cm     7.31 cm  0.000 boxtopline
+    4.61 cm     8.21 cm  0.000 boxleftline
+    4.61 cm     8.21 cm  0.000 boxbottomline
+    4.61 cm     8.21 cm  0.000 boxrightline
+    4.61 cm     8.21 cm  0.000 boxtopline
+   12.72 cm     8.21 cm  0.000 graybox
+   14.52 cm     8.21 cm  0.000 graybox
+    5.51 cm     9.11 cm  0.000 boxleftline
+    5.51 cm     9.11 cm  0.000 boxbottomline
+    5.51 cm     9.11 cm  0.000 boxrightline
+   12.72 cm     9.11 cm  0.000 graybox
+    5.51 cm    10.02 cm  0.000 boxleftline
+    5.51 cm    10.02 cm  0.000 boxtopline
+    6.41 cm    10.02 cm  0.000 boxbottomline
+    6.41 cm    10.02 cm  0.000 boxrightline
+    6.41 cm    10.02 cm  0.000 boxtopline
+   14.52 cm    10.02 cm  0.000 graybox
+   16.33 cm    10.02 cm  0.000 graybox
+   16.33 cm    10.92 cm  0.000 graybox
+    5.51 cm    12.72 cm  0.000 boxleftline
+    5.51 cm    12.72 cm  0.000 boxbottomline
+    5.51 cm    12.72 cm  0.000 boxrightline
+    5.51 cm    12.72 cm  0.000 boxtopline
+    8.21 cm    12.72 cm  0.000 boxleftline
+    8.21 cm    12.72 cm  0.000 boxbottomline
+    8.21 cm    12.72 cm  0.000 boxtopline
+    9.11 cm    12.72 cm  0.000 boxbottomline
+    9.11 cm    12.72 cm  0.000 boxrightline
+    9.11 cm    12.72 cm  0.000 boxtopline
+    5.51 cm    14.52 cm  0.000 boxleftline
+    5.51 cm    14.52 cm  0.000 boxbottomline
+    5.51 cm    14.52 cm  0.000 boxrightline
+    5.51 cm    14.52 cm  0.000 boxtopline
+    8.21 cm    14.52 cm  0.000 boxleftline
+    8.21 cm    14.52 cm  0.000 boxbottomline
+    8.21 cm    14.52 cm  0.000 boxrightline
+    8.21 cm    14.52 cm  0.000 boxtopline
+   10.02 cm    14.52 cm  0.000 boxleftline
+   10.02 cm    14.52 cm  0.000 boxbottomline
+   10.02 cm    14.52 cm  0.000 boxrightline
+   10.02 cm    14.52 cm  0.000 boxtopline
+    2.80 cm    16.33 cm  0.000 boxleftline
+    2.80 cm    16.33 cm  0.000 boxbottomline
+    2.80 cm    16.33 cm  0.000 boxrightline
+    5.51 cm    16.33 cm  0.000 boxleftline
+    5.51 cm    16.33 cm  0.000 boxbottomline
+    5.51 cm    16.33 cm  0.000 boxrightline
+   10.02 cm    16.33 cm  0.000 boxleftline
+   10.02 cm    16.33 cm  0.000 boxbottomline
+   10.02 cm    16.33 cm  0.000 boxtopline
+   10.92 cm    16.33 cm  0.000 boxbottomline
+   10.92 cm    16.33 cm  0.000 boxrightline
+   10.92 cm    16.33 cm  0.000 boxtopline
+    1.90 cm    17.23 cm  0.000 boxleftline
+    1.90 cm    17.23 cm  0.000 boxbottomline
+    1.90 cm    17.23 cm  0.000 boxtopline
+    2.80 cm    17.23 cm  0.000 boxrightline
+    2.80 cm    17.23 cm  0.000 boxtopline
+    5.51 cm    17.23 cm  0.000 boxleftline
+    5.51 cm    17.23 cm  0.000 boxrightline
+    5.51 cm    17.23 cm  0.000 boxtopline
+/Times_Roman findfont
+   0.902 cm scalefont setfont
+    1.00 cm     1.90 cm  moveto
+(N) show
+    1.90 cm     2.80 cm  moveto
+(L) show
+    2.80 cm     3.70 cm  moveto
+(Y) show
+    3.70 cm     4.61 cm  moveto
+(I) show
+    4.61 cm     5.51 cm  moveto
+(Q) show
+    5.51 cm     6.41 cm  moveto
+(W) show
+    6.41 cm     7.31 cm  moveto
+(L) show
+    7.31 cm     8.21 cm  moveto
+(K) show
+    8.21 cm     9.11 cm  moveto
+(D) show
+    9.11 cm    10.02 cm  moveto
+(G) show
+   10.02 cm    10.92 cm  moveto
+(G) show
+   10.92 cm    11.82 cm  moveto
+(P) show
+   11.82 cm    12.72 cm  moveto
+(S) show
+   12.72 cm    13.62 cm  moveto
+(S) show
+   13.62 cm    14.52 cm  moveto
+(G) show
+   14.52 cm    15.43 cm  moveto
+(R) show
+   15.43 cm    16.33 cm  moveto
+(P) show
+   16.33 cm    17.23 cm  moveto
+(P) show
+   17.23 cm    18.13 cm  moveto
+(P) show
+   18.13 cm    19.03 cm  moveto
+(S) show
+showpage

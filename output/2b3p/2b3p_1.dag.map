@@ -1,0 +1,6 @@
+<map id="FILENAME" name="FILENAME">
+<area shape="circle" id="node1" href="../isegment.cgi?iseg=n1&amp;dag=2b3p/2b3p_1.dag.out&amp;" title="1" alt="" coords="149,71,65"/>
+<area shape="poly" id="node2" href="../isegment.cgi?iseg=tp796&amp;dag=2b3p/2b3p_1.dag.out&amp;" alt="" coords="149,186,89,246,149,306,208,246"/>
+<area shape="circle" id="node3" href="../isegment.cgi?iseg=n2&amp;dag=2b3p/2b3p_1.dag.out&amp;" alt="" coords="71,421,65"/>
+<area shape="circle" id="node4" href="../isegment.cgi?iseg=n5&amp;dag=2b3p/2b3p_1.dag.out&amp;" alt="" coords="226,421,66"/>
+</map>

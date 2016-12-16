@@ -1,0 +1,33 @@
+geod2.csh deamon started Tue Dec 13 18:13:11 EST 2016 on bach1.bio.rpi.edu in /home/sanw/GeoFold
+This deamon drives the python script
+JOBS ACCUMULATED SO FAR: 1 
+GEOFOLD JOB ========> /bach1/home/sanw/server/geofold/jobs/1ecp_2.1015.job  Tue Dec 13 18:13:52 EST 2016
+if61
+else67
+else77
+--2016-12-13 18:13:52--  ftp://ftp.rcsb.org/pub/pdb/data/structures/all/pdb/pdb1015.ent.gz
+           => ‘pdb1015.ent.gz’
+Resolving ftp.rcsb.org (ftp.rcsb.org)... 165.230.17.229
+Connecting to ftp.rcsb.org (ftp.rcsb.org)|165.230.17.229|:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD (1) /pub/pdb/data/structures/all/pdb ... done.
+==> SIZE pdb1015.ent.gz ... done.
+
+==> PASV ... done.    ==> RETR pdb1015.ent.gz ... 
+No such file ‘pdb1015.ent.gz’.
+
+gzip: pdb1015.ent.gz: No such file or directory
+mv: cannot stat ‘pdb1015.ent’: No such file or directory
+mv: cannot stat ‘1015.pdb’: No such file or directory
+cp: cannot stat ‘/bach1/home/sanw/server/data/pdb/1015.pdb’: No such file or directory
+‘/bach1/home/sanw/server/geofold/jobs/1ecp_2.1015.job’ -> ‘/bach1/home/sanw/server/geofold/jobs/1ecp_2.1015.job.x’
+Traceback (most recent call last):
+  File "/bach1/home/sanw/server/geofold/rungeofold.py", line 657, in <module>
+    configuration = readConf(conf)
+  File "/bach1/home/sanw/server/geofold/rungeofold.py", line 51, in readConf
+    conf = open(confFile,'r')
+IOError: [Errno 2] No such file or directory: 'sanw'
+job submitted: /bach1/home/sanw/server/geofold/jobs/1ecp_2.1015.job
+Another day has passed: Wed Dec 14 00:00:01 EST 2016
+Another day has passed: Thu Dec 15 00:00:01 EST 2016

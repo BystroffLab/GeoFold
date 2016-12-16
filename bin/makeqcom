@@ -1,0 +1,22 @@
+    echo '#!/bin/csh' 
+    echo "cd `pwd`" 
+    echo "#============= GEOFOLD script created on `date` ============="
+    echo 'echo "============= Running on `hostname` ============="'
+    echo 'setenv PDBCODE '$1
+    echo 'setenv CHAIN '$2
+    echo 'setenv LNAME '$3
+    if [ $# = 4 ] 
+    then
+      echo 'setenv ONAME '$4
+    else
+      echo 'setenv ONAME '$3
+    fi
+    cat /bach1/home/bystrc/server/geofold/bin/RUNGEOFOLD.csh
+exit
+#TAG=`echo "$1" | cut -c 1-6`
+#if [ $TAG = "bystrc" ] 
+#then
+#  cat /bach1/home/bystrc/server/geofold/bin/RUN2.csh
+#else
+#  cat /bach1/home/bystrc/server/geofold/bin/RUNGEOFOLD.csh
+#fi

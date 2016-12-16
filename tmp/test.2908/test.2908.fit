@@ -1,0 +1,8 @@
+   3 cases read from file: /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908_fit.plot                                                                                                                                               
+ Least-squares coefficients & std. errors
+ Power  Coefficient          Std.error      Resid.sum of sq.
+   0   15.5124870928          0.00000          0.00000    
+   1   0.00000000000          0.00000          0.00000    
+
+ Residual standard deviation =    0.00000000000    
+ R^2 =                  NaN

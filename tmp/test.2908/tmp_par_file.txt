@@ -1,0 +1,8 @@
+omegaRange .04 .05 .06 
+LName test.2908
+paramFilename test.par
+thermal False
+debug False
+gDir /bach1/home/sanw/GeoFold
+htmlTmp /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908.html
+htmlOut /bach1/home/sanw/public_html/geofold/output/test.2908/test.2908.html

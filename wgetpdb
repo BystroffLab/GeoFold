@@ -1,0 +1,22 @@
+#!/bin/csh
+if ($#argv < 1) then
+  echo "Usage: xgetpdb CODE [1]"
+  echo "where CODE = 4-lette PDB code e.g. 1abc"
+  echo "a second argument signals to get the pdb1 (biological unit) file."
+  echo "This script requires wget"
+  exit
+endif
+setenv CODE $1
+which wget >& /dev/null
+if ($status) then
+  echo "wgetpdb requires wget. Please install it."
+  exit 1
+endif
+if ($#argv > 1) then
+  wget ftp://ftp.rcsb.org/pub/pdb/data/biounit/coordinates/all/${CODE}.pdb1.gz
+  gunzip -f ${CODE}.pdb1.gz
+else
+  wget ftp://ftp.rcsb.org/pub/pdb/data/structures/all/pdb/pdb${CODE}.ent.gz
+  gunzip -f pdb${CODE}.ent.gz
+  mv pdb${CODE}.ent ${CODE}.pdb
+endif

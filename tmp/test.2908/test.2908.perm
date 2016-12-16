@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head><title>GeoFold Server</title>
+<link rev=made href="mailto:bystrc@rpi.edu">
+</head>
+<body>
+<img src="../../banner.gif">
+<table width = "80%">
+<tr><td colspan="2">
+<img src="test.2908.gif" alt="image not found for test.2908.pdb. Try re-loading.">
+</td>
+<td colspan="4">
+<h1>Unfolding...</h1>
+<h4>test.2908</h4>
+<h4><a href="test.2908.pdb">Coordinate file (test.2908)</a></h4>
+<h4><a href="./test.2908_1.dag.out">Unfolding graph for test.2908</a></h4>
+<h5>Number of H-bonds fond: 20</h5>
+<h5>Number of SS-bonds found: 0</h5>
+<pre>
+# Code:      Chain: all       20 residues. From ATOM lines.
+NLYIQWLKDGGPSSGRPPPS
+</pre>
+</td>
+</tr>
+<tr>
+<td><a href="test.2908_1.log">timecourse</a> for &omega; = .04<br><a href="test.2908_1.tc.png"><img src="test.2908_1.tc_thumb.png" width=100 alt="timecourse data missing"></a></td>
+<td><a href="test.2908_2.log">timecourse</a> for &omega; = .05<br><a href="test.2908_2.tc.png"><img src="test.2908_2.tc_thumb.png" width=100 alt="timecourse data missing"></a></td>
+<td><a href="test.2908_3.log">timecourse</a> for &omega; = .06<br><a href="test.2908_3.tc.png"><img src="test.2908_3.tc_thumb.png" width=100 alt="timecourse data missing"></a></td>
+</tr>
+<tr>
+<td>Age plot for .04<br><a href="test.2908_1.png"><img src="test.2908_1_thumb.png" width=100 alt="age plot data missing"></a>
+</td>
+<td>Age plot for .05<br><a href="test.2908_2.png"><img src="test.2908_2_thumb.png" width=100 alt="age plot data missing"></a>
+</td>
+<td>Age plot for .06<br><a href="test.2908_3.png"><img src="test.2908_3_thumb.png" width=100 alt="age plot data missing"></a>
+</td>
+</tr>
+<tr>
+<td>Pathways at .04<br><a href="test.2908_1.dag.html"><img src="test.2908_1.dag_thumb.png" width=100 alt="pathway data missing"></a></td>
+<td>Pathways at .05<br><a href="test.2908_2.dag.html"><img src="test.2908_2.dag_thumb.png" width=100 alt="pathway data missing"></a></td>
+<td>Pathways at .06<br><a href="test.2908_3.dag.html"><img src="test.2908_3.dag_thumb.png" width=100 alt="pathway data missing"></a></td>
+</tr>
+<tr>
+<td>Energy profile for .04<br><a href="test.2908_1.nrg.html"><img src="test.2908_1.nrg_thumb.png" width=100 alt="energy data missing"></a></td>
+<td>Energy profile for .05<br><a href="test.2908_2.nrg.html"><img src="test.2908_2.nrg_thumb.png" width=100 alt="energy data missing"></a></td>
+<td>Energy profile for .06<br><a href="test.2908_3.nrg.html"><img src="test.2908_3.nrg_thumb.png" width=100 alt="energy data missing"></a></td>
+</tr>
+</table>
+<h3><A HREF="http://www.bioinfo.rpi.edu/geofold/howtoreadit.htm">How to Read GeoFOLD Output</A></h3>
+<hr width="80%">
+<h4>Equilibrium concentrations and rates under unfolding conditions</h4>
+<table width = "80%">
+<tr><td>&Delta;G<sub>solvation</sub></td><td>time(sec)</td><td>final [F]</td><td>final [U]</td><td>final[I]</td><td>half-life (sec)</td></tr>
+<tr><td>.04 </td><td>0.70007E-6</td><td>43.42306</td><td>56.57694</td><td>0.00000</td><td>0.12701E-6</td><tr><td>.05 </td><td>0.70007E-6</td><td>43.42455</td><td>56.57545</td><td>0.00000</td><td>0.12701E-6</td><tr><td>.06 </td><td>0.70007E-6</td><td>43.42455</td><td>56.57545</td><td>0.00000</td><td>0.12701E-6</td></table>
+<h5>Projected half-life of unfolding in pure water (solvation weight = 1.): 1.27010000006e-07 seconds</h5><br><table>
+<tr>
+<td>
+<h4>ln(k<sub>u</sub>) vs &omega; for test.2908 </h4><a href="test.2908.gp.png"><img src="test.2908.gp_thumb.png" alt="data missing"></a><br>
+</td>
+<td>
+<h4>Superimposed energy profiles for test.2908 </h4><a href="test.2908_all.nrg.png"><img src="test.2908_all.nrg_thumb.png" alt="data missing"></a><br>
+</td></tr></table><br>Completed Thu Dec 15 19:06:24 2016<br><p>Modify and do over:
+<FORM METHOD="POST" ACTION="../../geocgi.cgi" >
+<input type="hidden" name="script" value=3>
+<br><input type="text" name="keyword" value="" placeholder="Enter a new unique id for this job (avoid the words 'error' and 'bug')" size=80>
+<input type="hidden" name="oldParameters" value="test.par">
+<br><input type="submit" name = "submit" value="submit"></form><h3><a href="../../geofold.php">Back to GeoFold server</a></h3><br>
+</body></html>

@@ -1,0 +1,8 @@
+omegaRange 5. 10. 15.0 20.0 
+LName 2b3p
+paramFilename 2b3p.par
+thermal False
+debug False
+gDir /bach1/home/sanw/GeoFold
+htmlTmp /bach1/home/sanw/GeoFold/tmp/2b3p/2b3p.html
+htmlOut /bach1/home/sanw/GeoFold/output/2b3p/2b3p.html

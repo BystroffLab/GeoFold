@@ -1,0 +1,505 @@
+xunfoldsim /bach1/home/sanw/GeoFold/tmp/2b3p/2b3p_0.dag 2b3p.par.1
+LNAME 2b3p
+EMAIL sanw@rpi.edu
+PDBCODE 2B3P
+OMEGA 10.0
+REMARK omega set to     10.000
+INTERMEDIATE 0
+REMARK following intermediate number     0
+BARRELMOVES 1
+ORANGE 5. 10. 15.0 20.0
+RUNGEOFOLD 1
+BREAKCUT 0.05
+PIVOTCUT 0.01
+HINGECUT 0.5
+SEAMCUT 10
+BREAKPOINTENTROPY 90.
+REMARK break entropy set to   90.000
+HINGEPOINTENTROPY 30.
+REMARK hinge entropy set to   30.000
+TEMPERATURE 300.
+REMARK system temperature set to  300.000
+CONCENTRATION 1.
+REMARK total protein concentration    1.00000
+VOIDENTROPY 0.
+REMARK each void counts for    0.00000 kj/mol/deg
+SOLIDITY 1000.
+REMARK solidity parameter= 1000.00000
+HBONDENERGY 1000.
+REMARK each Hbond counts for 1000.00000 kj/mol
+HAMMONDSCALE 1000.
+REMARK transition state placement parameter= 1000.00000
+SIDECHAINENTROPY 1.
+REMARK side chain entropy scale factor =    1.00000
+HINGEBARRIER 0.
+REMARK transition state barrier for hinges=    0.00000
+PIVOTBARRIER 0.
+REMARK transition state barrier for pivots=    0.00000
+WATER 30.
+MAXSPLIT 4
+MAXTIME 10.
+REMARK maximum simulation time    10.00000
+MINSEG 4
+CAVITATION 0.000001
+SUBMIT submit
+CHAIN A
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p.split
+
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/tmp/2b3p/2b3p.sas
+
+HBONDS /home/cynthia/Local/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/tmp/2b3p/2b3p.sas
+
+HBONDS /home/cynthia/Local/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/tmp/2b3p/2b3p.sas
+
+HBONDS /home/cynthia/Local/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/tmp/2b3p/2b3p.sas
+
+HBONDS /home/cynthia/Local/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/tmp/2b3p/2b3p.sas
+
+HBONDS /home/cynthia/Local/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.split
+
+HBONDS /home/cynthia/Local/tmp/2b3p/2b3p.hb
+CONTACTS /home/cynthia/Local/tmp/2b3p/2b3p.sas
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.seams
+SEAMS /home/cynthia/Local/tmp/2b3p/2b3p.split
+
+HBONDS /bach1/home/sanw/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /bach1/home/sanw/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /bach1/home/sanw/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /bach1/home/sanw/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /bach1/home/sanw/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /bach1/home/sanw/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /bach1/home/sanw/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /bach1/home/sanw/GeoFold/tmp/2b3p/2b3p.split
+
+HBONDS /bach1/home/sanw/GeoFold/tmp/2b3p/2b3p.hb
+CONTACTS /bach1/home/sanw/GeoFold/tmp/2b3p/2b3p.sas
+SEAMS /bach1/home/sanw/GeoFold/tmp/2b3p/2b3p.seams
+SEAMS /bach1/home/sanw/GeoFold/tmp/2b3p/2b3p.split

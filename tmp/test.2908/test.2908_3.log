@@ -1,0 +1,127 @@
+xunfoldsim /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908_3.dag test.par.1
+LNAME test.2908
+EMAIL sanw@rpi.edu
+PDBCODE test.2908
+OMEGA 0.06
+REMARK omega set to      0.060
+INTERMEDIATE 0
+REMARK following intermediate number     0
+BARRELMOVES 1
+ORANGE .04 .05 .06
+RUNGEOFOLD 1
+BREAKCUT 0.05
+PIVOTCUT 0.25
+HINGECUT 0.5
+SEAMCUT 10
+BREAKPOINTENTROPY 90.
+REMARK break entropy set to   90.000
+HINGEPOINTENTROPY 30.
+REMARK hinge entropy set to   30.000
+TEMPERATURE 300.
+REMARK system temperature set to  300.000
+CONCENTRATION 1.
+REMARK total protein concentration    1.00000
+VOIDENTROPY 0.
+REMARK each void counts for    0.00000 kj/mol/deg
+SOLIDITY 1000.
+REMARK solidity parameter= 1000.00000
+HBONDENERGY 1000.
+REMARK each Hbond counts for 1000.00000 kj/mol
+HAMMONDSCALE 1000.
+REMARK transition state placement parameter= 1000.00000
+SIDECHAINENTROPY 1.
+REMARK side chain entropy scale factor =    1.00000
+HINGEBARRIER 0.
+REMARK transition state barrier for hinges=    0.00000
+PIVOTBARRIER 0.
+REMARK transition state barrier for pivots=    0.00000
+WATER 1.
+MAXSPLIT 4
+MAXTIME 10.
+REMARK maximum simulation time    10.00000
+MINSEG 4
+CAVITATION 0.000001
+FLORY 0
+FLORYW 8.
+SUBMIT submit
+REDUCING 0
+MOLSCRIPT 1
+HLFE 0
+FING 0
+CHAIN A
+
+HBONDS /home/cynthia/Local/GeoFold/tmp/test.2908.hb
+CONTACTS /home/cynthia/Local/GeoFold/tmp/test.2908.sas
+SEAMS /home/cynthia/Local/GeoFold/tmp/test.2908.seams
+SEAMS /home/cynthia/Local/GeoFold/tmp/test.2908.split
+
+HBONDS /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908.hb
+CONTACTS /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908.sas
+SEAMS /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908.seams
+SEAMS /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908.split
+
+HBONDS /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908.hb
+CONTACTS /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908.sas
+SEAMS /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908.seams
+SEAMS /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908.split
+
+HBONDS /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908.hb
+CONTACTS /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908.sas
+SEAMS /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908.seams
+SEAMS /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908.split
+
+HBONDS /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908.hb
+CONTACTS /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908.sas
+SEAMS /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908.seams
+SEAMS /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908.split
+
+HBONDS /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908.hb
+CONTACTS /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908.sas
+SEAMS /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908.seams
+SEAMS /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908.split
+
+HBONDS /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908.hb
+CONTACTS /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908.sas
+SEAMS /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908.seams
+SEAMS /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908.split
+
+HBONDS /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908.hb
+CONTACTS /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908.sas
+SEAMS /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908.seams
+SEAMS /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908.split
+
+HBONDS /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908.hb
+CONTACTS /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908.sas
+SEAMS /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908.seams
+SEAMS /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908.split
+
+HBONDS /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908.hb
+CONTACTS /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908.sas
+SEAMS /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908.seams
+SEAMS /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908.split
+
+HBONDS /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908.hb
+CONTACTS /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908.sas
+SEAMS /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908.seams
+SEAMS /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908.split
+
+HBONDS /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908.hb
+CONTACTS /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908.sas
+SEAMS /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908.seams
+SEAMS /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908.split
+           8  t-states allocated.
+          15  intermediates allocated.
+        1 native state node initialized to conc =   1.000M
+        3 leaf nodes initialized to conc =   0.000M
+CPU_TIME spent reading input files   =   0.0024 seconds.
+           3  of            8  transitions are diffusion controlled.
+CPU_TIME spent initializing params   =   0.0000 seconds.
+TIMECOURSE   0.10001E-6  88.33010  11.66990   0.00000  0.45500E-7  0.00  1.00  0.00  0.00
+TIMECOURSE   0.30003E-6  69.28223  30.71777   0.00000  0.12701E-6  0.00  1.00  0.00  0.00
+TIMECOURSE   0.70007E-6  43.42455  56.57545   0.00000  0.26301E-6  0.00  1.00  0.00  0.00
+CPU_TIME spent simulating            =   0.0870 seconds.    48.45% calculating dc    34.22% bookkeeping
+TIMECOURSE   0.70007E-6  43.42455  56.57545   0.00000  0.26301E-6
+           8  t-states allocated.
+          15  intermediates allocated.
+ Traffic and final concentration values sent to output DAG file /bach1/home/sanw/GeoFold/tmp/test.2908/test.2908_3.dag.out
+CPU_TIME spent reporting results     =   0.0020 seconds.

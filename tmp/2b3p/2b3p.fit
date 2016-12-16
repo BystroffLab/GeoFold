@@ -1,0 +1,10 @@
+   0 cases read from file: /bach1/home/sanw/GeoFold/tmp/2b3p/2b3p_fit.plot                                                                                                                                                         
+ Singularity detected for power:   0
+ Singularity detected for power:   1
+ Least-squares coefficients & std. errors
+ Power  Coefficient          Std.error      Resid.sum of sq.
+   0   0.00000000000          0.00000          0.00000    
+   1   0.00000000000          0.00000          0.00000    
+
+ Residual standard deviation =   -0.00000000000    
+ R^2 =                  NaN

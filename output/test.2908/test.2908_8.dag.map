@@ -1,0 +1,12 @@
+<map id="FILENAME" name="FILENAME">
+<area shape="circle" id="node1" href="../isegment.cgi?iseg=n1&amp;dag=test.2908/test.2908_8.dag.out&amp;" title="1" alt="" coords="263,71,65"/>
+<area shape="poly" id="node2" href="../isegment.cgi?iseg=tp5&amp;dag=test.2908/test.2908_8.dag.out&amp;" alt="" coords="140,221,103,246,140,271,178,246"/>
+<area shape="poly" id="node8" href="../isegment.cgi?iseg=tp8&amp;dag=test.2908/test.2908_8.dag.out&amp;" alt="" coords="263,186,203,246,262,306,322,246"/>
+<area shape="circle" id="node3" href="../isegment.cgi?iseg=n2&amp;dag=test.2908/test.2908_8.dag.out&amp;" alt="" coords="68,421,25"/>
+<area shape="circle" id="node7" href="../isegment.cgi?iseg=n9&amp;dag=test.2908/test.2908_8.dag.out&amp;" alt="" coords="143,421,25"/>
+<area shape="poly" id="node4" href="../isegment.cgi?iseg=tp3&amp;dag=test.2908/test.2908_8.dag.out&amp;" alt="" coords="68,536,31,561,68,586,106,561"/>
+<area shape="circle" id="node5" href="../isegment.cgi?iseg=n3&amp;dag=test.2908/test.2908_8.dag.out&amp;" alt="" coords="31,661,25"/>
+<area shape="circle" id="node6" href="../isegment.cgi?iseg=n6&amp;dag=test.2908/test.2908_8.dag.out&amp;" alt="" coords="106,661,25"/>
+<area shape="circle" id="node9" href="../isegment.cgi?iseg=n12&amp;dag=test.2908/test.2908_8.dag.out&amp;" alt="" coords="261,421,65"/>
+<area shape="circle" id="node10" href="../isegment.cgi?iseg=n14&amp;dag=test.2908/test.2908_8.dag.out&amp;" alt="" coords="417,421,65"/>
+</map>

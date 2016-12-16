@@ -1,0 +1,69 @@
+HEADER jobname= test.2908
+SEQUENCE   20 NLYIQWLKDGGPSSGRPPPS
+HEADER C-alpha coordinates with original numbering
+ATOM      1  CA  ASN A   1      -8.608   3.135  -1.618  0.00  0.00
+ATOM      2  CA  LEU A   2      -4.923   4.002  -2.452  0.00  0.00
+ATOM      3  CA  TYR A   3      -3.690   2.738   0.981  0.00  0.00
+ATOM      4  CA  ILE A   4      -5.857  -0.449   0.613  0.00  0.00
+ATOM      5  CA  GLN A   5      -4.122  -1.167  -2.743  0.00  0.00
+ATOM      6  CA  TRP A   6      -0.716  -0.631  -0.993  0.00  0.00
+ATOM      7  CA  LEU A   7      -1.641  -2.932   1.963  0.00  0.00
+ATOM      8  CA  LYS A   8      -3.024  -5.791  -0.269  0.00  0.00
+ATOM      9  CA  ASP A   9       0.466  -6.016  -1.905  0.00  0.00
+ATOM     10  CA  GLY A  10       2.060  -6.618   1.593  0.00  0.00
+ATOM     11  CA  GLY A  11       2.626  -2.967   2.723  0.00  0.00
+ATOM     12  CA  PRO A  12       6.333  -2.533   3.806  0.00  0.00
+ATOM     13  CA  SER A  13       7.049  -6.179   2.704  0.00  0.00
+ATOM     14  CA  SER A  14       6.389  -5.315  -1.015  0.00  0.00
+ATOM     15  CA  GLY A  15       9.451  -3.116  -1.870  0.00  0.00
+ATOM     16  CA  ARG A  16       7.289   0.084  -2.054  0.00  0.00
+ATOM     17  CA  PRO A  17       6.782   3.088   0.345  0.00  0.00
+ATOM     18  CA  PRO A  18       3.287   4.031   1.686  0.00  0.00
+ATOM     19  CA  PRO A  19       1.185   6.543  -0.353  0.00  0.00
+ATOM     20  CA  SER A  20       0.852  10.027   1.285  0.00  0.00
+HEADER tstate tstate_no f u1 u2 entropy cuttype axis
+TSTATE       1      3      4      5        0.10   m    0
+TSTATE       2      6      7      8        0.10   m    0
+TSTATE       3      2      3      6        0.41   p    0
+TSTATE       4      9     10     11        0.10   m    0
+TSTATE       5      1      2      9        0.53   p    0
+TSTATE       6     12      3     13        0.10   m    0
+TSTATE       7     14      9     15        0.10   m    0
+TSTATE       8      1     12     14        0.33   p    0
+HEADER ISEGMT isegmt_no recursion_depth symops Gsolv SAS sc_entropy Voids Hbonds concentration seamsX8
+ISEGMT       1    1    0    36877.70     2392.93       32.25       0    20 0.00000   0   0   0   0   0   0   0   0
+AAAAAAAAAAAAAAAAAAAA
+ISEGMT       2    2    0    26491.46     1709.16       24.95       0    15 0.00000   0   0   0   0   0   0   0   0
+AAAAAAAAAAAAAAA.....
+ISEGMT       3    3    0     9567.12      514.72        8.35       0     5 0.00000   0   0   0   0   0   0   0   0
+AAAAAA..............
+ISEGMT       4    4    0        0.00        0.00        0.00       0     0 0.00000   0   0   0   0   0   0   0   0
+A...................
+ISEGMT       5    4    0     6901.90      369.60        4.51       0     3 0.00000   0   0   0   0   0   0   0   0
+.AAAAA..............
+ISEGMT       6    3    0     8915.99      731.63       11.08       0     6 0.00000   0   0   0   0   0   0   0   0
+......AAAAAAAAA.....
+ISEGMT       7    4    0        0.00        0.00        0.00       0     0 0.00000   0   0   0   0   0   0   0   0
+......A.............
+ISEGMT       8    4    0     6635.78      595.32        9.47       0     4 0.00000   0   0   0   0   0   0   0   0
+.......AAAAAAAA.....
+ISEGMT       9    2    0     3565.51      235.62        1.19       0     0 0.00000   0   0   0   0   0   0   0   0
+...............AAAAA
+ISEGMT      10    3    0        0.00        0.00        0.00       0     0 0.00000   0   0   0   0   0   0   0   0
+...............A....
+ISEGMT      11    3    0     2523.74      171.07        0.00       0     0 0.00000   0   0   0   0   0   0   0   0
+................AAAA
+ISEGMT      12    2    0    16149.64      994.01       15.01       0     8 0.00000   0   0   0   0   0   0   0   0
+AAAAAAAAA...........
+ISEGMT      13    3    0      869.18      126.86        2.09       0     0 0.00000   0   0   0   0   0   0   0   0
+......AAA...........
+ISEGMT      14    2    0    10616.44      792.55        9.48       0     5 0.00000   0   0   0   0   0   0   0   0
+.........AAAAAAAAAAA
+ISEGMT      15    3    0     5387.89      402.89        5.31       0     3 0.00000   0   0   0   0   0   0   0   0
+.........AAAAAA.....
+# Output from geofold_seams.f90 :: geofold_seams_write()
+# NBARRELS  <Number of Barrels>
+# BARREL :  <id>  <Number of Seams>
+# SEAM :    <id>  <Number of Buttons> <Total Energy> <x1-beta1> <x2-beta1> <x1-beta2> <x2-beta2>
+# BUTTON :  <id>  <Energy-Beta1> <Energy-beta2>
+NBARRELS     0
