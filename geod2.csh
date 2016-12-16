@@ -6,8 +6,8 @@ echo "Running on `hostname` `date` in `pwd`" > Running
 ## /home/bystrc/server/geofold
 ## NOTE: server/geofold is located on brahms
 ############ change SHOME to the directory geofold is installed in ##########
-setenv SHOME /bach1/home/flex
-setenv LHOME /home/flex
+setenv SHOME /bach1/home/sanw
+setenv LHOME /home/sanw
 setenv GDIR $SHOME/server/geofold
 setenv BDIR $GDIR
 setenv PYTHON /usr/bin/python
@@ -21,7 +21,8 @@ if !(-e $BIOLUNIT ) setenv BIOLUNIT $SHOME/server/data/pdb1
 setenv GETCHAIN $GDIR/xgetchain
 setenv STMP $GDIR/tmp
 setenv SJOB $GDIR/jobs
-setenv WGETPDB 'ssh bach1 cd server/geofold; /bach1/home/bystrc/bin/wgetpdb'
+setenv WGETPDB ./wgetpdb
+setenv USERNAME sanw
 foreach RQRD ( $GDIR $BDIR $PDBDIR $LOGDIR $BIOLUNIT $GETCHAIN $SHOME $STMP $SJOB )
   if !(-e $RQRD ) then
     echo "ERROR: $RQRD is required for geod2 to run"
@@ -118,7 +119,7 @@ while ( 1 )
           mv -fv $CFILE ${CFILE}.x
           # if ($CHAIN == "" ) setenv CHAIN  _
           ## mv ${GDIR}/${SJOB}/${LNAME}.par $STMP/
-          $PYTHON $GDIR/rungeofold.py ${STMP}/$PARFILE > $LOGDIR/${LNAME}.log
+          $PYTHON $GDIR/rungeofold.py ${STMP}/$PARFILE $USERNAME > $LOGDIR/${LNAME}.log
           # chmod +x $GDIR/tmp/${LNAME}.csh
           ############ NEXT LINE SHOULD BE A JOB SUBMISSION -- MACHINE DEPENDENT
           ## qsub -b n -j y -cwd -o $LOGDIR/${LNAME}.log tmp/${LNAME}.csh $PDBCODE $CHAIN ${LNAME}  ${ONAME}

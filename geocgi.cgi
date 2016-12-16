@@ -109,8 +109,8 @@ def firstScript(form):
     """
     #Flex settings    
     #set directories
-    basedir = "/bach1/home/flex"
-    urldir = "/bach1/home/flex/public_html/geofold"
+    basedir = "/bach1/home/sanw"
+    urldir = "/bach1/home/sanw/public_html/geofold"
     tmpdir = "%s/server/geofold/tmp"%(basedir)
     dbgfile = "%s/output/debug.out"%(urldir)
     #default parameters file
@@ -292,9 +292,9 @@ def secondScript(form):
     #directories and basic settings
     waitimage = "http://www.bioinfo.rpi.edu/bystrc/pub/mpeg/peptide.gif"
     #set directories
-    basedir = "/bach1/home/flex"
+    basedir = "/bach1/home/sanw"
     gdir = "%s/server/geofold"%(basedir)
-    urldir = "/bach1/home/flex/public_html/geofold"
+    urldir = "/bach1/home/sanw/public_html/geofold"
     tmpdir = "%s/server/geofold/tmp"%(basedir)
     #default parameters file
     paramfile = "%s/server/geofold/bin/parameters"%(basedir)
@@ -379,8 +379,8 @@ def redo(form):
     #based on firstScript    
     checked = {'1':' checked','0':''} #['',' checked']
     #set directories
-    basedir = "/bach1/home/flex"
-    urldir = "/bach1/home/flex/public_html/geofold"
+    basedir = "/bach1/home/sanw"
+    urldir = "/bach1/home/sanw/public_html/geofold"
     tmpdir = "%s/server/geofold/tmp"%(basedir)
     dbgfile = "%s/output/debug.out"%(urldir)
     #default parameters file
@@ -555,9 +555,9 @@ def fourthScript(form):
     #directories and basic settings
     waitimage = "http://www.bioinfo.rpi.edu/bystrc/pub/mpeg/peptide.gif"
     #set directories
-    basedir = "/bach1/home/flex"
+    basedir = "/bach1/home/sanw"
     gdir = "%s/server/geofold"%(basedir)
-    urldir = "/bach1/home/flex/public_html/geofold"
+    urldir = "/bach1/home/sanw/public_html/geofold"
     tmpdir = "%s/tmp"%(gdir)
     #default parameters file
     paramfile = "%s/server/geofold/bin/parameters"%(basedir)

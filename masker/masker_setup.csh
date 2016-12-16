@@ -1,5 +1,5 @@
- setenv MASKERDIR /Users/wenyinsan/GitHub/GeoFOld/masker
- setenv DESIGN_HOME /Users/wenyinsan/GitHub/GeoFOld/masker
+ setenv MASKERDIR /home/sanw/GeoFold/masker
+ setenv DESIGN_HOME /home/sanw/GeoFold/masker
  setenv MSIZE   512
  setenv DTHETA  9.0 
  setenv MASKLIB      $MASKERDIR/$MSIZE.mask

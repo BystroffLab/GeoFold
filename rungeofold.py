@@ -24,7 +24,11 @@ make all
 By modifying the directories below, you can
 run this script and generate HTML output.
 E. Gilbert 03-February-2014
-B. Walcott 11 June 2014 """
+B. Walcott 11 June 2014 
+W. San 2016
+"""
+
+
 
 # NOTE: If running this using python version 3,
 # replace all occurrences of the commands module with subprocess
@@ -671,7 +675,7 @@ convert = configuration['convert']
 gnuplot = configuration['gnuplot']
 """
 #global gnuplot added by san
-gnuplot = "/bach1/home/sanw/usr/bin/gnuplot"
+gnuplot = "/bach1/usr/bin/gnuplot"
 '''
 #Directory settings for server
 if Username == "bystrc":
