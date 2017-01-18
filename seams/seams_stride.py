@@ -27,9 +27,9 @@ def main (args):
     betas =  getBetasStride (pdb, stridePath)
     for b in betas:
         print b
-    
+
 #-------------------------------------------------------------------------------
-# getBetasStride: 
+# getBetasStride:
 #-------------------------------------------------------------------------------
 def getBetasStride (pdbFilename, stridePath):
     sys.stderr.write("getBetasStride\n")
@@ -51,7 +51,7 @@ def writeBetas (betas, outFilename):
         outFile.write (" " + str (i))
 
     outFile.close()
-    
+
 #-------------------------------------------------------------------------------
 # runStride
 #-------------------------------------------------------------------------------
@@ -60,7 +60,10 @@ def runStride (pdbFilename, stridePath):
     sys.stderr.write("runStride\n")
     SEAMS_PATH = os.environ ["GDIR"] + "/seams"
     gDir = os.environ["GDIR"]+'/'
-    stride = SEAMS_PATH + "/stride "
+    if sys.platform() == 'Darwin':
+        stride = SEAMS_PATH + "/osx_stride "
+    else:
+        stride = SEAMS_PATH + "/stride "
     stemName = name (pdbFilename)
     strideFilename = stridePath + stemName + "-tmp"  + ".stride"
 
@@ -70,7 +73,7 @@ def runStride (pdbFilename, stridePath):
 
     cmm = stride + pdbFilename + " > " + strideFilename
     sys.stderr.write(cmm+'\n')
-    
+
 #"/home/garrel/svn/geofold/seams/stride /home/garrel/svn/geofold/tmp/rpl14.pdb"
     #os.system (cmm)
     import commands
@@ -100,9 +103,9 @@ def processStride (strideFilename):
     seqAABeta = []
 
     for line in strideFile:
-        
+
         lst = line.split ()
-        if lst[0] != "ASG": 
+        if lst[0] != "ASG":
           continue
 
         try:
@@ -162,13 +165,12 @@ def log (message):
     string=""
     for i in message:
         string += str (i) + " "
-    
+
     #sys.stderr.write (">>>> SecStr: " + string+"\n")
 
 ###############################################################################
-# Call the main function 
+# Call the main function
 ###############################################################################
-if __name__ == "__main__": 
+if __name__ == "__main__":
 
     main (sys.argv)
-
