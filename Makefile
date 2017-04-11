@@ -66,7 +66,8 @@ bin64 :
 	make maxTraffic
 
 all  : xgeofold xvoidmask xunfoldsim xcontactmask xgetchain xrenumber_one xpdb2cij \
-       xageplot xpathway2ps x3to1 xpdb2hb xfit_poly maxTraffic xsplitseams seams/xpdb2seams
+       xageplot xpathway2ps x3to1 xpdb2hb xfit_poly maxTraffic xsplitseams seams/xpdb2seams \
+       hxpathway2ps
 
 debug : geofold_pivots.f90 geofold_global.f90 geofold.f90 vectormath.f90 geofold_masker.f90 geofold_hbonds.f90
 	$(FFdebug)  -c vectormath.f90
@@ -129,6 +130,9 @@ xageplot : ageplot2ps.f90
 
 xpathway2ps : pathway2ps.f90
 	$(FF) -o xpathway2ps pathway2ps.f90
+
+hxpathway2ps : hxpathway2ps.f90
+        $(FF) -o hxpathway2ps hxpathway2ps.f90
 
 x3to1 : 3to1.f90
 	$(FF) -o x3to1 3to1.f90
