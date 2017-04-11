@@ -132,7 +132,7 @@ xpathway2ps : pathway2ps.f90
 	$(FF) -o xpathway2ps pathway2ps.f90
 
 hxpathway2ps : hxpathway2ps.f90
-        $(FF) -o hxpathway2ps hxpathway2ps.f90
+	$(FF) -o hxpathway2ps hxpathway2ps.f90
 
 x3to1 : 3to1.f90
 	$(FF) -o x3to1 3to1.f90
