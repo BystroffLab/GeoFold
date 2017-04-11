@@ -24,7 +24,7 @@ def hx2cij(hxfile,cijfile,output):
     #find all contacts in cij where both residues have hx data
     contacts = []
     for [i,j,x] in cij_data:
-        is_hx = [False,False]
+        is_hx = False
         for [k, let] in hx_data:
             if i == k:
                 is_hx[0] = True
@@ -39,3 +39,9 @@ def hx2cij(hxfile,cijfile,output):
     for c in contacts:
         out.write("%4i %4i %s\n"%(int(c[0]),int(c[1]),c[2]))
     out.close()
+
+def main():
+    pass
+
+if __name__ == '__main__':
+    main()
