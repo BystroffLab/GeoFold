@@ -15,7 +15,7 @@
 !! -----------------------------------
 !! C.Bystroff Sat Nov  8 16:00:14 EST 2008
 !!  hbcontactmap.f90 C.Bystroff Thu Apr 13 06:14:50 EDT 2006
-!!  Side-chain H-bonds added B. Walcott Tue May 6 14:57:34 EDT 2014 
+!!  Side-chain H-bonds added B. Walcott Tue May 6 14:57:34 EDT 2014
 !! -----------------------------------
 program pdb2hb
 implicit none
@@ -64,7 +64,7 @@ write(*,'("!            C.Bystroff 8-NOV-2008                    !")')
 write(*,'("!-----------------------------------------------------!")')
 write(*,'("! donor acceptor H-or-S ")')
 write(*,'("! pdb file = ",a)') trim(pdbfile)
- 
+
   allocate(d_head)
   allocate(a_head)
 
@@ -154,14 +154,14 @@ subroutine READPDB(pdbfile, d_head, a_head, nres, sg, nsg, nd, na, schb)
   real :: b,p !,chi1,chi2,x
 !  integer :: I,J,K,L,i1,i2,ist,startres
   character(len=80),parameter :: pdbinfmt="(BZ,6x,5x,1x,a4,1x,a4,1x,i4,4x,3f8.3,2f6.2)"
-  
+
 !  write(*,*) "Variables declared"
-  
+
   !** initialization
-  i_d=>d_head  
-  nullify(i_d%next)  
+  i_d=>d_head
+  nullify(i_d%next)
   i_a=>a_head
-  nullify(i_a%next)  
+  nullify(i_a%next)
   last = '      '
   nsg = 0
   open(1, file=pdbfile,status='old',form='formatted',action='read',iostat=ios)
@@ -172,7 +172,7 @@ subroutine READPDB(pdbfile, d_head, a_head, nres, sg, nsg, nd, na, schb)
 !  ocode = ' '
   jres = 0
   ires = 0
-  
+
   !Count the number of residues in file
   do
     read(1, '(a80)',iostat=ios) card
@@ -187,7 +187,7 @@ subroutine READPDB(pdbfile, d_head, a_head, nres, sg, nsg, nd, na, schb)
   enddo
   nres = jres
   write(*, '("!",i9," residues in PDB file.")') nres
-  
+
   !start from the beginning of file, more initialization
   rewind(1)
   allocate(sg(3,nres))
@@ -197,7 +197,7 @@ subroutine READPDB(pdbfile, d_head, a_head, nres, sg, nsg, nd, na, schb)
   ios = 0
   coordsC(1:8,1:3) = 999.
   coords2 = 999.
-  
+
   !Parse the PDB file into lists of acceptor and donor groups and an array of cys sulfides
   do
     read(1,'(a80)', iostat=ios) card
@@ -205,9 +205,9 @@ subroutine READPDB(pdbfile, d_head, a_head, nres, sg, nsg, nd, na, schb)
     if (jres > 0 .and. card(1:5) == 'ENDMD') exit
     if (jres > 0 .and. card(1:5) == 'TER  ') exit
     if (card(1:5) /= 'ATOM ') cycle
-    if (atomname(2:2)=='C') then 
+    if (atomname(2:2)=='C') then
 	  select case(atomname)
-	    case(' C  ')
+    case(' C  ')
 		  coordsC(1,1:3) = coords2
 		case(' CA ')
 		  coordsC(2,1:3) = coords2
@@ -226,17 +226,17 @@ subroutine READPDB(pdbfile, d_head, a_head, nres, sg, nsg, nd, na, schb)
 		case default
 	  end select
 	endif
-    read(card,pdbinfmt,iostat=ios) atomname,acid,ires,coords2,b,p	
+    read(card,pdbinfmt,iostat=ios) atomname,acid,ires,coords2,b,p
     if(ios/=0) cycle
-    if(card(22:27) /= last) then	!new residue starting 
+    if(card(22:27) /= last) then	!new residue starting
       jres = jres + 1
       if(jres>nres) exit
       last = card(22:27)
     endif
-      
+
       !debugging
 !      write(*,'(a3, ", residue number ",i7," of ",i7)') trim(acid),jres,nres
-      
+
       !backbone hydrogen bond donors/acceptors
       !Pro is an imino acid and doesn't donate a hydrogen bond
       if(acid /= 'PRO ') then
@@ -265,17 +265,17 @@ subroutine READPDB(pdbfile, d_head, a_head, nres, sg, nsg, nd, na, schb)
         i_a%atom = atomname(2:4)
         i_a%xyz = coords2
         prevO = coords2
-        na=na+1  
+        na=na+1
         cycle
       endif
-      
+
       if(schb .or. trim(acid)=='CYS') then
         !sidechain hydrogen bond donors/acceptors
-        select case(trim(acid))        
-           
+        select case(trim(acid))
+
           !hydrogen bond accepting sidechains
           case('ASP')
-  			if(atomname == ' OD1' .or. atomname == ' OD2') then        
+  			if(atomname == ' OD1' .or. atomname == ' OD2') then
           if(i_a%res_num /= 0) then
             allocate(i_a%next)
             i_a=>i_a%next
@@ -297,9 +297,9 @@ subroutine READPDB(pdbfile, d_head, a_head, nres, sg, nsg, nd, na, schb)
   			  i_a%atom = atomname(2:4)
   			  i_a%xyz = coords2
   			  na=na+1
-  			endif 
-           
-          !hydrogen bond donating/accepting sidechains  
+  			endif
+
+          !hydrogen bond donating/accepting sidechains
           case('ASN', 'GLN')
             !Carbonyl Oxygen acceptor
             if(atomname(2:2) == 'O') then
@@ -324,12 +324,12 @@ subroutine READPDB(pdbfile, d_head, a_head, nres, sg, nsg, nd, na, schb)
               i_d%atom = atomname(2:4)
               i_d%xyz = coords2
               if(atomname(3:3) == 'D') i_d%axyz = coordsC(4,1:3)
-              if(atomname(3:3) == 'E') i_d%axyz = coordsC(5,1:3)			
+              if(atomname(3:3) == 'E') i_d%axyz = coordsC(5,1:3)
               nd=nd+1
             endif
-     
-          !sidechains with hydroxyl groups  
-          case('SER', 'THR', 'TYR')         
+
+          !sidechains with hydroxyl groups
+          case('SER', 'THR', 'TYR')
             if(atomname(2:2) /= 'O') cycle
             !acceptor
             if(i_a%res_num /= 0) then
@@ -356,7 +356,7 @@ subroutine READPDB(pdbfile, d_head, a_head, nres, sg, nsg, nd, na, schb)
                 i_d%axyz = coordsC(3,1:3)
             endif
                 nd=nd+1
-            
+
           !hydrogen bond donating sidechains
           case('ARG', 'LYS', 'TRP', 'HIS')
             if(atomname(2:2) /= 'N' ) cycle
@@ -378,18 +378,18 @@ subroutine READPDB(pdbfile, d_head, a_head, nres, sg, nsg, nd, na, schb)
               i_d%axyz = coordsC(7,1:3)
             endif
                 nd=nd+1
-          
-          !Cysteine add sulfur group  
+
+          !Cysteine add sulfur group
           case('CYS')
   		  if(atomname /= ' SG ') cycle
   		  nsg = nsg + 1
   		  sg(1:3,jres) = coords2
-          
+
           !Do nothing
           case default
         end select
       endif
-       
+
   enddo
   close(1)
 end subroutine READPDB
@@ -441,7 +441,7 @@ subroutine GETHBONDS(d_head, a_head)
         cycle
       endif
       !if angle is between pi/2 and pi (90 and 180 deg), H-bond formed
-      
+
       !example output: 4 N 9 OE2 H
       write(*,'(i7," ",a3," ",i7," ",a3," "," H ")') i_d%res_num, i_d%atom, i_a%res_num, i_a%atom
       i_a=>i_a%next
@@ -458,20 +458,20 @@ subroutine calc_angle(don, acc, ant, angle)			!calculates the angle (rad) betwee
   real,dimension(3) :: temp = 0.0					!temporary variable
   real,intent(out) :: angle							!the angle between these three points
   real :: acc_ant, acc_don, ant_don					!sides of the imaginary triangle formed by these three points
-  
+
   angle = 0.0
   !Calculate acc_ant
   temp = acc(1:3)-ant(1:3)
   acc_ant = sqrt(sum(temp*temp))
-  
+
   !Calculate acc_don
   temp = acc(1:3)-don(1:3)
   acc_don = sqrt(sum(temp*temp))
-  
+
   !Calculate ant_don
   temp = ant(1:3)-don(1:3)
   ant_don = sqrt(sum(temp*temp))
-  
+
   !Calculate angle
   angle = acos(((ant_don*ant_don)+(acc_don*acc_don)-(acc_ant*acc_ant))&
                /(2*ant_don*acc_don))
@@ -499,7 +499,7 @@ subroutine cleanup(d_head, a_head)			!clears the memory from the linked lists
   nullify(j_d)
   nullify(j_a)
   nullify(i_d)
-  nullify(i_a)  
+  nullify(i_a)
 end subroutine cleanup
 !-----------------------------------------------------------------------!
 !-----------------------------------------------------------------------!
@@ -534,7 +534,7 @@ subroutine readoutss(sg,nres)
   integer,intent(in)::nres
   real,dimension(:,:),pointer :: sg
   integer :: i
-  
+
   do i=1,nres
     if(sg(1,i) == 0.0) cycle
     write(*,'("SG ",i3,"(",e10.3","e10.3","e10.3")")') i, sg(1:3,i)
