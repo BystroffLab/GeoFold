@@ -6,3 +6,4 @@ output/
 *.dSYM
 *.mod
 x*
+*~
