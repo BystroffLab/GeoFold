@@ -7,3 +7,7 @@ output/
 *.mod
 x*
 *~
+*.hx
+*.cij
+*.hb
+*.log
