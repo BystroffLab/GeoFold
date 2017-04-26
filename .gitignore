@@ -1,5 +1,6 @@
 *.pyc
 tmp/
+pdbs/
 output/
 *.o
 *.dSYM
