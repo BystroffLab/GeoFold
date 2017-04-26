@@ -31,7 +31,7 @@ call read_from_file(contacts,contactfile)
 ! call print(contacts%head_)
 ! call print(contacts%tail_)
 call write_output(contacts,outputfile)
-
+call contacts%cl_dtor()
 CONTAINS
 
 !------------------------------------------------------------------------------!
@@ -97,10 +97,10 @@ subroutine write_output(contacts,outputfile)
     write(0,*) "IOError: Could not open file for writing: ",outputfile
     stop 'hb2cij::write_output'
   endif
-  if(contacts%size_ == 0) then
+  if(contacts%size() == 0) then
     write(0,*) "Warning: Empty contact list"
   else
-    do i = 1, contacts%size_
+    do i = 1, contacts%size()
       call contacts%get_indx_values(i,res1,res2,tflag)
       if (tflag /= 2) cycle
       write(dunit,'(2i6,f5.2)') res1,res2,1.0
