@@ -1,5 +1,5 @@
 # ======================================================================
-# Makefile for seams module 
+# Makefile for seams module
 # Author: Luis Garreta
 # Date  : Jun 02/2013
 # ======================================================================
@@ -22,14 +22,19 @@ OBJ = obj
 BIN = bin
 
 # List of executables to be built within the package
-PROGRAMS = xpdb2seams 
+PROGRAMS = xpdb2seams xhb2cij
 
 # "make" builds all
 all: dir $(PROGRAMS)
 
-dir: 
+dir:
 	mkdir -p obj
-	
+
+xhb2cij: hb2cij.f90 contact_obj.o
+	$(FC) $(FCFLAGS) -I$(OBJ) -J$(OBJ) -o $@ $(LDFLAGS) hb2cij.f90 $(OBJ)/contact_obj.o
+
+contact_obj.o: $(SRC)/contact_obj.f90
+
 xpdb2seams: pdb2seams.f90 seams_main.o seams_graph.o seams_sequences.o seams_sequence_generic.o seams_pdbtools.o seams_utils.o
 	$(FC) $(FCFLAGS) -I$(OBJ) -J$(OBJ) -o $@ $(LDFLAGS) pdb2seams.f90 $(OBJ)/seams_main.o $(OBJ)/seams_graph.o \
                                $(OBJ)/seams_sequences.o $(OBJ)/seams_sequence_generic.o $(OBJ)/seams_pdbtools.o \
@@ -37,30 +42,29 @@ xpdb2seams: pdb2seams.f90 seams_main.o seams_graph.o seams_sequences.o seams_seq
 
 seams_main.o: $(SRC)/seams_main.f90 seams_sequences.o seams_pdbtools.o seams_graph.o seams_utils.o
 seams_sequences.o: $(SRC)/seams_sequences.f90 seams_sequence_generic.o
-seams_graph.o: $(SRC)/seams_graph.f90 seams_sequences.o 
-seams_sequence_generic.o: $(SRC)/seams_sequence_generic.f90 
+seams_graph.o: $(SRC)/seams_graph.f90 seams_sequences.o
+seams_sequence_generic.o: $(SRC)/seams_sequence_generic.f90
 seams_pdbtools.o: $(SRC)/seams_pdbtools.f90 seams_sequences.o seams_utils.o
-seams_utils.o: $(SRC)/seams_utils.f90 
+seams_utils.o: $(SRC)/seams_utils.f90
 
 # ======================================================================
 # General rule for building prog from prog.o; $^ (GNU extension) is
 # used in order to list additional object files on which the
 # executable depends
 %: %.o
-	$(FC) $(FCFLAGS) -I$(OBJ) -J$(OBJ) -o $(OBJ)$@ $^ $(LDFLAGS) $< 
+	$(FC) $(FCFLAGS) -I$(OBJ) -J$(OBJ) -o $(OBJ)$@ $^ $(LDFLAGS) $<
 
 # General rules for building prog.o from prog.f90 or prog.F90; $< is
 # used in order to list only the first prerequisite (the source file)
 # and not the additional prerequisites such as module or include files
 %.o: $(SRC)/%.f90
-	$(FC) $(FCFLAGS) -I$(OBJ) -J$(OBJ) -o $(OBJ)/$@ -c $< 
+	$(FC) $(FCFLAGS) -I$(OBJ) -J$(OBJ) -o $(OBJ)/$@ -c $<
 
 # Utility targets
 .PHONY: clean veryclean
 
 clean:
-	rm -f *.o *.mod *.MOD $(SRC)/*.mod $(SRC)/*.o $(PROGRAMS) $(OBJ)/*.mod $(OBJ)/*.o 
+	rm -fv *.o *.mod *.MOD $(SRC)/*.mod $(SRC)/*.o $(PROGRAMS) $(OBJ)/*.mod $(OBJ)/*.o
 
 veryclean: clean
-	rm -f *~ $(PROGRAMS)
-
+	rm -fv *~ $(PROGRAMS)
