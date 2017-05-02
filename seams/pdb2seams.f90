@@ -11,14 +11,18 @@ program pdb2seams
 
   implicit none
     character (len=100)       :: pdbFilename, contactsFilename
+    character (len=1000) :: aline
+    character (len=:),allocatable :: cijfile
     type(sequence_node), pointer    :: seamsSeq, graphSeq, cyclesSeq
     integer, allocatable        :: betaSheetContactsSeq (:,:)
     integer             :: numberAminos
     real, allocatable             :: energyMatrix (:,:)
     type (barrel_type), allocatable :: barrelsArray (:)
+    logical :: has_cij = .false.
 
+  write(0,*) "iargc() = ",iargc()
   if (iargc() < 1) then
-    print *,"USAGE : pdb2seams <input pdb filename> [input energies file] "
+    print *,"USAGE : pdb2seams <input pdb filename> [input energies file] [input cijfile] "
     print *,"Identifies beta barrels in PDB files. Writes barrel data, including all seams    "
     print *,"all residues H-bonding across a seam, and all buttons.   "
     print *,"INPUT: A protein structure in PDB format"
@@ -26,20 +30,31 @@ program pdb2seams
   endif
 
   call getarg (1, pdbFilename)
+  if(iargc() == 3) then
+    call getarg(3,aline)
+    cijfile = trim(adjustl(aline))
+    has_cij = .true.
+    write(0,*) "CIJFILE: ",cijfile
+  endif
   numberAminos = getSizePdb (pdbFilename)
     !! diagnostic
     write(*,*) "Size of PDB file = ",numberAminos
 
-  
+
   ! Get bsheets, convert to a graph, get all cycles, convert to barrel array
-  call getBetaSheetsPdb (pdbFilename, seamsSeq)
+  write(0,*) "has_cij: ",has_cij
+  if(has_cij .eqv. .true.) then
+    call getBetaSheetsPdb(pdbFilename,seamsSeq,cijfile)
+  else
+    call getBetaSheetsPdb (pdbFilename, seamsSeq)
+  endif
   call getBetaSheetGraph (seamsSeq, betaSheetContactsSeq, graphSeq)
   call getAllCyclesGraphSeq (graphSeq, cyclesSeq)
   !stops at printGraphSeq???
   call printGraphSeq(graphSeq)
   write (0,*) "we got this far?"
   call createBarrels (cyclesSeq, seamsSeq, barrelsArray)  ! Create barrels struct from seams and cycles info
-  
+
   write (0,*) "barrels created?"
     !! diagnostic
 
@@ -64,7 +79,7 @@ subroutine createBarrels (cyclesSeq, seamsSeq, barrelsArray)
   implicit none
   type(sequence_node), pointer    :: cyclesSeq, seamsSeq
   type (barrel_type), allocatable, intent (out) :: barrelsArray (:)
-  type(seam_data), target     :: cycleReg, seam ! cycle data type record 
+  type(seam_data), target     :: cycleReg, seam ! cycle data type record
   type(barrel_type), target     :: barrel
 
   integer        :: cycleSize, nCycles, i, j, id
@@ -94,9 +109,9 @@ subroutine writeBarrels(barrelsArray)
   implicit none
   type (barrel_type), allocatable, intent (in)  :: barrelsArray(:)
   integer        :: nBarrels, nSeams, i, j, k, nButtons
-  type(seam_data), target     :: seam ! cycle data type record 
-  type(barrel_type), target     :: barrel 
-  type(button_type), target     :: button 
+  type(seam_data), target     :: seam ! cycle data type record
+  type(barrel_type), target     :: barrel
+  type(button_type), target     :: button
 
   nBarrels = size(barrelsArray)
 

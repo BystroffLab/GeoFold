@@ -1,8 +1,4 @@
-module seam_debug
-  use seams_pdbtools
-  use seams_sequences
-  use seams_graph
-  use seams_utils
+module seams_debug
 
 CONTAINS
   !----------------------------------------------------------------------------
@@ -39,3 +35,4 @@ CONTAINS
     write(tmpch,'(i4.4)') num
     ch = trim(adjustl(tmpch))
   end subroutine itoa
+end module seams_debug

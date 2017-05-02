@@ -3,11 +3,12 @@ module seams_main
   use seams_sequences
   use seams_graph
   use seams_utils
+  use seams_debug
 
-  integer, parameter :: MIN_CONTACTS_REGION=15  !15 !! Minimal number of contacts for regions 
-  integer, parameter :: MIN_CONTACTS_BETAS=5    !5 !! Minimal number of beta contacts 
+  integer, parameter :: MIN_CONTACTS_REGION=15  !15 !! Minimal number of contacts for regions
+  integer, parameter :: MIN_CONTACTS_BETAS=5    !5 !! Minimal number of beta contacts
 
-  !! Structure for barrels 
+  !! Structure for barrels
   type :: barrel_type
     integer :: nSeams  ! number of barrels_array
     type (seam_data) :: seams (100) ! Array of seams
@@ -18,30 +19,38 @@ CONTAINS
   !------------------------------------------------------------------------------
   ! seams_main:
   !      Functions of the module seams_main
-  !      Given a contact map (contactMatrix), it detects the regions 
-  !      (betas, helix, coils), and remove the ones that not has contiguos 
+  !      Given a contact map (contactMatrix), it detects the regions
+  !      (betas, helix, coils), and remove the ones that not has contiguos
   !      contacts greter than a threshod
   !------------------------------------------------------------------------------
   ! Return True/False if the protein (pdbFilename) is a beta barrel
   ! - It uses the graph property that if the number of edges connecting the
   ! is equal to the number of vertices, then this graph has a complete cycle
   !----------------------------------------------------------------------------
-  subroutine getBetaSheetsPdb (pdbFilename, betaSheetSeq)
+  subroutine getBetaSheetsPdb (pdbFilename, betaSheetSeq,cijfile)
     implicit none
-      character (*), intent (in)      :: pdbFilename        ! PDB 
+      character (*), intent (in)      :: pdbFilename        ! PDB
       type(sequence_node), pointer      :: betaSheetSeq
+      character(len=:),allocatable,optional,intent(in) :: cijfile
       integer, allocatable          :: contactMatrix (:,:), betaResidues (:)
       integer               :: nResidues, minContacts !! Minimum number of contacts per region
 
     minContacts = MIN_CONTACTS_REGION   ! Minimal number of contacts for beta sheet
-
-    call getContactMapPdb (pdbFilename, contactMatrix) ! Get the contact map from the PDB
+    if(present(cijfile)) then
+      call getContactMapFromCij(cijfile,contactMatrix)
+      write(0,*) "Loaded from cijfile"
+    else
+      call getContactMapPdb (pdbFilename, contactMatrix) ! Get the contact map from the PDB
+      write(0,*) "Loaded from pdb"
+    endif
     !call writeMatrix (contactMatrix, "in.mat")           ! for debugging
+    call bridgeBulges(contactMatrix)
     call getBetaResiduesPdb  (pdbFilename, betaResidues) ! Get the residues in betas (according to the stride program)
+    call bridgeBulges(contactMatrix)
     call detectBetaSheets (contactMatrix, betaResidues, minContacts, betaSheetSeq)
     !call writeMatrix (contactMatrix, "out.mat")          ! for debugging
-    call bridgeBulges (contactMatrix) 
-    call detectBetaSheets (contactMatrix, betaResidues, minContacts, betaSheetSeq) 
+    call bridgeBulges (contactMatrix)
+    call detectBetaSheets (contactMatrix, betaResidues, minContacts, betaSheetSeq)
     !call writeMatrix (contactMatrix, "bulge.mat")          ! for debugging
   endsubroutine getBetaSheetsPdb
 
@@ -49,7 +58,7 @@ CONTAINS
   ! Get the Total energy (seam + buttons) for a seam "iSeam"
   ! Returns the total energy and the side with low energy (beta1 or beta2)
   !--------------------------------------------------------------------
-  function getEnergySeam (barrelsArray, energyMatrix, iBarrel, iSeam, side, iflags) result(energySeam) 
+  function getEnergySeam (barrelsArray, energyMatrix, iBarrel, iSeam, side, iflags) result(energySeam)
     implicit none
       type (barrel_type), intent (in)    :: barrelsArray (:)
       real, intent (in)                  :: energyMatrix (:,:)
@@ -70,7 +79,7 @@ CONTAINS
       c2 = contact (2)
       if (present (iflags) .and. iflags(c1:c1) == '.' .or. iflags (c2:c2) == '.') cycle
       energySeam = energySeam + energyMatrix (contact(1), contact(2))
-    enddo 
+    enddo
 
     !! Get energy of seam's buttons
     y1 = seam%segments (1) ! Beta 1
@@ -109,7 +118,7 @@ CONTAINS
     integer, intent (in)              :: residue, x1, x2 ! coordinates beta
     real, intent (in)                 :: energyMatrix (:,:)
     character, intent (in), optional  :: iflags              ! Unfolded residues not taken into account
-    integer, allocatable              :: contactsResidueSeq (:)! residues forming contacts with input "residue" 
+    integer, allocatable              :: contactsResidueSeq (:)! residues forming contacts with input "residue"
     real                              :: energy
     integer                           :: contact, i, j
 
@@ -120,7 +129,7 @@ CONTAINS
     call getContactsResidue (residue, energyMatrix, contactsResidueSeq)
     energy = 0
     do i=1, lengthSeq (contactsResidueSeq)
-      contact = getAtSeq (contactsResidueSeq, i)   ! get contact 
+      contact = getAtSeq (contactsResidueSeq, i)   ! get contact
 
       if (contact < x1 .or. contact > x2) cycle  ! not in beta
       if (present (iflags)) then
@@ -197,8 +206,8 @@ CONTAINS
           call appendSeq (buttonsSeq, k)
         enddo
         barrelsArray (i)%seams(j)%nButtons = nButtons
-      enddo 
-     enddo 
+      enddo
+     enddo
     endsubroutine
 
   !------------------------------------------------------------------------------
@@ -216,7 +225,7 @@ CONTAINS
       type(seam_data), target         :: seam
 
     call loadEnergyToMatrix (energyFilename, energyMatrix, nResidues)
-    
+
     do k=1, size (barrelsArray)
       nSeams = barrelsArray(k)%nSeams
       do i=1, nSeams
@@ -226,9 +235,9 @@ CONTAINS
         do j=1, nContacts
           contact = seam%x (:, j)
           energy = energy + energyMatrix (contact(1), contact(2))
-        enddo 
+        enddo
         barrelsArray (k)%seams (i)%energy = energy
-      enddo 
+      enddo
     enddo
   endsubroutine
 
@@ -244,7 +253,7 @@ CONTAINS
       character (len=50)        :: aline
       integer             :: aa1, aa2, ios
       real                :: energy, x
-      
+
     allocate (energyMatrix (nResidues, nResidues))
     energyMatrix = 0
     open(99,file=energyFilename,status="old",form="formatted")
@@ -268,7 +277,7 @@ CONTAINS
   !------------------------------------------------------------------------------
   ! Given an input sequence of beta sheets (betaSheetSeq) it finds the contacts
   ! that connects each beta sheet with the others (betaSheetContactsSeq)
-  ! This informations can be used to detect if there is a cycle 
+  ! This informations can be used to detect if there is a cycle
   ! NOTE: There is a fast checking if connected, using only limit points of the region
   !------------------------------------------------------------------------------
   subroutine getBetaSheetContacts (betaSheetSeq, betaSheetContactsSeq)
@@ -276,8 +285,8 @@ CONTAINS
     type(sequence_node), pointer, intent (in) :: betaSheetSeq      ! Sequence of beta sheets each one with is set of contacts
     integer, allocatable, intent (out)      :: betaSheetContactsSeq (:,:) ! Contacts (x,y) which conneact the beta sheets
     integer                   :: n, m, i, k
-    type(seam_data), target         :: r1, r2 
-    
+    type(seam_data), target         :: r1, r2
+
     call createSeq (betaSheetContactsSeq)
 
     k = lengthSeqG (betaSheetSeq)
@@ -287,13 +296,13 @@ CONTAINS
         r2 = getAtSeq (betaSheetSeq, m)
 
         ! Check comparing same regions and contacts visited
-        if (n==m)                   cycle 
+        if (n==m)                   cycle
         if (existsSeq (betaSheetContactsSeq, (/n,m/)))   cycle
         if (existsSeq (betaSheetContactsSeq, (/m,n/)))   cycle
 
         if (isConnectedRegionsFast (r1, r2)) then
           call appendSeq (betaSheetContactsSeq, (/n, m/))
-        endif 
+        endif
       enddo
     enddo
   endsubroutine
@@ -306,8 +315,8 @@ CONTAINS
     integer, allocatable, intent (out)      :: betaSheetContactsSeq (:,:) ! Contacts (x,y) which connect the beta sheets
     type(sequence_node), pointer, intent (in) :: graphSeq      ! Undirected Graph
     integer                   :: n, m, i, k
-    type(seam_data), target         :: r1, r2 
-    
+    type(seam_data), target         :: r1, r2
+
     call createSeq (betaSheetContactsSeq)
     call createGraphSeq (graphSeq)
 
@@ -319,14 +328,14 @@ CONTAINS
         r2 = getAtSeq (betaSheetSeq, m)
 
         ! Check comparing same regions and contacts visited
-        if (n==m)                   cycle 
+        if (n==m)                   cycle
         !if (existsSeq (betaSheetContactsSeq, (/n,m/)))   cycle
         !if (existsSeq (betaSheetContactsSeq, (/m,n/)))   cycle
 
         if (isConnectedRegionsFast (r1, r2)) then
           call appendSeq (betaSheetContactsSeq, (/n, m/))
           call addEdgeGraphSeq (graphSeq, n, m )
-        endif 
+        endif
       enddo
     enddo
   endsubroutine
@@ -342,21 +351,21 @@ CONTAINS
     type(seam_data), target    :: reg1, reg2
     logical         :: value
     integer         :: x1, x2, y1, y2, w1, w2, h1, h2, last
-    
-    y1   = reg1%segments(1) 
-    last = reg1%segments(2) 
+
+    y1   = reg1%segments(1)
+    last = reg1%segments(2)
     w1   = last - y1 + 1
 
-    x1   = reg1%segments(3) 
-    last = reg1%segments(4) 
+    x1   = reg1%segments(3)
+    last = reg1%segments(4)
     h1   = last - x1 + 1
-    
-    y2   = reg2%segments(1) 
-    last = reg2%segments(2) 
+
+    y2   = reg2%segments(1)
+    last = reg2%segments(2)
     w2   = last - y2 + 1
 
-    x2   = reg2%segments(3) 
-    last = reg2%segments(4) 
+    x2   = reg2%segments(3)
+    last = reg2%segments(4)
     h2 = last - x2 + 1
 
     if ((y1+w1>y2 .and. y2+w2>y1) .or. &
@@ -373,16 +382,16 @@ CONTAINS
   function isConnectedRegions (reg1, reg2) result (value)
     type(seam_data), target    :: reg1, reg2
     logical         :: value
-    integer         :: nReg1, nReg2, i, x, y 
+    integer         :: nReg1, nReg2, i, x, y
     integer, allocatable  :: r2y (:), r2x (:)
-    
+
     nReg1 = reg1%n
-    
+
     value = .false.
     do i = 1, nReg1
       y = reg1%x (1, i)
       x = reg1%x (2, i)
-      
+
       nReg2 = reg2%n
       allocate (r2y (nReg2))
       allocate (r2x (nReg2))
@@ -403,7 +412,7 @@ CONTAINS
   !----------------------------------------------------------------------------
   ! detectBetaSheets
   ! Detect all the regions from the contactMatrix which has more contacts
-  ! than "minContacts". The other regions are cleared (zeroes) 
+  ! than "minContacts". The other regions are cleared (zeroes)
   !----------------------------------------------------------------------------
   subroutine detectBetaSheets (contactMatrix, betaResidues, minContacts, betaSheetSeq)
     implicit none
@@ -422,7 +431,7 @@ CONTAINS
     n = nrows (contactMatrix)
     do i=1, n
       do j=1, n
-        if (existsSeq (visitedSeq, (/j, i/)) .or. contactMatrix (j, i) == 0) cycle 
+        if (existsSeq (visitedSeq, (/j, i/)) .or. contactMatrix (j, i) == 0) cycle
         call getContacts (contactMatrix, (/j, i/), contacts)
         call extendsSeq (visitedSeq, contacts)
 
@@ -459,7 +468,7 @@ CONTAINS
         integer, parameter                  :: betaextend=1
 
     call createSeq (betaContactsSeq)
-    n = lengthSeq (contactSeq)  
+    n = lengthSeq (contactSeq)
     do i=1, n
       contact = getAtSeq (contactSeq, i)
       x = contact (1)
@@ -470,7 +479,7 @@ CONTAINS
                (any (abs(betaResidues-y)<=betaextend))) then
         call appendSeq (betaContactsSeq, contact)
       else
-        contactMatrix (x,y) = 0   
+        contactMatrix (x,y) = 0
       endif
      enddo
   endsubroutine
@@ -510,13 +519,13 @@ CONTAINS
     integer, allocatable, dimension (:,:), intent (out) :: contacts
     integer, allocatable, dimension (:,:) :: pointQueue, neighborSeq
     integer                 :: tmpPoint(2), x, y, n, i, j, neighbor(2)
-    character (len=15)            :: text 
+    character (len=15)            :: text
 
     call createSeq (contacts)
     call createSeq (pointQueue)
     call appendSeq (contacts, point)
     call appendSeq (pointQueue, point)
-    do while ( .not. isEmptySeq (pointQueue) ) 
+    do while ( .not. isEmptySeq (pointQueue) )
       tmpPoint = popSeq (pointQueue,1)
       call getNeighbors (contactMatrix, tmpPoint, neighborSeq)
       do while ( .not. isEmptySeq (neighborSeq) )
@@ -532,7 +541,7 @@ CONTAINS
      enddo
   endsubroutine
   !----------------------------------------------------------------------------
-  ! clearRegion: 
+  ! clearRegion:
   ! Crear the contactMatrix region (assign 0) correspondig to the points of input sequence
   !----------------------------------------------------------------------------
   subroutine clearRegion (contactMatrix, pointSeq)
@@ -541,10 +550,24 @@ CONTAINS
     integer, allocatable, dimension (:,:), intent (inout) :: pointSeq
     integer                 :: minContacts, point (2)
     integer, allocatable, dimension (:,:) :: contacts ! Handle with seq2I
+    !debugging variables!
+    integer,save :: count = 0
+    character(len=:),allocatable :: matrixfile,str_count
+    if(count == 0) then
+      call itoa(count,str_count)
+      matrixfile="/home/walcob/d/Dropbox/Desktop/cij_files/new/clear_"//str_count//".cij"
+      call dwriteMatrix(contactMatrix,size(contactMatrix,dim=1),matrixfile)
+      count = count + 1
+    endif
     do while ( .not. isEmptySeq (pointSeq) )
       point = popSeq (pointSeq, 1)
       contactMatrix (point(1), point (2)) = 0
     enddo
+    !write out contact map for debugging!
+    call itoa(count,str_count)
+    matrixfile="/home/walcob/d/Dropbox/Desktop/cij_files/new/clear_"//str_count//".cij"
+    call dwriteMatrix(contactMatrix,size(contactMatrix,dim=1),matrixfile)
+    count = count + 1
   endsubroutine
   !----------------------------------------------------------------------------
   ! writeRegion
@@ -553,7 +576,7 @@ CONTAINS
     integer, dimension (:,:), intent (in):: contacts
     integer :: n, rows
     character (len=10) :: formatStr
-    
+
     n = size (contacts)
     rows = nrows (contacts)
 
@@ -563,7 +586,7 @@ CONTAINS
   endsubroutine
 
   !----------------------------------------------------------------------------
-  ! bridgeBulge  -- add contacts wherever surrounding contacts exist. 
+  ! bridgeBulge  -- add contacts wherever surrounding contacts exist.
   !----------------------------------------------------------------------------
     subroutine bridgeBulges(contacts)
       integer,dimension(:,:),intent(inout) :: contacts
@@ -588,4 +611,3 @@ CONTAINS
     endsubroutine bridgeBulges
 
 endmodule
-

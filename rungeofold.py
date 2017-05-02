@@ -671,76 +671,6 @@ dot = configuration['dot']
 convert = configuration['convert']
 gnuplot = configuration['gnuplot']
 
-'''
-#Directory settings for server
-if Username == "bystrc":
-  thisDir = os.getcwd()
-  baseDir = "/bach1/home/%s/server/geofold" %(Username)
-  gDir      = baseDir+"/src/geofold"
-  bDir      = baseDir+"/bin"
-  maskerDir = baseDir+"/src/geofold/masker"
-  tmpDir    = baseDir+"/tmp"
-  pdbDir    = tmpDir
-  logDir    = baseDir+"/log"
-  htmlDir   = baseDir+"/output"
-  jobDir    = baseDir+"/job"
-  paramTemplate= gDir+"/bin/parameters"
-
-
-  baseURL = "http://www.bioinfo.rpi.edu/bystrc/geofold"
-  outputURL= "output"
-
-if Username == 'flex':
-  #Directory settings for Flex
-
-  thisDir = os.getcwd()
-  baseDir = "/bach1/home/flex/server"
-  gDir      = baseDir+"/geofold"
-  bDir      = gDir
-  maskerDir = gDir+"/masker"
-  tmpDir    = gDir+"/tmp"
-  pdbDir    = "/bach1/home/flex/server/data/pdb"
-  logDir    = gDir+"/log"
-  htmlDir   = gDir+"/output"
-  jobDir    = gDir+"/jobs"
-  paramTemplate= gDir+"/bin/parameters"
-
-
-  baseURL = "http://www.bioinfo.rpi.edu/bystrc/geofold"
-  outputURL= "output"
-
-if Username == 'walcob':
-  #Directory settings for B. Walcott
-  thisDir   = os.getcwd()
-  baseDir   = thisDir
-  gDir      = baseDir
-  bDir      = baseDir
-  maskerDir = gDir+'/masker'
-  pdbDir    = gDir+'/pdbs'
-  tmpDir    = baseDir+"/tmp"
-  logDir    = baseDir+"/log"
-  htmlDir   = baseDir+"/output"
-  jobDir    = baseDir+"/job"
-  paramTemplate=gDir+'/parameters'
-  baseURL='http://bach1.bio.rpi.edu/walcob/geofold'
-  outputURL='html'
-
-if Username == 'public':
-  #B. Walcott publicly accessible results
-  thisDir   = os.getcwd()
-  baseDir   = thisDir
-  gDir      = baseDir
-  bDir      = baseDir
-  maskerDir = gDir+'/masker'
-  pdbDir    = gDir+'/pdbs'
-  tmpDir    = baseDir+"/tmp"
-  logDir    = baseDir+"/log"
-  htmlDir   = "/bach1/home/bystrc/server/geofold/output"
-  jobDir    = baseDir+"/job"
-  paramTemplate=gDir+'/parameters'
-  baseURL='http://www.bioinfo.rpi.edu/bystrc/geofold'
-  outputURL='output'
-'''
 
 if len(sys.argv) < 2 or len(sys.argv) > 4:
   #### JOB level variable from parameter file ####
@@ -1099,11 +1029,19 @@ else:
       outWrite.close()
     writeParam = "echo CONTACTS %s/%s.sas >> %s" %(tmpDir,LName,paramFilename)
     commands.getstatusoutput(writeParam)
+    #================================ HB2CIJ ================================#
+    print("============= HB2CIJ =============")
+    tmpWrite.write("============= HB2CIJ =============<br>\n")
+    writeOut("============= HB2CIJ =============\n")
+    hb2cij = "%s/seams/xhb2cij %s/%s.hb %s/%s.hbcij"%(gDir,tmpDir,LName,tmpDir,LName)
+    runProgram(hb2cij)
+    #=======================================================================#
     print("============= PDB2SEAMS (extract seams) =============")
     tmpWrite.write("============= PDB2SEAMS (extract seams) =============<br>\n")
     writeOut("============= PDB2SEAMS (extract seams) =============\n")
     if barrels:
-      pdb2seams = "%s/seams/xpdb2seams %s %s/%s.sas > %s/%s.seams" %(gDir,LNamePDB,tmpDir,LName,tmpDir,LName)
+      pdb2seams = "%s/seams/xpdb2seams %s %s/%s.sas %s/%s.hbcij > %s/%s.seams" %(gDir,LNamePDB,tmpDir,LName,tmpDir,LName,tmpDir,LName)
+    #   pdb2seams = "%s/seams/xpdb2seams %s %s/%s.sas > %s/%s.seams" %(gDir,LNamePDB,tmpDir,LName,tmpDir,LName)
       os.environ['GDIR']=gDir
       os.environ['TMPDIR']=tmpDir
       runProgram(pdb2seams)

@@ -35,17 +35,18 @@ xhb2cij: hb2cij.f90 contact_obj.o
 
 contact_obj.o: $(SRC)/contact_obj.f90
 
-xpdb2seams: pdb2seams.f90 seams_main.o seams_graph.o seams_sequences.o seams_sequence_generic.o seams_pdbtools.o seams_utils.o
+xpdb2seams: pdb2seams.f90 seams_main.o seams_graph.o seams_sequences.o seams_sequence_generic.o seams_pdbtools.o seams_utils.o seams_debug.o
 	$(FC) $(FCFLAGS) -I$(OBJ) -J$(OBJ) -o $@ $(LDFLAGS) pdb2seams.f90 $(OBJ)/seams_main.o $(OBJ)/seams_graph.o \
                                $(OBJ)/seams_sequences.o $(OBJ)/seams_sequence_generic.o $(OBJ)/seams_pdbtools.o \
-							   $(OBJ)/seams_utils.o
+							   $(OBJ)/seams_utils.o $(OBJ)/seams_debug.o
 
-seams_main.o: $(SRC)/seams_main.f90 seams_sequences.o seams_pdbtools.o seams_graph.o seams_utils.o
+seams_main.o: $(SRC)/seams_main.f90 seams_sequences.o seams_pdbtools.o seams_graph.o seams_utils.o seams_debug.o
 seams_sequences.o: $(SRC)/seams_sequences.f90 seams_sequence_generic.o
 seams_graph.o: $(SRC)/seams_graph.f90 seams_sequences.o
 seams_sequence_generic.o: $(SRC)/seams_sequence_generic.f90
 seams_pdbtools.o: $(SRC)/seams_pdbtools.f90 seams_sequences.o seams_utils.o
 seams_utils.o: $(SRC)/seams_utils.f90
+seams_debug.o: $(SRC)/seams_debug.f90
 
 # ======================================================================
 # General rule for building prog from prog.o; $^ (GNU extension) is

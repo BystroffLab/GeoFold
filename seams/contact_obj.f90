@@ -78,7 +78,6 @@ subroutine cl_dtor(self)
 
   current => self%head_
   do i = 1,self%size_
-    call print(current)
     next => current%next_
     deallocate(current)
     current=>next

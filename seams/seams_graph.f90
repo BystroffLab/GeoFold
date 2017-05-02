@@ -9,11 +9,11 @@ module seams_graph
 		integer  :: id			! Vertice id
 		integer  :: n			! number of edges
 		integer  :: edges (100) ! Array of vertex (edges)
-	endtype 
+	endtype
 
 	type :: vertex_pointer
 		type(vertex_data), pointer :: p
-	endtype 
+	endtype
 
 CONTAINS
 !------------------------------------------------------------------------------
@@ -22,7 +22,7 @@ CONTAINS
 subroutine seams_test_graph ()
 	implicit none
 		type(sequence_node), pointer :: graph
-		integer								:: i		 
+		integer								:: i
 		integer, parameter, dimension (11)		:: vertex=(/1,2,3,4,5,6,7,8,9,10,11/)
 		integer, parameter, dimension (22)	 :: edges =(/3,1,1,2,2,7,7,5,5,6,6,10,10,9,9,8,8,11,11,4,4,3/)
 		!integer, parameter, dimension (6)		:: vertex=(/1,2,3,4,5,6/)
@@ -56,7 +56,7 @@ subroutine seams_test_graph ()
 subroutine printCyclesGraphSeq (cyclesSeq)
 	type(sequence_node), pointer :: cyclesSeq
 
-	print *, ">>> N: ", lengthSeq (cyclesSeq) 
+	print *, ">>> N: ", lengthSeq (cyclesSeq)
 	call printSeqG (cyclesSeq, printOneCycle)
 endsubroutine
 
@@ -86,8 +86,8 @@ subroutine createGraphSeq (graph)
 !------------------------------------------------------------------------------
 subroutine addVertexGraphSeq (graph, id)
 	implicit none
-		type(sequence_node), pointer	:: graph 
-		integer, intent (in)			:: id 
+		type(sequence_node), pointer	:: graph
+		integer, intent (in)			:: id
 		type(vertex_pointer)			:: vPtr
 
 	allocate (vPtr%p)
@@ -98,11 +98,11 @@ subroutine addVertexGraphSeq (graph, id)
 	call appendSeqG (graph, DATA=transfer(vPtr, sequence_data))
 	endsubroutine
 !------------------------------------------------------------------------------
-! Add and edge between two vertex to the graph 
+! Add and edge between two vertex to the graph
 !------------------------------------------------------------------------------
 subroutine addEdgeGraphSeq (graph, vertex1, vertex2)
 	implicit none
-		type(sequence_node), pointer	:: graph 
+		type(sequence_node), pointer	:: graph
 		integer, intent (in)			:: vertex1, vertex2
 		type(vertex_pointer)			:: vPtr
 		integer						:: n
@@ -115,11 +115,11 @@ subroutine addEdgeGraphSeq (graph, vertex1, vertex2)
 	call putAtSeqG (graph, vertex1, DATA=transfer(vPtr, sequence_data))
 	endsubroutine
 !------------------------------------------------------------------------------
-! Get the vertices of the edges of the vertex 
+! Get the vertices of the edges of the vertex
 !------------------------------------------------------------------------------
 subroutine getEdgesVertex (graph, vertex, edgesVertex)
 	implicit none
-		type(sequence_node), pointer			 :: graph 
+		type(sequence_node), pointer			 :: graph
 		integer, intent (in)							 :: vertex
 		integer, allocatable, intent (out) :: edgesVertex (:)
 		type(vertex_data), target					 :: vData
@@ -138,7 +138,7 @@ subroutine getEdgesVertex (graph, vertex, edgesVertex)
 !------------------------------------------------------------------------------
 subroutine getAdjacentEdges (graph, vertex, adjacentEdgesSeq)
 	implicit none
-		type(sequence_node), pointer			 :: graph 
+		type(sequence_node), pointer			 :: graph
 		integer, intent (in)							 :: vertex
 		integer, allocatable, intent (out) :: adjacentEdgesSeq (:,:)
 		integer, allocatable							 :: edgesVertex (:)
@@ -172,7 +172,7 @@ subroutine getCycle  (startEdge, treeEdgesSeq, vertexSeq)
 
 	n = lengthSeq (treeEdgesSeq)
     m = 1
-	do 
+	do
 		! curEdge		= getAtSeq (treeEdgesSeq, n)
 		curEdge		= popSeq(treeEdgesSeq, n)
 		if (startVertex == curEdge(1)) then
@@ -197,7 +197,7 @@ subroutine getCycle  (startEdge, treeEdgesSeq, vertexSeq)
 	call reverseSeq (vertexSeq)
 	endsubroutine getCycle
 !---------------------------------------------------------------------------
-! Deep First Search to get all the cycles. 
+! Depth First Search to get all the cycles. 
 !---------------------------------------------------------------------------
 recursive subroutine DFS (graph, vertex, visitedVertexSeq, visitedEdgesSeq, treeEdgesSeq, backEdgesSeq, cyclesSeq)
 	implicit none
@@ -222,8 +222,8 @@ recursive subroutine DFS (graph, vertex, visitedVertexSeq, visitedEdgesSeq, tree
             !! edge has not been visited
 			call appendSeq (visitedEdgesSeq, edge)
 			adjacentVertex = edge(2)
-			
-			if (.not. existsSeq (visitedVertexSeq, (/adjacentVertex,adjacentVertex/))) then 
+
+			if (.not. existsSeq (visitedVertexSeq, (/adjacentVertex,adjacentVertex/))) then
 				call appendSeq (treeEdgesSeq, edge)
 				call DFS(graph, adjacentVertex, visitedVertexSeq, visitedEdgesSeq, treeEdgesSeq, backEdgesSeq, cyclesSeq)
 			else
@@ -258,7 +258,7 @@ subroutine getAllCyclesGraphSeq (graph, cyclesSeq)
     do i=1, n
       if (.not. existsSeq(visitedVertexSeq, (/i,i/))) then
 		call DFS(graph, i, visitedVertexSeq, visitedEdgesSeq, treeEdgesSeq, backEdgesSeq, cyclesSeq)
-      endif	 
+      endif
 	enddo
 endsubroutine
 !---------------------------------------------------------------------------
