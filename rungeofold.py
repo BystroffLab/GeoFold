@@ -38,6 +38,14 @@ import time
 import math
 from georansac import fit
 
+def makeZip(directory,LName):
+  '''creates a zip archive of the directory and stores it within itself'''
+  os.chdir("%s/.."%(directory))
+  status,output = commands.getstatusoutput('zip -rv %s/%s.zip %s'%(LName,LName,LName))
+  if status != 0:
+    writeOut('%s: %s'%(status,output))
+    runProgram('error')
+
 def readConf(confFile):
   output = {}
   conf = open(confFile,'r')

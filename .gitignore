@@ -1,0 +1,7 @@
+*.pyc
+tmp/
+output/
+*.o
+*.dSYM
+*.mod
+x*
