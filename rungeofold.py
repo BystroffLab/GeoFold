@@ -1556,6 +1556,7 @@ def main(args):
         nn+=1
         commands.getstatusoutput("cp %s/%s_%s.dag.out %s/%s_%s.dag.out"%(tmpDir,LName,nn,htmlDir,LName,nn))
         commands.getstatusoutput("cp %s/%s_%s.log %s/%s_%s.log" %(tmpDir,LName,nn,htmlDir,LName,nn))
+      makeZip(htmlDir,LName)
 
 
 
