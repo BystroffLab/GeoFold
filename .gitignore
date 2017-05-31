@@ -5,3 +5,10 @@ output/
 *.dSYM
 *.mod
 x*
+pdbs/
+parameters/
+*.pdb.1
+maxTraffic
+*.bk
+helpscripts/
+log/
