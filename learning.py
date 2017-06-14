@@ -1,25 +1,43 @@
 import rungeofold as gf
 import numpy as np
 import os
+from mpi4py import MPI
 
-
+#bc=0.05, pc=0.25, hc=0.5
 def purge(pdb,itr):
     from commands import getstatusoutput as run
-    run("rm -rfv tmp/%s_%i output/%s_%i"%(pdb,itr,pdb,itr))
+    run ("cp -v tmp/%s_%i/*.age stf/"%(pdb,itr))
+    # run("rm -rfv tmp/%s_%i output/%s_%i"%(pdb,itr,pdb,itr))
 
 def main():
+    score = run(0.01,0.27,0.1,9001)
+    print score
+    '''comm = MPI.COMM_WORLD
+    rank = comm.Get_rank()
+    # pvt = False
+    # if rank == 0: pvt = True
     scores = {}
-    itr = 0
-    breakcut = 0.
-    while breakcut <= 1.:
-        scores[breakcut] = run(breakcut,0.25,0.5,itr)
-        breakcut += 0.1
-        itr += 1
-    output = open("breakcut.dat","w+")
-    for bc in scores.keys().sort():
-        output.write("%f, %f\n"%(bc,scores[bc]))
-        print "%f, %f"%(bc,scores[bc])
-    output.close()
+    itr = 60
+    cut = 0.01
+    # if rank == 0: output = open("breakcut.dat","a")
+    # else: output = open("pivotcut.dat","a")
+    # # else: output = open("hingecut.dat","w+")
+    output = open("hingecut.dat","a")
+    while cut <= 0.2:
+        # if rank == 0:
+        #     scores[cut+0] = run(cut+0,0.25,0.5,itr)
+        #     output.write("%f, %f\n"%(cut+0,scores[cut+0]))
+        # else:
+        #     scores[cut+0.2] = run(0.05,cut+0.2,0.5,itr+1)
+        #     output.write("%f, %f\n"%(cut+0.2,scores[cut+0.2]))
+        # else: scores[cut] = run(0.05,cut,0.5,itr+1)
+        # else: scores[cut] = run(0.05,0.25,cut,itr+2)
+        scores[cut] = run(0.05,0.25,cut,itr+2)
+        output.write("%f, %f\n"%(cut,scores[cut]))
+        output.flush()
+        cut += 0.01
+        itr += 3
+    output.close()'''
 
 def getScore(pdb,itr):
     '''after GeoFold runs, calculates the score for this iteration'''
