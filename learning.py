@@ -38,9 +38,25 @@ def getScore(pdb,itr):
             age_pairs.append([res1,res2,xage,10.])
     age_pairs.sort(key=lambda x: x[3])
     late,early,intermediate = countLEI(age_pairs)
-    for i in range(early): age_pairs[i][3] = 1
-    for i in range(early,intermediate+early): age_pairs[i][3] = 2
-    for i in range(intermediate+early,intermediate+early+late): age_pairs[i][3] = 3
+    last_age = (-1,0)
+    for i in range(early):
+        if age_pairs[i][3] == last_age[0]:
+            age_pairs[i][3] = last_age[1]
+        else:
+            last_age = (age_pairs[i][3],1)
+            age_pairs[i][3] = 1
+    for i in range(early,intermediate+early):
+        if age_pairs[i][3] == last_age[0]:
+            age_pairs[i][3] = last_age[1]
+        else:
+            last_age = (age_pairs[i][3],2)
+            age_pairs[i][3] = 2
+    for i in range(intermediate+early,intermediate+early+late):
+        if age_pairs[i][3] == last_age[0]:
+            age_pairs[i][3] = last_age[1]
+        else:
+            last_age = (age_pairs[i][3],3)
+            age_pairs[i][3] = 3
     score = 0.
     for [res1,res2,xage,gage] in age_pairs:
         score += float((xage-gage)**2)
