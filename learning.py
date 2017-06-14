@@ -173,7 +173,7 @@ def writeParamFile(pdb,temp,breakcut,pivotcut,hingecut,itr=0):
     parameters'''
     fout = open("parameters/%s_%i"%(pdb,itr),"w+")
     fout.write("LNAME %s_%i\nEMAIL walcob@rpi.edu\nPDBCODE %s\nOMEGA 1.\n"%(pdb,itr,pdb))
-    fout.write("INTERMEDIATES 0\nBARRELMOVES 0\nORANGE 1.0\nRUNGEOFOLD 1\n")
+    fout.write("INTERMEDIATES 0\nBARRELMOVES 0\nORANGE 0.5\nRUNGEOFOLD 1\n")
     fout.write("MOLSCRIPT 0\nBREAKCUT %f\nPIVOTCUT %f\nHINGECUT %f\n"%(breakcut,pivotcut,hingecut))
     fout.write("SEAMCUT 10\nBREAKPOINTENTROPY 90.\nHINGEPOINTENTROPY 30.\n")
     fout.write("TEMPERATURE %s\nCONCENTRATION 1.\nVOIDENTROPY 0.\nSOLIDITY 1000\n"%(temp))
