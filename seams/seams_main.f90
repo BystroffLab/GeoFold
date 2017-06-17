@@ -6,7 +6,7 @@ module seams_main
   use seam_debug
 
   integer, parameter :: MIN_CONTACTS_REGION=15  !15 !! Minimal number of contacts for regions
-  integer, parameter :: MIN_CONTACTS_BETAS=5    !5 !! Minimal number of beta contacts
+  integer, parameter :: MIN_CONTACTS_BETAS=6    !5 !! Minimal number of beta contacts
   integer :: nResidues
 
   !! Structure for barrels
@@ -41,18 +41,18 @@ CONTAINS
 
     call getContactMapPdb (pdbFilename, contactMatrix) ! Get the contact map from the PDB
     !call writeMatrix (contactMatrix, "in.mat")           ! for debugging
-    call dwriteMatrix(contactMatrix,nResidues,"/home/walcob/Desktop/getContactMapPdb.cij")
+    ! call dwriteMatrix(contactMatrix,nResidues,"/home/walcob/Desktop/getContactMapPdb.cij")
     call getBetaResiduesPdb  (pdbFilename, betaResidues) ! Get the residues in betas (according to the stride program)
-    call dwriteMatrix(contactMatrix,nResidues,"/home/walcob/Desktop/getBetaResiduesPdb.cij")
+    ! call dwriteMatrix(contactMatrix,nResidues,"/home/walcob/Desktop/getBetaResiduesPdb.cij")
     ! Testing....
     ! call bridgeBulges (contactMatrix)
     call detectBetaSheets (contactMatrix, betaResidues, minContacts, betaSheetSeq)
-    call dwriteMatrix(contactMatrix,nResidues,"/home/walcob/Desktop/detectBetaSheets.cij")
+    ! call dwriteMatrix(contactMatrix,nResidues,"/home/walcob/Desktop/detectBetaSheets.cij")
     !call writeMatrix (contactMatrix, "out.mat")          ! for debugging
     call bridgeBulges (contactMatrix)
-    call dwriteMatrix(contactMatrix,nResidues,"/home/walcob/Desktop/bridgeBulges.cij")
+    ! call dwriteMatrix(contactMatrix,nResidues,"/home/walcob/Desktop/bridgeBulges.cij")
     call detectBetaSheets (contactMatrix, betaResidues, minContacts, betaSheetSeq)
-    call dwriteMatrix(contactMatrix,nResidues,"/home/walcob/Desktop/detectBetaSheets2.cij")
+    ! call dwriteMatrix(contactMatrix,nResidues,"/home/walcob/Desktop/detectBetaSheets2.cij")
     !call writeMatrix (contactMatrix, "bulge.mat")          ! for debugging
   endsubroutine getBetaSheetsPdb
 
@@ -436,7 +436,7 @@ CONTAINS
     base = "/home/walcob/Desktop/detectBetaSheets_"
     call itoa(count,str_count)
     filename = base//str_count//".cij"
-    call dwriteMatrix(contactMatrix,nResidues,filename)
+    ! call dwriteMatrix(contactMatrix,nResidues,filename)
     n = nrows (contactMatrix)
     do i=1, n
       do j=1, n
@@ -451,7 +451,7 @@ CONTAINS
           count = count + 1
           call itoa(count,str_count)
           filename = base//str_count//".cij"
-          call dwriteMatrix(contactMatrix,nResidues,filename)
+          ! call dwriteMatrix(contactMatrix,nResidues,filename)
           cycle
         endif
         !call selectBetas (betaResidues, contacts, contactMatrix, betaContactsSeq)
