@@ -2955,7 +2955,7 @@ CONTAINS
       write(*,'("masker.mod - WARNING: calling getwaters(), but there are zero waters!!")')
       return
     endif
-    if (associated(watout)) deallocate(watout)
+    if (associated(watout)) nullify(watout)
     allocate(watout(3,nw),stat=ios); if (ios/=0) stop 'masker.mod - ERROR: allocating watout(): masker_getwaters'
     do i=1,nw
       watout(1:3,i) = water(i)%xyz(1:3)
