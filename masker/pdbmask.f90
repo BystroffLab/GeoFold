@@ -28,6 +28,7 @@ xmin = 999.; ymin = 999.; zmin = 999.
 xmax = -999.; ymax = -999.; zmax = -999.
 masker_saying = .true.
 dockdist=6.5
+wzs = .false.
 !! ---------------------------------------------------------------
 !! Read command line
 !! ---------------------------------------------------------------
@@ -129,7 +130,8 @@ do
     enddo
     if (jj==0) then
       write(*,'("pdbmask:: Unknown atom type: >>",a4,"<< ignored")') aline(13:16)
-      ! do j=1,nattype;write(*,'(a4,"|",$)') atomlib(j)%name(1:4);enddo;write(*,*)
+      !! diagnostic
+      do j=1,nattype;write(*,'(a4,"|",$)') atomlib(j)%name(1:4);enddo;write(*,*)
       !atype(i) = -1   !! dont draw the surface
       cycle
     elseif (aline(14:14)=="H") then
