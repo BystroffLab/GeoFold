@@ -178,12 +178,14 @@ enddo
 write(*,*) "Clustering void spaces.....", n
 call vcluster(watv,n,nv,rg)
 call masker_getmxyz(maskxyz)
+n = 0
 do i=1,nv
     !! See if this void is buried. Translate it. If it is free to float away, it's not buried.
     call escapevoid(watv(1:3,i), xyz, nat, maskxyz, MAXATOM, ff)   
     if (ff > 0.2) cycle
     write(13,'("HETATM",i5,2x,a1,3x,a3,1x,a1,i4,4x,3f8.3,2f6.2)') &
                 9000+i,"O", "HOH","V",i,watv(1:3,i), ff, rg(i)*10.
+    n = n + 1
 enddo
 close(13)
   
