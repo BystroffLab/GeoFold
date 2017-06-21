@@ -35,6 +35,7 @@ xmax = -999.; ymax = -999.; zmax = -999.
 masker_saying = .false.  !! masker public variable
 !! Readcommand line
 tt = 100.
+wzs = .false.
 ncycle = 1
 nseed = time()
 jarg = iargc()
@@ -97,7 +98,7 @@ do
   if (ios/=0) exit
   if ((aline(1:5)=='ATOM ').or.(aline(1:6)=='HETATM')) then
     if (aline(22:22)=="V") then
-      write(*,'("WARNING:: ignoring chain V in input file!!!!!!!!!!!")')
+      write(*,'("WARNING:: ignoring chain V (void points) in input file! This is probably OK.")')
       cycle
     endif
     i = i + 1
@@ -112,7 +113,11 @@ do
     !!!  WZS HERE
     if(.not. wzs) then
       do j=1,nattype
-        if (aline(14:17)==atomlib(j)%name(1:4)) then
+        !! diagnostic
+        !! write(*,'(">>>",a4,"<>",a4,"<<<")') aline(14:17), atomlib(j)%name(1:4)
+        !! JUST CHECK FIRST CHARACTER of atom name for now. CB 20-jun-2017
+        !! if (aline(14:17)==atomlib(j)%name(1:4)) then
+        if (aline(14:14)==atomlib(j)%name(1:1)) then
           jj = j
           exit
         endif
@@ -121,7 +126,7 @@ do
       jj = getatype(aline)
     endif
     if (jj==0) then
-      write(*,'("Unknown atom type ignored: ",a)') trim(aline)
+      write(*,'("Unknown atom type : ",a)') trim(aline)
       atype(i) = -1   !! dont draw the surface
     else
       atype(i) = jj
