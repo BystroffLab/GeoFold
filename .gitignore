@@ -12,3 +12,6 @@ maxTraffic
 *.bk
 helpscripts/
 log/
+*.hx
+*.dat
+*.txt
