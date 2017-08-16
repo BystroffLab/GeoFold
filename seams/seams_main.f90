@@ -6,7 +6,7 @@ module seams_main
   use seam_debug
 
   integer, parameter :: MIN_CONTACTS_REGION=15  !15 !! Minimal number of contacts for regions
-  integer, parameter :: MIN_CONTACTS_BETAS=6    !5 !! Minimal number of beta contacts
+  integer, parameter :: MIN_CONTACTS_BETAS=5    !5 !! Minimal number of beta contacts
   integer :: nResidues
 
   !! Structure for barrels
@@ -21,8 +21,8 @@ CONTAINS
   ! seams_main:
   !      Functions of the module seams_main
   !      Given a contact map (contactMatrix), it detects the regions
-  !      (betas, helix, coils), and remove the ones that not has contiguos
-  !      contacts greter than a threshod
+  !      (betas, helix, coils), and remove the ones that do not have contiguous
+  !      contacts greater than a threshold
   !------------------------------------------------------------------------------
   ! Return True/False if the protein (pdbFilename) is a beta barrel
   ! - It uses the graph property that if the number of edges connecting the
@@ -444,14 +444,14 @@ CONTAINS
         call getContacts (contactMatrix, (/j, i/), contacts)
         call extendsSeq (visitedSeq, contacts)
 
-                !! Erase contact regions smaller than minContacts
+                !! Erase contact regions smaller than minContacts MIN_CONTACTS_REGION
         if (lengthSeq (contacts) < minContacts) then
           call clearRegion (contactMatrix, contacts)
           !!!!!!BDW DEBUGGING!!!!!
           count = count + 1
           call itoa(count,str_count)
           filename = base//str_count//".cij"
-          ! call dwriteMatrix(contactMatrix,nResidues,filename)
+          ! call dwriteMatrix(contactMatrix,nResidues,filename)c      
           cycle
         endif
         !call selectBetas (betaResidues, contacts, contactMatrix, betaContactsSeq)
@@ -482,7 +482,7 @@ CONTAINS
     integer, allocatable, intent (out)          :: betaContactsSeq (:,:)
     integer               :: n, i, x, y, contact (2)
         integer, parameter                  :: betaextend=1
-
+!maybe increase betaextend to 2?
     call createSeq (betaContactsSeq)
     n = lengthSeq (contactSeq)
     do i=1, n

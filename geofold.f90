@@ -54,7 +54,7 @@ PROGRAM geofold
   type(intermediate), TARGET :: Native
   type(contact),dimension(:),allocatable :: contacts
   real :: w,T
-  logical :: all_seams = .true.
+  logical :: all_seams = .false.
   ! character(len=3) :: aa
   !------------------------------ COMMAND LINE ----------------
 
@@ -628,7 +628,7 @@ subroutine getseams (f, seammove, nMove,contacts,flory,w,T)
   !seammove(:)%energy = -HUGE(0.0)
   nseam = nMove
   nMove = 0
-    side = 0
+  side = 0
 
   nBarrels = size (barrels_array)
     if (nBarrels==0) return
@@ -658,10 +658,11 @@ subroutine getseams (f, seammove, nMove,contacts,flory,w,T)
       endif
       if (energy < maxval(seammove(1:nseam)%energy,dim=1)) then
         i = maxloc(seammove(1:nseam)%energy,dim=1)
+        write(*,*) "i = ",i," max of ",nseam
 !      if(energy > minval(seammove(1:nseam)%energy,dim=1)) then
 !        i = minloc(seammove(1:nseam)%energy,dim=1)
         seammove(i) = tmpMove
-        nMove = nMove + 1
+        if(nMove < nseam) nMove = nMove + 1
       endif
     enddo
   enddo

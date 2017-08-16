@@ -161,7 +161,9 @@ subroutine getCycle  (startEdge, treeEdgesSeq, vertexSeq)
 		integer, allocatable, intent (inout)	 :: treeEdgesSeq (:,:)
 		integer, allocatable, intent (out)  :: vertexSeq (:,:)
 		integer								 :: m,n, startVertex, curVertex, endVertex, curEdge(2)
-
+		logical :: foundCycle
+	
+	foundCycle  = .false.
 	startVertex = startEdge (1)
 	endVertex		= startEdge (2)
         !! diagnostic
@@ -186,18 +188,23 @@ subroutine getCycle  (startEdge, treeEdgesSeq, vertexSeq)
         !! diagnostic
         write(*,*) "Vertex:  ",curEdge
         m = m + 1
-		if (endVertex == curVertex) exit
+		if (endVertex == curVertex) then
+			foundCycle = .true.
+			exit
+		endif
 		call appendSeq (vertexSeq, (/curVertex, curVertex/))
 		n = n - 1
         startVertex = curVertex
 	enddo
     !! diagnostic
-    write(*,*) "CYCLE  ",m
-	call appendSeq (vertexSeq, (/endVertex, endVertex/))
-	call reverseSeq (vertexSeq)
+	if(foundCycle) then
+	    write(*,*) "CYCLE  ",m
+		call appendSeq (vertexSeq, (/endVertex, endVertex/))
+		call reverseSeq (vertexSeq)
+	endif
 	endsubroutine getCycle
 !---------------------------------------------------------------------------
-! Deep First Search to get all the cycles. 
+! Depth First Search to get all the cycles. 
 !---------------------------------------------------------------------------
 recursive subroutine DFS (graph, vertex, visitedVertexSeq, visitedEdgesSeq, treeEdgesSeq, backEdgesSeq, cyclesSeq)
 	implicit none

@@ -37,19 +37,19 @@ program pdb2seams
   call getAllCyclesGraphSeq (graphSeq, cyclesSeq)
   !stops at printGraphSeq???
   call printGraphSeq(graphSeq)
-  write (0,*) "we got this far?"
+  ! write (0,*) "we got this far?"
   call createBarrels (cyclesSeq, seamsSeq, barrelsArray)  ! Create barrels struct from seams and cycles info
   
-  write (0,*) "barrels created?"
+  ! write (0,*) "barrels created?"
     !! diagnostic
 
   ! Calculate and assign energies if energies file given
   if (iargc() == 2) then
     call getarg (2, contactsFilename)
-    write(0,*)"contactsFilename = ",contactsFilename
+    ! write(0,*)"contactsFilename = ",contactsFilename
     !! assigning energy to barrels not working?
     call assignEnergyToBarrels (barrelsArray, contactsFilename, numberAminos, energyMatrix)
-    write(0,*) "energy assigned"
+    ! write(0,*) "energy assigned"
     call getButtonsSeams (barrelsArray, energyMatrix) ! Get residues making contact with seam's bsheets
   endif
 
