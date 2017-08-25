@@ -46,13 +46,13 @@ CONTAINS
     call getBetaResiduesPdb  (pdbFilename, betaResidues) ! Get the residues in betas (according to the stride program)
     ! call dwriteMatrix(contactMatrix,nResidues,"/home/walcob/Desktop/getBetaResiduesPdb.cij")
     ! Testing....
-    ! call bridgeBulges (contactMatrix)
+    call bridgeBulges (contactMatrix)
     call detectBetaSheets (contactMatrix, betaResidues, minContacts, betaSheetSeq)
     ! call dwriteMatrix(contactMatrix,nResidues,"/home/walcob/Desktop/detectBetaSheets.cij")
     !call writeMatrix (contactMatrix, "out.mat")          ! for debugging
-    call bridgeBulges (contactMatrix)
+    ! call bridgeBulges (contactMatrix)
     ! call dwriteMatrix(contactMatrix,nResidues,"/home/walcob/Desktop/bridgeBulges.cij")
-    call detectBetaSheets (contactMatrix, betaResidues, minContacts, betaSheetSeq)
+    ! call detectBetaSheets (contactMatrix, betaResidues, minContacts, betaSheetSeq)
     ! call dwriteMatrix(contactMatrix,nResidues,"/home/walcob/Desktop/detectBetaSheets2.cij")
     !call writeMatrix (contactMatrix, "bulge.mat")          ! for debugging
   endsubroutine getBetaSheetsPdb
@@ -354,6 +354,8 @@ CONTAINS
     type(seam_data), target    :: reg1, reg2
     logical         :: value
     integer         :: x1, x2, y1, y2, w1, w2, h1, h2, last
+    
+    value = .false.
 
     y1   = reg1%segments(1)
     last = reg1%segments(2)
@@ -371,17 +373,38 @@ CONTAINS
     last = reg2%segments(4)
     h2 = last - x2 + 1
 
-    if ((y1+w1>y2 .and. y2+w2>y1) .or. &
-      (y1+w1>x2 .and. x2+h2>y1) .or. &
-      (x1+h1>y2 .and. y2+w2>x1) .or. &
-      (x1+h1>x2 .and. x2+h2>x1) ) then
-
-      value = .true.
+    if (y1+w1>y2 .and. y2+w2>y1) then
+        if(getOverlap(reg1%segments(1),reg1%segments(2),reg2%segments(1),reg2%segments(2)) >= MINIMUM_OVERLAP) value = .true.
+    elseif(y1+w1>x2 .and. x2+h2>y1) then
+        if(getOverlap(reg1%segments(1),reg1%segments(2),reg2%segments(3),reg2%segments(4)) >= MINIMUM_OVERLAP) value = .true.    
+    elseif(x1+h1>y2 .and. y2+w2>x1) then
+        if(getOverlap(reg1%segments(3),reg1%segments(4),reg2%segments(1),reg2%segments(2)) >= MINIMUM_OVERLAP) value = .true.
+    elseif(x1+h1>x2 .and. x2+h2>x1) then
+        if(getOverlap(reg1%segments(3),reg1%segments(4),reg2%segments(3),reg2%segments(4)) >= MINIMUM_OVERLAP) value = .true.
     else
       value = .false.
     endif
     endfunction
-
+    
+integer function getOverlap(x1,x2,y1,y2) result(overlap)
+    implicit none
+    integer, intent(in) :: x1,x2,y1,y2
+    
+    if(x1 < y1) then
+        if(x2 < y2) then
+            overlap = x2 - y1
+        else
+            overlap = y2 - y1
+        endif
+    else
+        if(y2 < x2) then
+            overlap = y2 - x1
+        else
+            overlap = x2 - x1
+        endif
+    endif
+endfunction
+      
   function isConnectedRegions (reg1, reg2) result (value)
     type(seam_data), target    :: reg1, reg2
     logical         :: value
