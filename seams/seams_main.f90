@@ -7,6 +7,7 @@ module seams_main
 
   integer, parameter :: MIN_CONTACTS_REGION=15  !15 !! Minimal number of contacts for regions
   integer, parameter :: MIN_CONTACTS_BETAS=5    !5 !! Minimal number of beta contacts
+  integer, parameter :: MINIMUM_OVERLAP=3 ! Minimum overlap between beta strands in contact to be a seam
   integer :: nResidues
 
   !! Structure for barrels
