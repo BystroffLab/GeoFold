@@ -21,7 +21,7 @@ module geofold_contact_weight
     
     real, parameter :: HUGE = 9999999.0
     real, parameter :: A = 200. !Amplitude for energy function
-    public :: set_contacts_made, add_contact, get_contact_weights
+    public :: add_contact, get_contact_weights
 contains
     
     logical contacts_made(i,j,f,u1,u2,s) result(made)
@@ -61,12 +61,9 @@ contains
         !weights as well
         implicit none
         integer,intent(in) :: i,j
-        logical,dimension(geofold_nres,geofold_nres),intent(inout) :: contacts_made
         real,dimension(geofold_nres,geofold_nres),intent(inout) :: contacts
         real :: energy
         
-        contacts_made(i,j) = .true.
-        contacts_made(j,i) = .true.
         energy = geofold_hbonds_eperbond*geofold_hb(i,j) + sasnrg(i,j)
         energy = A*exp(energy)+1
         contacts(i,j) = energy
