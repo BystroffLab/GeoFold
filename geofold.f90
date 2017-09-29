@@ -86,8 +86,8 @@ PROGRAM geofold
   call getarg(2, dagfile) ! get the name of output file
   call getarg(3, parfile) ! get the name of parameters file
   !!=============== READ PARAMETERS FILE ================
-  dunit = pickunit(20)
-  open(dunit,file=parfile,status='old',form='formatted',iostat=ios)
+  ! dunit = pickunit(20)
+  open(newunit=dunit,file=parfile,status='old',form='formatted',iostat=ios)
   if (ios/=0) stop 'geofold.f90:: parameters file not found.'
 !  write(0,*) 'Reading parameters'
   call geofold_readparameter(dunit,"HINGECUT",hcutoff,low=0.0,high=1.0,default=hcutoff)
@@ -111,8 +111,8 @@ PROGRAM geofold
   close(dunit)
 !  write(0,*) 'Read parameters'
   !------------------------------ READ INPUT PDB and other FILEs ---------
-  dunit = pickunit(10)
-  open(dunit, file=filename, form="formatted", status="old", iostat=ierr)
+  ! dunit = pickunit(10)
+  open(newunit=dunit, file=filename, form="formatted", status="old", iostat=ierr)
   IF (ierr > 0 ) STOP "geofold:: Error! File not found!"
   !write(0,*) 'geofold_readpdb'
   call geofold_readpdb(dunit)
@@ -1110,11 +1110,11 @@ SUBROUTINE dag_write(ofile,ounit)
   real :: ntrp
   character(len=20),parameter :: aa1="ACDEFGHIKLMNPQRSTVWY"
   !!
-  dunit = pickunit(dunit)
-  if (present(ounit)) ounit=dunit
-  open(dunit,file=ofile,form='formatted',status='replace',iostat=ios)
+  ! dunit = pickunit(dunit)
+  open(newunit=dunit,file=ofile,form='formatted',status='replace',iostat=ios)
   if (ios/=0) stop 'geofold:: error opening file for writing. Permissions?'
   !!
+  if (present(ounit)) ounit=dunit
   pdbcode = " "
   !! No big deal if these environment varables are not set...
   call getenv("TARG",pdbcode)

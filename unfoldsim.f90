@@ -811,12 +811,12 @@ CONTAINS
     real    :: discard
     integer :: nres, iseg, ires, iseam
     !!!!!
-    iunit = pickunit(10)
-    open(iunit,file=inputfile,status='old',action='read',iostat=ios)
+    ! iunit = pickunit(10)
+    open(newunit=iunit,file=inputfile,status='old',action='read',iostat=ios)
     if (ios/=0) stop 'unfoldsim.f90:: ERROR file not found.'
-    ounit = pickunit(11)
+    ! ounit = pickunit(11)
     if (present(traffic_out)) then
-      open(ounit,file=trim(inputfile)//".out",status='replace',action='write',iostat=ios)
+      open(newunit=ounit,file=trim(inputfile)//".out",status='replace',action='write',iostat=ios)
       if (ios/=0) stop 'Error opening inputfile'
       !! normalize traffic values
       !! ------------------------------ changed 12-MAY-2009
@@ -1264,8 +1264,8 @@ CONTAINS
     logical, save :: is_open = .false.
     !!
     if(.not. is_open) then
-      debug = pickunit(debug)
-      open(debug,file="unfold_debug.log",form='formatted',status='replace',iostat=ios)
+    !   debug = pickunit(debug)
+      open(newunit=debug,file="unfold_debug.log",form='formatted',status='replace',iostat=ios)
       if(ios/= 0) then
         debug = 0
       endif
@@ -1330,8 +1330,8 @@ CONTAINS
   real,parameter :: MAXDD=12.
   type(intype),pointer :: iptr
   !!
-  iunit = pickunit(12)
-  open(iunit,file=trim(infile)//".path",form='formatted',status='replace',iostat=ios)
+  ! iunit = pickunit(12)
+  open(newunit=iunit,file=trim(infile)//".path",form='formatted',status='replace',iostat=ios)
   if (ios/=0) stop 'unfoldsim.f90 :: ERROR writing to pathway file. '
   sumi = getsumc(0)
   sumf = getsumc(1)
@@ -1362,8 +1362,8 @@ CONTAINS
   character(len=200) :: agefile
   integer :: iunit, ios=0,i,j
   !!
-  iunit = pickunit(11)
-  open(iunit,file=trim(infile)//".age",form='formatted',status='replace',iostat=ios)
+  ! iunit = pickunit(11)
+  open(newunit=iunit,file=trim(infile)//".age",form='formatted',status='replace',iostat=ios)
   do i=1,global_nres
     do j=i+3,global_nres
       if (age(i,j) < 999999.0) then
@@ -1399,8 +1399,8 @@ CONTAINS
     bigts = 0
     intr = 1
     call sumpathtree(idepth,intr,nrg,sas,bigf,bigts,nt)
-    iunit = pickunit(11)
-    open(iunit,file=trim(infile)//".nrg",form='formatted',status='replace',iostat=ios)
+    ! iunit = pickunit(11)
+    open(newunit=iunit,file=trim(infile)//".nrg",form='formatted',status='replace',iostat=ios)
     if (ios/=0) stop 'unfoldsim:: writeenergyprofile : failed to open output file.'
     sumnrg = 0.
     do i=1,nt
@@ -1502,8 +1502,8 @@ CONTAINS
     character(len=*),intent(in) :: paramfile
     integer :: iunit,ios, i
     !------
-    iunit = pickunit(12)
-    open(iunit,file=paramfile,status='old',form='formatted',iostat=ios)
+    ! iunit = pickunit(12)
+    open(newunit=iunit,file=paramfile,status='old',form='formatted',iostat=ios)
     if (ios/=0) stop 'unfoldsim.f90:: ERROR param file not found.'
     do
       read(iunit,'(a)',iostat=ios) aline

@@ -109,8 +109,8 @@ CONTAINS
     character (len=*), intent(in) :: filename 
     integer, save :: dunit
 
-    dunit = pickUnit(10)
-    open (unit=dunit, file=filename, iostat=ierr)
+    ! dunit = pickUnit(10)
+    open (newunit=dunit, file=filename, iostat=ierr)
     if (ierr > 0 ) then
       print *, "Error ", ierr, " opening file ", filename
       Stop

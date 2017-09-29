@@ -649,8 +649,8 @@ subroutine geofold_flory_all_contacts(mfile, cijfile, c_list, nres)
 
   !determine nres
     !open mfile (hbonds file)
-    dunit = pickunit(dunit)
-    open(dunit,file=mfile,iostat=ierr,status='old',form='formatted')
+    ! dunit = pickunit(dunit)
+    open(newunit=dunit,file=mfile,iostat=ierr,status='old',form='formatted')
     if(ierr /= 0) stop "geofold_flory::all_contacts: Error opening &
     hbonds file"
     !find line 8
@@ -713,8 +713,8 @@ subroutine geofold_flory_all_contacts(mfile, cijfile, c_list, nres)
   !close(mfile)
   close(dunit)
   !open cijfile
-  dunit = pickunit(dunit)
-  open(dunit,file=cijfile,iostat=ierr,status='old',form='formatted')
+  ! dunit = pickunit(dunit)
+  open(newunit=dunit,file=cijfile,iostat=ierr,status='old',form='formatted')
   if(ierr /= 0) stop "geofold_flory::all_contacts: Error opening cij &
   file."
   !read through cijfile

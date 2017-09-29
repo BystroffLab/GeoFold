@@ -76,8 +76,8 @@ subroutine geofold_seams_read(seamsFilename)
     if (allocated(barrels_array)) then
       deallocate(barrels_array)
     endif
-    iunit = pickunit(99)
-  open(iunit,file=seamsFilename,status="old",form="formatted")
+    ! iunit = pickunit(99)
+  open(newunit=iunit,file=seamsFilename,status="old",form="formatted")
     i=0; j=0; k=0; ios=0; nSeams=0; nButtons=0;
   do
     read(iunit,'(a)',iostat=ios) aline

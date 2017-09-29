@@ -145,9 +145,9 @@ MODULE geofold_hbonds
   if (allocated(geofold_hb)) deallocate(geofold_hb)
   allocate(geofold_ss(geofold_nres),stat=ierr)
   if (ierr/=0) stop 'read_hbonds:: error allocating geofold_ss'
-  dunit = pickunit(dunit)
-  write(0,'("dunit ",i3,", mfile ",a,", ierr ",i3)') dunit,mfile,ierr
-  open(dunit, file = mfile, iostat=ierr, status="old", form="formatted")
+  ! dunit = pickunit(dunit)
+  ! write(0,'("dunit ",i3,", mfile ",a,", ierr ",i3)') dunit,mfile,ierr
+  open(newunit=dunit, file = mfile, iostat=ierr, status="old", form="formatted")
   IF (ierr /= 0 ) STOP "geofold:: geofold_hbonds_read:  error opening file!"
   do
     read(dunit, '(a)', iostat=ierr) aline
