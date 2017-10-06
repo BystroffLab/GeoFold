@@ -43,14 +43,16 @@ contains
         else
             u1flag = s%u1flag
             u2flag = s%u2flag
-                if((u1flag(i:i) /= "." .and. u1flag(j:j) /= ".") .or. &
-                   (u2flag(i:i) /= "." .and. u2flag(j:j) /= ".") .or.
-                   geofold_ss(i,j) == 1 .or. geofold_ss(j,i) == 1) then
-                    made = .true.
-                endif
-            enddo
-        enddo
-        if(abs(i-j)==1) made = .true.
+        endif
+        if((u1flag(i:i) /= "." .and. u1flag(j:j) /= ".") .or. &
+           (u2flag(i:i) /= "." .and. u2flag(j:j) /= ".") .or.
+           geofold_ss(i,j) == 1 .or. geofold_ss(j,i) == 1) then
+            made = .true.
+        endif
+        if(abs(i-j)==1 .and. &
+            (((u1flag(i:i) == u1flag(j:j)) .and. (u1flag(i:i) /= ".")) .or. &
+            ((u2flag(i:i) == u2flag(j:j)) .and. (u2flag(i:i) /= "."))))&
+                made = .true.
     end function contacts_made
         
     
@@ -81,22 +83,27 @@ contains
         type(seam_type),pointer,intent(in),optional :: s
         
         contacts = HUGE
-        do i = 1, geofold_nres-3
-            do j = i+3, geofold_nres
-                !check if these contacts have been added
-                if(contacts_made(i,j,f,u1,u2,s) == .false.) cycle
-                if(geofold_ss(i,j) == 1 or geofold_ss(j,i) == 1) then
-                    contacts(i,j) = 1.
-                    contacts(j,i) = 1.
-                    cycle
+        do i = 1, geofold_nres-1
+            do j = i+1, geofold_nres
+                if(abs(j-i) == 1) then
+                    if(f%iflag(i:i) == f%iflag(i+1:i+1)) then
+                        contacts(i,i+1) = 1.
+                        contacts(i+1,i) = 1.
+                    endif
+                else
+                    !check if these contacts have been added
+                    if(contacts_made(i,j,f,u1,u2,s) == .false.) cycle
+                    if(geofold_ss(i,j) == 1 or geofold_ss(j,i) == 1) then
+                        contacts(i,j) = 1.
+                        contacts(j,i) = 1.
+                        cycle
+                    endif
+                    energy = geofold_hbonds_eperbond*(geofold_hb(i,j)) + sasnrg(i,j)
+                    energy = A*exp(energy)+1
+                    contacts(i,j) = energy
+                    contacts(j,i) = energy
                 endif
-                energy = geofold_hbonds_eperbond*(geofold_hb(i,j)) + sasnrg(i,j)
-                energy = A*exp(energy)+1
             enddo
-        enddo
-        do i = 1,geofold_nres-1
-            contacts(i,i+1) = 1.
-            contacts(i+1,i) = 1.
         enddo
     end subroutine get_contact_weights
 end module geofold_contact_weights
