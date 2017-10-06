@@ -960,7 +960,7 @@ CONTAINS
           !! This is the line from isegment.f90 that reads the ISEGMT lines. Make sure these sync!
           !isegment.f90:284     read(line1(7:),*) nseg,i,nsym,sas,ntrp,nvoid,nhb,ftype,conc
           aline = " "
-          write(aline(1:),'("ISEGMT ",2i5,i3,f12.3,f8.3,i5,i5)') j, k, inter(iseg)%sym, &
+          write(aline(1:),'("ISEGMT ",2i5,i3,2f12.3,f8.3,i5,i5)') j, k, inter(iseg)%sym,inter(iseg)%solv &
             inter(iseg)%sas,inter(iseg)%lambda,inter(iseg)%void, inter(iseg)%hb
           j = len_trim(aline)+2
           write(aline(j:),'(f12.8)') inter(iseg)%conc
