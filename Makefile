@@ -256,7 +256,9 @@ package : masker.tgz
 		 geofold/seams/*.f90
 
 clean :
-	rm -vrf *.o xgeofold *.mod *.o *.dSYM
+	rm -vrf *.o xgeofold x3to1 xgeofold xvoidmask xunfoldsim xcontactmask \
+	xgetchain xrenumber_one xpdb2cij xageplot xpathway2ps x3to1 xpdb2hb \
+	xfit_poly maxTraffic xsplitseams  *.mod *.o *.dSYM
 
 cleaner :
 	rm -vf x* *.o *.mod masker.tgz masker/*.o masker/*.mod masker/x*
