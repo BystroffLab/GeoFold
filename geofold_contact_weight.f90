@@ -19,91 +19,45 @@ module geofold_contact_weight
     !!geofold_masker
     ! sasnrg : solvation energy
     
-    real, parameter :: HUGE = 9999999.0
+    real, parameter :: BIG = 9999999.0
     real, parameter :: A = 200. !Amplitude for energy function
+    integer, public, dimension(geofold_nres:geofold_nres) :: gcw_contacts = 0
+    integer,public,dimension(geofold_nres) :: gcw_nc = 0
+    real, public, dimension(geofold_nres:geofold_nres) :: gcw_contact_weights = BIG
     public :: add_contact, get_contact_weights
 contains
     
-    logical contacts_made(i,j,f,u1,u2,s) result(made)
+        
+    
+    subroutine append_contact(i,j)
         implicit none
-        logical,dimension(geofold_nres,geofold_nres),intent(inout) :: contacts_made
-        type(intermediate),pointer,intent(in) :: f,u1
-        type(intermediate),pointer,intent(in),optional :: u2
-        type(seam_type),pointer,intent(in),optional :: s
-        character,dimension(MAXRES) :: fflag,u1flag,u2flag
         integer,intent(in) :: i,j
         
-        
-        fflag = f%iflag
-        !not a seam move
-        if(present(u2)) then
-            u1flag = u1%iflag
-            u2flag = u2%iflag
-        !seam move
-        else
-            u1flag = s%u1flag
-            u2flag = s%u2flag
-        endif
-        if((u1flag(i:i) /= "." .and. u1flag(j:j) /= ".") .or. &
-           (u2flag(i:i) /= "." .and. u2flag(j:j) /= ".") .or.
-           geofold_ss(i,j) == 1 .or. geofold_ss(j,i) == 1) then
-            made = .true.
-        endif
-        if(abs(i-j)==1 .and. &
-            (((u1flag(i:i) == u1flag(j:j)) .and. (u1flag(i:i) /= ".")) .or. &
-            ((u2flag(i:i) == u2flag(j:j)) .and. (u2flag(i:i) /= "."))))&
-                made = .true.
-    end function contacts_made
-        
+        gcw_nc(i) = gcw_nc(i) + 1
+        gcw_nc(j) = gcw_nc(j) + 1
+        gcw_contacts(i,gcw_nc(i)) = j
+        gcw_contacts(j,gcw_nc(j)) = i
+    end subroutine append_contact
+            
     
-    
-    subroutine add_contact(i,j,contacts_made,contacts)
+    subroutine gcw_add_contact(i,j,T)
         !add contact between res i and j to contacts_made, should be called after
         !performing shortest path algorithm and adding contact.  Will adjust contact
         !weights as well
         implicit none
         integer,intent(in) :: i,j
-        real,dimension(geofold_nres,geofold_nres),intent(inout) :: contacts
-        real :: energy
+        real,intent(in) :: T !Temperature
+        real :: energy,scentropy
         
-        energy = geofold_hbonds_eperbond*geofold_hb(i,j) + sasnrg(i,j)
+        call geofold_masker_getscenergy(i,j,scentropy,contacts)
+        energy = geofold_hbonds_eperbond*geofold_hb(i,j) + sasnrg(i,j) &
+            - T*scentropy
         energy = A*exp(energy)+1
-        contacts(i,j) = energy
-        contacts(j,i) = energy
+        gcw_contact_weights(i,j) = energy
+        gcw_contact_weights(j,i) = energy
+        call append_contact(i,j)
     end subroutine add_contact
     
-    !A*exp(energy)+1
-    subroutine get_contact_weights(contacts,f,u1,u2,s,contacts_made)
-        implicit none
-        real, dimension(geofold_nres,geofold_nres), intent(inout) :: contacts 
-        type(intermediate),pointer,intent(in) :: f,u1
-        type(intermediate),pointer,intent(in),optional :: u2
-        integer :: i,j
-        real :: energy
-        type(seam_type),pointer,intent(in),optional :: s
-        
-        contacts = HUGE
-        do i = 1, geofold_nres-1
-            do j = i+1, geofold_nres
-                if(abs(j-i) == 1) then
-                    if(f%iflag(i:i) == f%iflag(i+1:i+1)) then
-                        contacts(i,i+1) = 1.
-                        contacts(i+1,i) = 1.
-                    endif
-                else
-                    !check if these contacts have been added
-                    if(contacts_made(i,j,f,u1,u2,s) == .false.) cycle
-                    if(geofold_ss(i,j) == 1 or geofold_ss(j,i) == 1) then
-                        contacts(i,j) = 1.
-                        contacts(j,i) = 1.
-                        cycle
-                    endif
-                    energy = geofold_hbonds_eperbond*(geofold_hb(i,j)) + sasnrg(i,j)
-                    energy = A*exp(energy)+1
-                    contacts(i,j) = energy
-                    contacts(j,i) = energy
-                endif
-            enddo
-        enddo
-    end subroutine get_contact_weights
+    
+    
 end module geofold_contact_weights

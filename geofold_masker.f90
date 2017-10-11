@@ -7,7 +7,7 @@ MODULE geofold_masker
  use geofold_pivots
  use geofold_seams
  private
- REAL, dimension(:,:), allocatable :: sasnrg,sasvalues !contains energies of all the c-a residues
+ REAL,dimension(:,:), allocatable :: sasnrg,sasvalues !contains energies of all the c-a residues
  real,dimension(20)::lambda=(/ &
       0.00, 0.55, 1.25, 1.81, 0.58, 0.00, 0.96, 0.89, 1.94, 0.78, &
       1.61, 1.57, 0.00, 2.11, 2.03, 1.71, 1.63, 0.51, 0.97, 0.98/)
@@ -27,6 +27,7 @@ MODULE geofold_masker
  interface geofold_masker_getscenergy
    module procedure getscenergy
    module procedure getscenergy_seam
+   module procedure getscenergy_gcw
  endinterface
  public :: geofold_masker_energy , geofold_masker_read, geofold_masker_intermediates
  public :: geofold_masker_setvoids, geofold_masker_readvoids, geofold_masker_seamenergy
@@ -330,6 +331,40 @@ CONTAINS
     END DO
     if (present(energy)) energy=scentropy*geofold_masker_lambdaweight
   end subroutine getscenergy
+  
+  subroutine scentropy_gcw(i,j,scentropy,contacts)
+      implicit none
+      integer,dimension(geofold_nres:geofold_nres),intent(in) :: contacts
+      real,intent(out) :: scentropy
+      integer :: i,j,k,l
+      logical :: done,countit
+      real :: sumk,saszero
+      
+      done = .false.
+      countit = .false.
+      
+      k = i
+      scentropy = 0.
+      do while(.not. done)
+          sumsas = 0.
+          sumk = 0.
+          do l = 1, geofold_nres
+              if (all(contacts(l,:)==0)) cycle !no contacts with l are formed
+              sumk = sumk + sasvalues(k,l)
+          enddo
+          saszero = maxsas(seq(k)) - maxsas(6)
+          if (saszero > 0.00000001) &
+             scentropy = scentropy + lambda(seq(k))*(sumk/saszero)
+          if(k == i) then
+              k = j
+          else
+              done = .true.
+          endif
+      enddo
+      scentropy = scentropy*geofold_masker_lambdaweight
+      
+  end function scentropy_gcw
+  
   !!-----------------------------------------------------
   subroutine getscenergy_seam(aseam, scentropy, energy, seamchar)   
     !! returns side chain entropy gain with sem unfolding,
