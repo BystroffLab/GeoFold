@@ -337,7 +337,7 @@ CONTAINS
       integer,dimension(geofold_nres:geofold_nres),intent(in) :: contacts
       real,intent(out) :: scentropy
       integer :: i,j,k,l
-      logical :: done,countit
+      logical :: done
       real :: sumk,saszero
       
       done = .false.
