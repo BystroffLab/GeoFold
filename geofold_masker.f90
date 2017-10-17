@@ -27,11 +27,11 @@ MODULE geofold_masker
  interface geofold_masker_getscenergy
    module procedure getscenergy
    module procedure getscenergy_seam
-   module procedure getscenergy_gcw
+   module procedure scentropy_gcw
  endinterface
  public :: geofold_masker_energy , geofold_masker_read, geofold_masker_intermediates
  public :: geofold_masker_setvoids, geofold_masker_readvoids, geofold_masker_seamenergy
- public :: geofold_masker_getscenergy, geofold_masker_seamsas
+ public :: geofold_masker_getscenergy, geofold_masker_seamsas,geofold_masker_getsasnrg
 CONTAINS
   !-----------------------------------------------------------------------------
   SUBROUTINE geofold_masker_readvoids(dunit)
@@ -51,7 +51,7 @@ CONTAINS
       IF (aline(22:22) /="V" ) CYCLE
       ivoid = ivoid + 1
       ! Get Coordinates and Chain ID (_ 'Char')
-      read( aline(31:54),'(3f8.3)' ), voidcoords(1:3, ivoid)   
+      read( aline(31:54),'(3f8.3)' ) voidcoords(1:3, ivoid)   
     END DO 
     geofold_masker_nvoid = ivoid
   END SUBROUTINE geofold_masker_readvoids
@@ -151,6 +151,14 @@ CONTAINS
       nc = k
     endif
   ENDSUBROUTINE geofold_masker_seamenergy
+
+  real function geofold_masker_getsasnrg(i,j) result(energy)
+      implicit none
+      integer, intent(in) :: i,j
+      
+      energy = sasnrg(i,j)
+  end function geofold_masker_getsasnrg
+      
 
   subroutine geofold_masker_seamsas(seam,sas,nc,seamchar)
     ! get the amount of buried surface area exposed by opening a seam
@@ -334,14 +342,13 @@ CONTAINS
   
   subroutine scentropy_gcw(i,j,scentropy,contacts)
       implicit none
-      integer,dimension(geofold_nres:geofold_nres),intent(in) :: contacts
+      integer,dimension(:,:),pointer,intent(in) :: contacts
       real,intent(out) :: scentropy
       integer :: i,j,k,l
       logical :: done
-      real :: sumk,saszero
+      real :: sumk,saszero,sumsas
       
       done = .false.
-      countit = .false.
       
       k = i
       scentropy = 0.
@@ -363,7 +370,7 @@ CONTAINS
       enddo
       scentropy = scentropy*geofold_masker_lambdaweight
       
-  end function scentropy_gcw
+  end subroutine scentropy_gcw
   
   !!-----------------------------------------------------
   subroutine getscenergy_seam(aseam, scentropy, energy, seamchar)   

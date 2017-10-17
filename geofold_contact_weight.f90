@@ -21,14 +21,24 @@ module geofold_contact_weight
     
     real, parameter :: BIG = 9999999.0
     real, parameter :: A = 200. !Amplitude for energy function
-    integer, public, dimension(geofold_nres:geofold_nres) :: gcw_contacts = 0
-    integer,public,dimension(geofold_nres) :: gcw_nc = 0
-    real, public, dimension(geofold_nres:geofold_nres) :: gcw_contact_weights = BIG
-    public :: add_contact, get_contact_weights
+    integer, public, dimension(:,:),pointer :: gcw_contacts
+    integer,public,dimension(:),pointer :: gcw_nc
+    real, public, dimension(:,:),pointer :: gcw_contact_weights
+    public :: add_contact, get_contact_weights, gcw_init
 contains
     
         
-    
+    subroutine gcw_init()
+        implicit none
+        if(.not.associated(gcw_contacts)) &
+            allocate(gcw_contacts(geofold_nres,geofold_nres))
+        if(.not.associated(gcw_nc)) & 
+            allocate(gcw_nc(geofold_nres))
+        if(.not.associated(gcw_contact_weights)) &
+            allocate(gcw_contact_weights(geofold_nres,geofold_nres))
+    end subroutine gcw_init
+
+
     subroutine append_contact(i,j)
         implicit none
         integer,intent(in) :: i,j
@@ -49,15 +59,15 @@ contains
         real,intent(in) :: T !Temperature
         real :: energy,scentropy
         
-        call geofold_masker_getscenergy(i,j,scentropy,contacts)
-        energy = geofold_hbonds_eperbond*geofold_hb(i,j) + sasnrg(i,j) &
-            - T*scentropy
+        call geofold_masker_getscenergy(i,j,scentropy,gcw_contacts)
+        energy = geofold_hbonds_eperbond*geofold_hb(i,j) + &
+            geofold_masker_getsasnrg(i,j) - T*scentropy
         energy = A*exp(energy)+1
         gcw_contact_weights(i,j) = energy
         gcw_contact_weights(j,i) = energy
         call append_contact(i,j)
-    end subroutine add_contact
+    end subroutine gcw_add_contact
     
     
     
-end module geofold_contact_weights
+end module geofold_contact_weight
