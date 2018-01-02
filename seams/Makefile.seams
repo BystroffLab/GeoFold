@@ -3,6 +3,7 @@
 # Author: Luis Garreta
 # Date  : Jun 02/2013
 # ======================================================================
+# Modified by CB. Mon Jan  1 22:19:43 EST 2018
 
 # The compiler
 FC = gfortran
@@ -12,7 +13,7 @@ FCFLAGS = -g -fbounds-check -fbacktrace
 # flags for debugging or for maximum performance, comment as necessary
 #FCFLAGS = -O2
 # flags forall (e.g. look for system .mod files, required in gfortran)
-FCFLAGS += -I/usr/include
+#FCFLAGS += -I/usr/include
 
 # libraries needed for linking, unused in the examples
 #LDFLAGS = -li_need_this_lib
@@ -22,7 +23,7 @@ OBJ = obj
 BIN = bin
 
 # List of executables to be built within the package
-PROGRAMS = xpdb2seams 
+PROGRAMS = xpdb2seams2
 
 # "make" builds all
 all: dir $(PROGRAMS)
@@ -30,10 +31,8 @@ all: dir $(PROGRAMS)
 dir: 
 	mkdir -p obj
 	
-xpdb2seams: pdb2seams.f90 seams_main.o seams_graph.o seams_sequences.o seams_sequence_generic.o seams_pdbtools.o seams_utils.o
-	$(FC) $(FCFLAGS) -I$(OBJ) -J$(OBJ) -o $@ $(LDFLAGS) pdb2seams.f90 $(OBJ)/seams_main.o $(OBJ)/seams_graph.o \
-                               $(OBJ)/seams_sequences.o $(OBJ)/seams_sequence_generic.o $(OBJ)/seams_pdbtools.o \
-							   $(OBJ)/seams_utils.o
+xpdb2seams2: pdb2seams2.f90 
+	$(FC) $(FCFLAGS) -I$(OBJ) -J$(OBJ) -o $@ $(LDFLAGS) pdb2seams2.f90 
 
 seams_main.o: $(SRC)/seams_main.f90 seams_sequences.o seams_pdbtools.o seams_graph.o seams_utils.o
 seams_sequences.o: $(SRC)/seams_sequences.f90 seams_sequence_generic.o

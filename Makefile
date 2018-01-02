@@ -66,7 +66,7 @@ bin64 :
 	make maxTraffic
 
 all  : xgeofold xvoidmask xunfoldsim xcontactmask xgetchain xrenumber_one xpdb2cij \
-       xageplot xpathway2ps x3to1 xpdb2hb xfit_poly maxTraffic xsplitseams seams/xpdb2seams \
+       xageplot xpathway2ps x3to1 xpdb2hb xfit_poly maxTraffic xsplitseams seams/xpdb2seams2 \
        hxpathway2ps
 
 debug : geofold_pivots.f90 geofold_global.f90 geofold.f90 vectormath.f90 geofold_masker.f90 geofold_hbonds.f90
@@ -107,8 +107,8 @@ xgeofold_split32 : geofold_pivots.o
 	make xgeofold
 	cp xgeofold xgeofold_split32
 
-seams/xpdb2seams :  seams/pdb2seams.f90
-	cd seams; make all -f Makefile.seams; cd ../
+seams/xpdb2seams2 :  seams/pdb2seams2.f90
+	cd seams; make xpdb2seams2 -f Makefile.seams; cd ../
 
 masker : masker.o
 

@@ -149,7 +149,7 @@ CONTAINS
     overlap(this,last) = 0
     !! add this to barrel
     nb = nb + 1
-    barrel(nb) = this
+    if (nb <= nseams) barrel(nb) = this  !! guards against outofbounds when adding last seam for 2nd time.
     !! look for a cycle
     if (nb > 2) then
       if (any(barrel(1:nb-2)==this)) then
