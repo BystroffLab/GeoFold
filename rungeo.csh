@@ -168,20 +168,20 @@ endif
 echo "============= 3to1 (extract sequence) =============" 
 (	$thisdir/x3to1 "+" < ${outdir}/$UNAME.pdb > ${outdir}/$UNAME.seq || \
         ( echo "3to1 ended with errors" ; exit )    )
-echo "============= PDB2SEAMS (extract seams) ============="
-(	$seams/xpdb2seams ${outdir}/$UNAME.pdb \
-        > ${outdir}/$UNAME.seams || \
-        ( echo "Error in PDB2SEAMS " ; exit )    )
-echo "SEAMS ${outdir}/$UNAME.seams" >> $PARAMFILE
-echo "============= PDB2CIJ (extract contacts) =============" 
-(	$thisdir/xpdb2cij ${outdir}/$UNAME.pdb 8. \
-        > ${outdir}/$UNAME.cij || \
-        ( echo "Error in PDB2CIJ " ; exit )    )
 echo "============= PDB2HB (extract H-bonds SS-bonds) =============" 
 (	$thisdir/xpdb2hb $PARAMFILE ${outdir}/$UNAME.pdb \
         > ${outdir}/$UNAME.hb || \
         ( echo "Error in PDB2HB " ; exit )    )
 echo "HBONDS ${outdir}/$UNAME.hb" >> $PARAMFILE
+echo "============= PDB2SEAMS2 (extract seams) ============="
+(	$seams/xpdb2seams2 ${outdir}/$UNAME.hb \
+        > ${outdir}/$UNAME.seams || \
+        ( echo "Error in PDB2SEAMS2 " ; exit )    )
+echo "SEAMS ${outdir}/$UNAME.seams" >> $PARAMFILE
+echo "============= PDB2CIJ (extract contacts) =============" 
+(	$thisdir/xpdb2cij ${outdir}/$UNAME.pdb 8. \
+        > ${outdir}/$UNAME.cij || \
+        ( echo "Error in PDB2CIJ " ; exit )    )
 echo "============= CONTACTMASK =============" 
 (	source $thisdir/masker/masker_setup.csh; \
         $thisdir/masker/xcontactmask ${outdir}/$UNAME.pdb \
