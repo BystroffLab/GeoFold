@@ -33,10 +33,10 @@ program pdb2seams2
   integer,dimension(:,:),allocatable :: overlap
   integer :: nhb,nseams, this,ios=0,i,j,jarg,nb,nbarrel
   integer,parameter :: MINSEAM=3 !! minimum number of beta H-bonds to count as a seam
-  integer,parameter :: MAXBARREL=22 !! minimum number of beta H-bonds to count as a seam
+  integer,parameter :: MAXBARREL=22 !! Maximum number of seams in a barrel
   integer,dimension(MAXBARREL) :: barrel
   logical :: isthere
-  character(len=200) :: hbfile,tmpfile
+  character(len=1000) :: tmpfile,hbfile
   character(len=1000) :: aline
   !!----------------------
   jarg = command_argument_count()
@@ -69,9 +69,13 @@ program pdb2seams2
   nb = 0
   barrel = 0
   nbarrel = 0
-  tmpfile = "/tmp/pdb2seams.tmp"
-  open(11,file=tmpfile,status='replace',iostat=ios)
-  if (ios/=0) stop 'pdb2seams2.f90 :: permission problems. Dont open a new file.'
+  ! It is bad to have a static tmp file
+  ! If multiple jobs are running at once, they create a race condition.
+  ! Things would end poorly. Let's salt it with a random integer
+  call random_seed()
+  write(tmpfile,'(a,i10.10,a)') "/tmp/pdb2seams2_",irand(),".tmp"
+  open(11,file=trim(tmpfile),status='replace',iostat=ios)
+  if (ios/=0) stop 'pdb2seams2.f90 :: permission problems. Do not open a new file.'
   do while (any(overlap/=0)) 
     this = 1
     !! find the first seam that has any overlap with another seam
@@ -85,9 +89,6 @@ program pdb2seams2
     !!   enddo
     !!   write(*,*)
     !! enddo
-    do while (all(overlap(this,:)==0))
-      this = this + 1
-    enddo
     nb = 1
     barrel(nb) = this
     j = minloc(overlap(this,:),mask=(overlap(this,:)/=0),dim=1)
@@ -173,7 +174,7 @@ CONTAINS
   !!
   subroutine gethbonds(hb,hbfile,nhb)
     implicit none
-    character(len=200),intent(in) :: hbfile
+    character(len=*),intent(in) :: hbfile
     integer,intent(out) :: nhb
     type (hbtype),dimension(:),pointer :: hb
     integer :: iunit,ios
@@ -230,7 +231,7 @@ CONTAINS
     !!       pop all hb from stack2 back to stack1
     !!       pop top hb from stack1 => stack2
     !!     endif
-    !!     while (hb=antiparallel(stack2,stack1) /= )
+    !!     while (hb=antiparallel(stack2,stack1) /= 0)
     !!       push hb to stack2
     !!       pop hb from stack1
     !!     end
@@ -644,7 +645,7 @@ CONTAINS
       integer,intent(in) :: nseams
       type(seamtype),dimension(:),pointer :: seams
       integer,dimension(nseams,nseams),intent(inout) :: overlap
-      integer,parameter :: novr=0  !! additional required overlap in sequence
+      integer,parameter :: novr=1  !! additional required overlap in sequence
       integer :: i,j
       do i=1,nseams
         overlap(i,i) = 0
