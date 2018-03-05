@@ -15,3 +15,6 @@ log/
 *.hx
 *.dat
 *.txt
+masker/masker_setup.csh
+masker/masker_setup.sh
+*.bck
