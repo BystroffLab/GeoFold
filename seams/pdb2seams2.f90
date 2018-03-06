@@ -38,6 +38,7 @@ program pdb2seams2
   logical :: isthere
   character(len=1000) :: tmpfile,hbfile
   character(len=1000) :: aline
+  
   !!----------------------
   jarg = command_argument_count()
   if (jarg < 1) then
@@ -54,6 +55,7 @@ program pdb2seams2
   nullify(seamsroot%bbhb)
   nullify(seamsroot%schb)
   call gethbonds(hb,hbfile,nhb)
+  write(0,*) "FINDING SEAMS"
   call findseams(hb,nhb,seamsroot,nseams)
   allocate(overlap(nseams,nseams))
   allocate(seams(nseams))
@@ -197,7 +199,7 @@ CONTAINS
       !     11 N        99 OH   H
       if (aline(1:1)=='!') cycle
       nhb = nhb + 1
-      read(aline,'(i7,1x,a4,i7,1x,a4,1x,a1)') hb(nhb)%donornum,hb(nhb)%donorat, &
+      read(aline,'(i7,1x,a3,1x,i7,1x,a3,2x,a1)') hb(nhb)%donornum,hb(nhb)%donorat, &
         hb(nhb)%acceptnum, hb(nhb)%acceptat, hb(nhb)%bondtype
     enddo
     close(iunit)
@@ -246,6 +248,7 @@ CONTAINS
     integer,dimension(:),allocatable :: stack
     integer :: ihb,jhb,khb,icyc,nbulge
     character(len=12) :: ostr, bstr
+    integer,parameter :: maxBulge = 1
     !! ---------------
     allocate(stack(nhb),stat=ios)
     if (ios/=0) stop 'pdb2seams2.f90:: findseams: error allocating stack'
@@ -277,8 +280,11 @@ CONTAINS
       if (ihb>nhb) exit
       stack(ihb) = 2  !! mark this hbond as part of a potential seam.
       !! !! if (hb(ihb)%donornum==216) write(*,*) "====216 to ",hb(ihb)%acceptnum
+      write(0,'("ihb = ",i3,x,i3)') hb(ihb)%donornum,hb(ihb)%acceptnum
+      nbulge = 0
       !!----- Parallel seam? Look for next Hbond upseam
       jhb = nexthbond(ihb,nhb,stack,hb,orient="parallelN")
+      if(jhb/=0) write(0,'("parallelN: jhb = ",i3,x,i3)') hb(jhb)%donornum,hb(jhb)%acceptnum
       if (jhb/=0) then  
         !! upseam parallel --------- keep going upseam parallel 
 !!         if (hb(ihb)%donornum==216) write(*,*) "====216 is parallelN"
@@ -287,14 +293,22 @@ CONTAINS
             khb = jhb
             stack(jhb) = 2
             jhb = nexthbond(jhb,nhb,stack,hb,orient="parallelN")
+            if(jhb/=0) write(0,'("parallelN: jhb = ",i3,x,i3)') hb(jhb)%donornum,hb(jhb)%acceptnum
           enddo
           !! end of parallelN series, look for a single bulge in parallelN sequence
           !! if a bulge exists, see if parallelN continues from there.
-          jhb = nexthbond(khb,nhb,stack,hb,orient="bulgeN")
+          if(nbulge < maxBulge) then
+              jhb = nexthbond(khb,nhb,stack,hb,orient="bulgeN")
+              if(jhb/=0) then
+                   write(0,'("parallelN: jhb = ",i3,x,i3)') hb(jhb)%donornum,hb(jhb)%acceptnum
+                   nbulge = nbulge + 1
+              endif
+          endif 
         enddo
       endif
       !! downseam parallel --------- go back and look downseam parallel 
       jhb = nexthbond(ihb,nhb,stack,hb,orient="parallelC")
+      if(jhb/=0) write(0,'("parallelC: jhb = ",i3,x,i3)') hb(jhb)%donornum,hb(jhb)%acceptnum
       if (jhb/=0) then  
         !! upseam parallel --------- keep going upseam parallel 
         !! if (hb(ihb)%donornum==216) write(*,*) "====216 is parallelC"
@@ -303,13 +317,21 @@ CONTAINS
             khb = jhb
             stack(jhb) = 2
             jhb = nexthbond(jhb,nhb,stack,hb,orient="parallelC")
+            if(jhb/=0) write(0,'("parallelC: jhb = ",i3,x,i3)') hb(jhb)%donornum,hb(jhb)%acceptnum
           enddo
           !! end of parallelC series, look for a single bulge in parallelC sequence
           !! if a bulge exists, see if parallelC continues from there.
-          jhb = nexthbond(khb,nhb,stack,hb,orient="bulgeC")
+          if(nbulge < maxBulge) then
+              jhb = nexthbond(khb,nhb,stack,hb,orient="bulgeC")
+              if(jhb/=0) then
+                  write(0,'("bulgeC: jhb = ",i3,x,i3)') hb(jhb)%donornum,hb(jhb)%acceptnum
+                  nbulge = nbulge + 1
+              endif
+          endif
         enddo
       endif
       if (count(stack==2)>=MINSEAM) then
+        write(0,'("count(stack) = ",i4)') count(stack==2)
         nseams = nseams+1
         call saveseam(seamsroot,nseams,orient="parallel",stack=stack,nhb=nhb,hb=hb)
         !! diagnostic
@@ -320,19 +342,25 @@ CONTAINS
       !!----- not parallel. Is it antiparallel?
       !! search upseam antiparallel ---------
       !!   upseam: [bulgeC] --> antiN --> [bulgeN] --> antiC --> <repeat>
-      nbulge = 0
-      jhb = nexthbond(ihb,nhb,stack,hb,orient="bulgeC")
-      if (jhb==0) then
-        !! no bulge, no worries, start again
-        jhb = ihb
+      ! nbulge = 0
+      if(nbulge < maxBulge)then
+          jhb = nexthbond(ihb,nhb,stack,hb,orient="bulgeC")
+          if(jhb/=0) write(0,'("bulgeC: jhb = ",i3,x,i3)') hb(jhb)%donornum,hb(jhb)%acceptnum
+          if (jhb==0) then
+            !! no bulge, no worries, start again
+            jhb = ihb
+          else
+            !! found a bulge, count it.
+            stack(jhb) = 2
+            nbulge = nbulge + 1
+            !! if (hb(ihb)%donornum==216) write(*,*) "====216 is bulgeC"
+          endif
       else
-        !! found a bulge, count it.
-        stack(jhb) = 2
-        nbulge = nbulge + 1
-        !! if (hb(ihb)%donornum==216) write(*,*) "====216 is bulgeC"
+          jhb = ihb
       endif
       ostr = "antiN"
       jhb = nexthbond(jhb,nhb,stack,hb,orient=ostr)
+      if(jhb/=0) write(0,'(a,": jhb = ",i3,x,i3)') ostr,hb(jhb)%donornum,hb(jhb)%acceptnum
       icyc = 0
       do while (jhb /= 0) 
         stack(jhb) = 2
@@ -347,31 +375,43 @@ CONTAINS
           bstr = "bulgeN"
           ostr = "antiC"
         endif
-        khb = nexthbond(jhb,nhb,stack,hb,orient=bstr)
-        if (khb==0) then
-          khb = jhb
+        if(nbulge < maxBulge) then
+            khb = nexthbond(jhb,nhb,stack,hb,orient=bstr)
+            if(khb/=0) write(0,'(a,": khb = ",i3,x,i3)') bstr,hb(khb)%donornum,hb(khb)%acceptnum
+            if (khb==0) then
+              khb = jhb
+            else
+              !! found a bulge
+              stack(khb) = 2
+              nbulge = nbulge + 1
+              !! if (hb(ihb)%donornum==216) write(*,*) "====216 is ",trim(bstr)
+            endif
         else
-          !! found a bulge
-          stack(khb) = 2
-          nbulge = nbulge + 1
-          !! if (hb(ihb)%donornum==216) write(*,*) "====216 is ",trim(bstr)
+            khb = jhb
         endif
         jhb = nexthbond(khb,nhb,stack,hb,orient=ostr)
+        if(jhb/=0) write(0,'(a,": jhb = ",i3,x,i3)') ostr,hb(jhb)%donornum,hb(jhb)%acceptnum
       enddo
       !! downseam antiparallel ---------
       !!   downseam: [bulgeN] --> antiC --> [bulgeC] --> antiN --> <repeat>
-      jhb = nexthbond(ihb,nhb,stack,hb,orient="bulgeN")
-      if (jhb==0) then
-        !! no bulge, no worries, start again
-        jhb = ihb
+      if(nbulge < maxBulge) then
+          jhb = nexthbond(ihb,nhb,stack,hb,orient="bulgeN")
+          if(jhb/=0) write(0,'("bulgeN: jhb = ",i3,x,i3)') hb(jhb)%donornum,hb(jhb)%acceptnum
+          if (jhb==0) then
+            !! no bulge, no worries, start again
+            jhb = ihb
+          else
+            !! found a bulge
+            stack(jhb) = 2
+            nbulge = nbulge + 1
+            !! if (hb(ihb)%donornum==216) write(*,*) "====216 is bulgeN"
+          endif
       else
-        !! found a bulge
-        stack(jhb) = 2
-        nbulge = nbulge + 1
-        !! if (hb(ihb)%donornum==216) write(*,*) "====216 is bulgeN"
+          jhb = ihb
       endif
       ostr = "antiC"
       jhb = nexthbond(jhb,nhb,stack,hb,orient=ostr)
+      if(jhb /= 0) write(0,'(a,": jhb = ",i3,x,i3)') ostr,hb(jhb)%donornum,hb(jhb)%acceptnum
       icyc = 0
       do while (jhb /= 0) 
         stack(jhb) = 2
@@ -384,18 +424,24 @@ CONTAINS
           bstr = "bulgeC"
           ostr = "antiN"
         endif
-        khb = nexthbond(jhb,nhb,stack,hb,orient=bstr)
-        if (khb==0) then
-          khb = jhb
+        if(nbulge < maxBulge) then
+            khb = nexthbond(jhb,nhb,stack,hb,orient=bstr)
+            if(khb /= 0) write(0,'(a,": khb = ",i3,x,i3)') bstr,hb(khb)%donornum,hb(khb)%acceptnum
+            if (khb==0) then
+              khb = jhb
+            else
+              stack(khb) = 2
+              nbulge = nbulge + 1
+              !! if (hb(ihb)%donornum==216) write(*,*) "====216 is ",trim(bstr)
+            endif
         else
-          stack(khb) = 2
-          nbulge = nbulge + 1
-          !! if (hb(ihb)%donornum==216) write(*,*) "====216 is ",trim(bstr)
+            khb = jhb
         endif
         jhb = nexthbond(khb,nhb,stack,hb,orient=ostr)
       enddo
       !! done looking for a antiparallel seam. Did we find it?
       if (count(stack==2)>=MINSEAM) then
+        write(0,'("count(stack==2): ",i4)') count(stack==2)
         nseams = nseams+1
         call saveseam(seamsroot,nseams,orient="antiparallel",stack=stack,nhb=nhb,nbulge=nbulge,hb=hb)
         !! diagnostic
