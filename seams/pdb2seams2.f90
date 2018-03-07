@@ -38,8 +38,6 @@ program pdb2seams2
   logical :: isthere
   character(len=1000) :: tmpfile,hbfile
   character(len=1000) :: aline
-  integer,parameter :: minSeamLength = 3 ! seams must involve stretches of >2 res
-  integer :: z
   !!----------------------
   jarg = command_argument_count()
   if (jarg < 1) then
@@ -56,21 +54,18 @@ program pdb2seams2
   nullify(seamsroot%bbhb)
   nullify(seamsroot%schb)
   call gethbonds(hb,hbfile,nhb)
-  write(0,*) "FINDING SEAMS"
   call findseams(hb,nhb,seamsroot,nseams)
   allocate(overlap(nseams,nseams))
   allocate(seams(nseams))
   overlap = 0
   aseam => seamsroot
+  call mergeseams(seamsroot,nseams)
   do i=1,nseams
     seams(i) = aseam
     if (.not.associated(aseam%next)) exit
     aseam => aseam%next
   enddo
   call connectseams(seams,overlap,nseams)
-  do z = 1, nseams
-      write(0,*) z,":",overlap(z,:)
-  enddo
   this = 1
   nb = 0
   barrel = 0
@@ -203,11 +198,25 @@ CONTAINS
       !     11 N        99 OH   H
       if (aline(1:1)=='!') cycle
       nhb = nhb + 1
-      read(aline,'(i7,1x,a3,1x,i7,1x,a3,2x,a1)') hb(nhb)%donornum,hb(nhb)%donorat, &
+      read(aline,'(i7,1x,a4,i7,1x,a4,1x,a1)') hb(nhb)%donornum,hb(nhb)%donorat, &
         hb(nhb)%acceptnum, hb(nhb)%acceptat, hb(nhb)%bondtype
     enddo
     close(iunit)
   end subroutine gethbonds
+  
+  subroutine printStack2(stack,hb,nhb)
+      implicit none
+      integer,intent(in) :: nhb
+      type(hbtype),intent(in),dimension(:),pointer :: hb
+      integer,intent(in),dimension(:),allocatable :: stack
+      integer :: i
+      
+      write(0,*) "PRINTING STACK"
+      do i = 1, nhb
+          if(stack(i) == 2) write(0,*) hb(i)%donornum, hb(i)%acceptnum
+      enddo
+      
+  end subroutine printStack2
   !!---------------------
   subroutine findseams(hb,nhb,seamsroot,nseams)
     implicit none
@@ -252,7 +261,6 @@ CONTAINS
     integer,dimension(:),allocatable :: stack
     integer :: ihb,jhb,khb,icyc,nbulge
     character(len=12) :: ostr, bstr
-    integer,parameter :: maxBulge = 1
     !! ---------------
     allocate(stack(nhb),stat=ios)
     if (ios/=0) stop 'pdb2seams2.f90:: findseams: error allocating stack'
@@ -284,11 +292,8 @@ CONTAINS
       if (ihb>nhb) exit
       stack(ihb) = 2  !! mark this hbond as part of a potential seam.
       !! !! if (hb(ihb)%donornum==216) write(*,*) "====216 to ",hb(ihb)%acceptnum
-      write(0,'("ihb = ",i3,x,i3)') hb(ihb)%donornum,hb(ihb)%acceptnum
-      nbulge = 0
       !!----- Parallel seam? Look for next Hbond upseam
       jhb = nexthbond(ihb,nhb,stack,hb,orient="parallelN")
-      if(jhb/=0) write(0,'("parallelN: jhb = ",i3,x,i3)') hb(jhb)%donornum,hb(jhb)%acceptnum
       if (jhb/=0) then  
         !! upseam parallel --------- keep going upseam parallel 
 !!         if (hb(ihb)%donornum==216) write(*,*) "====216 is parallelN"
@@ -297,22 +302,14 @@ CONTAINS
             khb = jhb
             stack(jhb) = 2
             jhb = nexthbond(jhb,nhb,stack,hb,orient="parallelN")
-            if(jhb/=0) write(0,'("parallelN: jhb = ",i3,x,i3)') hb(jhb)%donornum,hb(jhb)%acceptnum
           enddo
           !! end of parallelN series, look for a single bulge in parallelN sequence
           !! if a bulge exists, see if parallelN continues from there.
-          if(nbulge < maxBulge) then
-              jhb = nexthbond(khb,nhb,stack,hb,orient="bulgeN")
-              if(jhb/=0) then
-                   write(0,'("parallelN: jhb = ",i3,x,i3)') hb(jhb)%donornum,hb(jhb)%acceptnum
-                   nbulge = nbulge + 1
-              endif
-          endif 
+          jhb = nexthbond(khb,nhb,stack,hb,orient="bulgeN")
         enddo
       endif
       !! downseam parallel --------- go back and look downseam parallel 
       jhb = nexthbond(ihb,nhb,stack,hb,orient="parallelC")
-      if(jhb/=0) write(0,'("parallelC: jhb = ",i3,x,i3)') hb(jhb)%donornum,hb(jhb)%acceptnum
       if (jhb/=0) then  
         !! upseam parallel --------- keep going upseam parallel 
         !! if (hb(ihb)%donornum==216) write(*,*) "====216 is parallelC"
@@ -321,21 +318,14 @@ CONTAINS
             khb = jhb
             stack(jhb) = 2
             jhb = nexthbond(jhb,nhb,stack,hb,orient="parallelC")
-            if(jhb/=0) write(0,'("parallelC: jhb = ",i3,x,i3)') hb(jhb)%donornum,hb(jhb)%acceptnum
           enddo
           !! end of parallelC series, look for a single bulge in parallelC sequence
           !! if a bulge exists, see if parallelC continues from there.
-          if(nbulge < maxBulge) then
-              jhb = nexthbond(khb,nhb,stack,hb,orient="bulgeC")
-              if(jhb/=0) then
-                  write(0,'("bulgeC: jhb = ",i3,x,i3)') hb(jhb)%donornum,hb(jhb)%acceptnum
-                  nbulge = nbulge + 1
-              endif
-          endif
+          jhb = nexthbond(khb,nhb,stack,hb,orient="bulgeC")
         enddo
       endif
       if (count(stack==2)>=MINSEAM) then
-        write(0,'("count(stack) = ",i4)') count(stack==2)
+        call printStack2(stack,hb,nhb)
         nseams = nseams+1
         call saveseam(seamsroot,nseams,orient="parallel",stack=stack,nhb=nhb,hb=hb)
         !! diagnostic
@@ -346,25 +336,19 @@ CONTAINS
       !!----- not parallel. Is it antiparallel?
       !! search upseam antiparallel ---------
       !!   upseam: [bulgeC] --> antiN --> [bulgeN] --> antiC --> <repeat>
-      ! nbulge = 0
-      if(nbulge < maxBulge)then
-          jhb = nexthbond(ihb,nhb,stack,hb,orient="bulgeC")
-          if(jhb/=0) write(0,'("bulgeC: jhb = ",i3,x,i3)') hb(jhb)%donornum,hb(jhb)%acceptnum
-          if (jhb==0) then
-            !! no bulge, no worries, start again
-            jhb = ihb
-          else
-            !! found a bulge, count it.
-            stack(jhb) = 2
-            nbulge = nbulge + 1
-            !! if (hb(ihb)%donornum==216) write(*,*) "====216 is bulgeC"
-          endif
+      nbulge = 0
+      jhb = nexthbond(ihb,nhb,stack,hb,orient="bulgeC")
+      if (jhb==0) then
+        !! no bulge, no worries, start again
+        jhb = ihb
       else
-          jhb = ihb
+        !! found a bulge, count it.
+        stack(jhb) = 2
+        nbulge = nbulge + 1
+        !! if (hb(ihb)%donornum==216) write(*,*) "====216 is bulgeC"
       endif
       ostr = "antiN"
       jhb = nexthbond(jhb,nhb,stack,hb,orient=ostr)
-      if(jhb/=0) write(0,'(a,": jhb = ",i3,x,i3)') ostr,hb(jhb)%donornum,hb(jhb)%acceptnum
       icyc = 0
       do while (jhb /= 0) 
         stack(jhb) = 2
@@ -379,43 +363,31 @@ CONTAINS
           bstr = "bulgeN"
           ostr = "antiC"
         endif
-        if(nbulge < maxBulge) then
-            khb = nexthbond(jhb,nhb,stack,hb,orient=bstr)
-            if(khb/=0) write(0,'(a,": khb = ",i3,x,i3)') bstr,hb(khb)%donornum,hb(khb)%acceptnum
-            if (khb==0) then
-              khb = jhb
-            else
-              !! found a bulge
-              stack(khb) = 2
-              nbulge = nbulge + 1
-              !! if (hb(ihb)%donornum==216) write(*,*) "====216 is ",trim(bstr)
-            endif
+        khb = nexthbond(jhb,nhb,stack,hb,orient=bstr)
+        if (khb==0) then
+          khb = jhb
         else
-            khb = jhb
+          !! found a bulge
+          stack(khb) = 2
+          nbulge = nbulge + 1
+          !! if (hb(ihb)%donornum==216) write(*,*) "====216 is ",trim(bstr)
         endif
         jhb = nexthbond(khb,nhb,stack,hb,orient=ostr)
-        if(jhb/=0) write(0,'(a,": jhb = ",i3,x,i3)') ostr,hb(jhb)%donornum,hb(jhb)%acceptnum
       enddo
       !! downseam antiparallel ---------
       !!   downseam: [bulgeN] --> antiC --> [bulgeC] --> antiN --> <repeat>
-      if(nbulge < maxBulge) then
-          jhb = nexthbond(ihb,nhb,stack,hb,orient="bulgeN")
-          if(jhb/=0) write(0,'("bulgeN: jhb = ",i3,x,i3)') hb(jhb)%donornum,hb(jhb)%acceptnum
-          if (jhb==0) then
-            !! no bulge, no worries, start again
-            jhb = ihb
-          else
-            !! found a bulge
-            stack(jhb) = 2
-            nbulge = nbulge + 1
-            !! if (hb(ihb)%donornum==216) write(*,*) "====216 is bulgeN"
-          endif
+      jhb = nexthbond(ihb,nhb,stack,hb,orient="bulgeN")
+      if (jhb==0) then
+        !! no bulge, no worries, start again
+        jhb = ihb
       else
-          jhb = ihb
+        !! found a bulge
+        stack(jhb) = 2
+        nbulge = nbulge + 1
+        !! if (hb(ihb)%donornum==216) write(*,*) "====216 is bulgeN"
       endif
       ostr = "antiC"
       jhb = nexthbond(jhb,nhb,stack,hb,orient=ostr)
-      if(jhb /= 0) write(0,'(a,": jhb = ",i3,x,i3)') ostr,hb(jhb)%donornum,hb(jhb)%acceptnum
       icyc = 0
       do while (jhb /= 0) 
         stack(jhb) = 2
@@ -428,24 +400,19 @@ CONTAINS
           bstr = "bulgeC"
           ostr = "antiN"
         endif
-        if(nbulge < maxBulge) then
-            khb = nexthbond(jhb,nhb,stack,hb,orient=bstr)
-            if(khb /= 0) write(0,'(a,": khb = ",i3,x,i3)') bstr,hb(khb)%donornum,hb(khb)%acceptnum
-            if (khb==0) then
-              khb = jhb
-            else
-              stack(khb) = 2
-              nbulge = nbulge + 1
-              !! if (hb(ihb)%donornum==216) write(*,*) "====216 is ",trim(bstr)
-            endif
+        khb = nexthbond(jhb,nhb,stack,hb,orient=bstr)
+        if (khb==0) then
+          khb = jhb
         else
-            khb = jhb
+          stack(khb) = 2
+          nbulge = nbulge + 1
+          !! if (hb(ihb)%donornum==216) write(*,*) "====216 is ",trim(bstr)
         endif
         jhb = nexthbond(khb,nhb,stack,hb,orient=ostr)
       enddo
       !! done looking for a antiparallel seam. Did we find it?
       if (count(stack==2)>=MINSEAM) then
-        write(0,'("count(stack==2): ",i4)') count(stack==2)
+        call printStack2(stack,hb,nhb)
         nseams = nseams+1
         call saveseam(seamsroot,nseams,orient="antiparallel",stack=stack,nhb=nhb,nbulge=nbulge,hb=hb)
         !! diagnostic
@@ -749,6 +716,174 @@ CONTAINS
              aseam%start(2), aseam%end(2)
       enddo
   end subroutine outputDAGlines
+  
+  subroutine mergeseams(root,nseams)
+      implicit none
+      integer,intent(inout)::nseams
+      type(seamtype),intent(inout),pointer :: root
+      type(seamtype),pointer :: itr,jtr,ktr,newseam
+      integer :: i,j,k
+      
+      ! mess with the linked list
+      itr => root
+      do while(associated(itr%next))
+          jtr => itr%next
+          do while(associated(jtr))
+              !1-3, 2-4
+              if(itr%start(1) <= jtr%end(1)&
+              .and. itr%end(1) >= jtr%start(1)&
+              .and. itr%start(2) <= jtr%end(2)&
+              .and. itr%end(2) >= jtr%start(2)&
+              .and. itr%orient == jtr%orient) then
+                allocate(newseam)
+                ! start
+                newseam%start(1) = itr%start(1)
+                newseam%start(2) = itr%start(2)
+                ! end
+                newseam%end(1) = jtr%end(1)
+                newseam%end(2) = jtr%end(2)
+                call merge(itr,jtr,root,newseam)
+                ! deallocate itr and jtr
+                deallocate(itr)
+                deallocate(jtr)
+                ! reassign itr and jtr
+                itr => newseam
+                jtr => newseam%next
+              ! 1-4, 2-3
+              elseif(itr%start(1) <= jtr%end(2)&
+              .and. itr%end(1) >= jtr%start(2)&
+              .and. itr%start(2) <= jtr%end(1)&
+              .and. itr%end(2) >= jtr%start(1)&
+              .and. itr%orient == jtr%orient) then
+                allocate(newseam)
+                ! start
+                newseam%start(1) = itr%start(1)
+                newseam%start(2) = itr%start(2)
+                ! end
+                newseam%end(1) = jtr%end(2)
+                newseam%end(2) = jtr%end(1)
+                call merge(itr,jtr,root,newseam)
+                ! deallocate itr and jtr
+                deallocate(itr)
+                deallocate(jtr)
+                ! reassign itr and jtr
+                itr => newseam
+                jtr => newseam%next
+              ! 3-1, 4-2
+              elseif(jtr%start(1) <= itr%end(1)&
+              .and. jtr%end(1) >= itr%start(1)&
+              .and. jtr%start(2) <= itr%end(2)&
+              .and. jtr%end(2) >= itr%start(2)&
+              .and. jtr%orient == itr%orient) then
+                allocate(newseam)
+                ! start
+                newseam%start(1) = jtr%start(1)
+                newseam%start(2) = jtr%start(2)
+                ! end
+                newseam%end(1) = itr%end(1)
+                newseam%end(2) = itr%end(2)
+                call merge(itr,jtr,root,newseam)
+                ! deallocate itr and jtr
+                deallocate(itr)
+                deallocate(jtr)
+                ! reassign itr and jtr
+                itr => newseam
+                jtr => newseam%next
+              ! 4-1, 3-2
+              elseif(jtr%start(1) <= itr%end(2)&
+              .and. jtr%end(1) >= itr%start(2)&
+              .and. jtr%start(2) <= itr%end(1)&
+              .and. jtr%end(2) >= itr%start(1)&
+              .and. jtr%orient == itr%orient) then
+                allocate(newseam)
+                ! start
+                newseam%start(1) = jtr%start(2)
+                newseam%start(2) = jtr%start(1)
+                ! end
+                newseam%end(1) = itr%end(1)
+                newseam%end(2) = itr%end(2)
+                call merge(itr,jtr,root,newseam)
+                ! deallocate itr and jtr
+                deallocate(itr)
+                deallocate(jtr)
+                ! reassign itr and jtr
+                itr => newseam
+                jtr => newseam%next
+              else  
+                jtr => jtr%next
+              endif
+          enddo
+          itr => itr%next
+      enddo
+      nullify(itr)
+      nullify(jtr)
+      nullify(ktr)
+      nullify(newseam)
+  end subroutine mergeseams
+  
+  subroutine merge(itr,jtr,root,newseam)
+      !Do the common operations for merging seams itr and jtr into seam
+      implicit none
+      type(seamtype),intent(in),pointer :: itr,jtr,root
+      type(seamtype),intent(inout),pointer :: newseam
+      type(seamtype),pointer :: ktr
+      integer :: i,j,k
+      
+      
+      ! idx
+      newseam%idx = itr%idx
+      ! orient
+      newseam%orient = itr%orient
+      ! nbbhb, nschb, nbulge
+      newseam%nbbhb = itr%nbbhb + jtr%nbbhb
+      newseam%nschb = itr%nschb + jtr%nschb
+      newseam%nbulge = itr%nbulge + jtr%nbulge
+      ! b1num, b2num
+      ! I don't know what these are...
+      ! bbhb
+      allocate(newseam%bbhb(newseam%nbbhb))
+      i = 1
+      do while(i <= itr%nbbhb)
+          newseam%bbhb(i) = itr%bbhb(i)
+      enddo
+      j = 1
+      do while(j <= jtr%nbbhb)
+          newseam%bbhb(i+j) = jtr%bbhb(j)
+      enddo
+      ! schb
+      allocate(newseam%schb(newseam%nschb))
+      i = 1
+      do while(i <= itr%nschb)
+          newseam%schb(i) = itr%schb(i)
+      enddo
+      j = 1
+      do while(j <= jtr%nschb)
+          newseam%schb(i+j) = jtr%schb(j)
+      enddo
+      ! previous's next
+      ktr => root
+      do 
+          if(associated(ktr%next)) then
+              if(ktr%next%idx == itr%idx) then
+                  ktr%next => newseam
+                  exit
+              endif
+              ktr => ktr%next
+          else
+              exit
+          endif
+      enddo
+      ! next
+      newseam%next => jtr%next
+      ! upstream reindexing
+      ktr => newseam
+      k = newseam%idx
+      do while(associated(ktr%next))
+          ktr => ktr%next
+          k = k + 1
+          ktr%idx = k
+      enddo
+  end subroutine merge
 !!------------------------------------------------------------------
 !! NOTE: outputDAGseams should be synched with geofold_seams.f90
 !! writeBarrels()
