@@ -698,6 +698,9 @@ CONTAINS
           endif
         enddo
       enddo
+      do i = 1, nseams
+          write(0,*) overlap(i,:)
+      enddo
   end subroutine connectseams
   !!--------------------
   subroutine outputDAGlines(iunit,nseams,seams,barrel,nb,nbarrel)
