@@ -55,11 +55,11 @@ program pdb2seams2
   nullify(seamsroot%schb)
   call gethbonds(hb,hbfile,nhb)
   call findseams(hb,nhb,seamsroot,nseams)
+  call mergeseams(seamsroot,nseams)
   allocate(overlap(nseams,nseams))
   allocate(seams(nseams))
   overlap = 0
   aseam => seamsroot
-  call mergeseams(seamsroot,nseams)
   do i=1,nseams
     seams(i) = aseam
     if (.not.associated(aseam%next)) exit
