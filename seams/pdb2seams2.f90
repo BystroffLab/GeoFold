@@ -33,10 +33,10 @@ program pdb2seams2
   integer,dimension(:,:),allocatable :: overlap
   integer :: nhb,nseams, this,ios=0,i,j,jarg,nb,nbarrel
   integer,parameter :: MINSEAM=3 !! minimum number of beta H-bonds to count as a seam
-  integer,parameter :: MAXBARREL=22 !! minimum number of beta H-bonds to count as a seam
+  integer,parameter :: MAXBARREL=22 !! Maximum number of seams in a barrel
   integer,dimension(MAXBARREL) :: barrel
   logical :: isthere
-  character(len=200) :: hbfile,tmpfile
+  character(len=1000) :: tmpfile,hbfile
   character(len=1000) :: aline
   !!----------------------
   jarg = command_argument_count()
@@ -55,6 +55,7 @@ program pdb2seams2
   nullify(seamsroot%schb)
   call gethbonds(hb,hbfile,nhb)
   call findseams(hb,nhb,seamsroot,nseams)
+  call mergeseams(seamsroot,nseams)
   allocate(overlap(nseams,nseams))
   allocate(seams(nseams))
   overlap = 0
@@ -69,9 +70,13 @@ program pdb2seams2
   nb = 0
   barrel = 0
   nbarrel = 0
-  tmpfile = "/tmp/pdb2seams.tmp"
-  open(11,file=tmpfile,status='replace',iostat=ios)
-  if (ios/=0) stop 'pdb2seams2.f90 :: permission problems. Dont open a new file.'
+  ! It is bad to have a static tmp file
+  ! If multiple jobs are running at once, they create a race condition.
+  ! Things would end poorly. Let's salt it with a random integer
+  call random_seed()
+  write(tmpfile,'(a,i10.10,a)') "/tmp/pdb2seams2_",irand(),".tmp"
+  open(11,file=trim(tmpfile),status='replace',iostat=ios)
+  if (ios/=0) stop 'pdb2seams2.f90 :: permission problems. Do not open a new file.'
   do while (any(overlap/=0)) 
     this = 1
     !! find the first seam that has any overlap with another seam
@@ -85,9 +90,6 @@ program pdb2seams2
     !!   enddo
     !!   write(*,*)
     !! enddo
-    do while (all(overlap(this,:)==0))
-      this = this + 1
-    enddo
     nb = 1
     barrel(nb) = this
     j = minloc(overlap(this,:),mask=(overlap(this,:)/=0),dim=1)
@@ -173,7 +175,7 @@ CONTAINS
   !!
   subroutine gethbonds(hb,hbfile,nhb)
     implicit none
-    character(len=200),intent(in) :: hbfile
+    character(len=*),intent(in) :: hbfile
     integer,intent(out) :: nhb
     type (hbtype),dimension(:),pointer :: hb
     integer :: iunit,ios
@@ -201,6 +203,20 @@ CONTAINS
     enddo
     close(iunit)
   end subroutine gethbonds
+  
+  subroutine printStack2(stack,hb,nhb)
+      implicit none
+      integer,intent(in) :: nhb
+      type(hbtype),intent(in),dimension(:),pointer :: hb
+      integer,intent(in),dimension(:),allocatable :: stack
+      integer :: i
+      
+      write(0,*) "PRINTING STACK"
+      do i = 1, nhb
+          if(stack(i) == 2) write(0,*) hb(i)%donornum, hb(i)%acceptnum
+      enddo
+      
+  end subroutine printStack2
   !!---------------------
   subroutine findseams(hb,nhb,seamsroot,nseams)
     implicit none
@@ -230,7 +246,7 @@ CONTAINS
     !!       pop all hb from stack2 back to stack1
     !!       pop top hb from stack1 => stack2
     !!     endif
-    !!     while (hb=antiparallel(stack2,stack1) /= )
+    !!     while (hb=antiparallel(stack2,stack1) /= 0)
     !!       push hb to stack2
     !!       pop hb from stack1
     !!     end
@@ -309,6 +325,7 @@ CONTAINS
         enddo
       endif
       if (count(stack==2)>=MINSEAM) then
+        call printStack2(stack,hb,nhb)
         nseams = nseams+1
         call saveseam(seamsroot,nseams,orient="parallel",stack=stack,nhb=nhb,hb=hb)
         !! diagnostic
@@ -395,6 +412,7 @@ CONTAINS
       enddo
       !! done looking for a antiparallel seam. Did we find it?
       if (count(stack==2)>=MINSEAM) then
+        call printStack2(stack,hb,nhb)
         nseams = nseams+1
         call saveseam(seamsroot,nseams,orient="antiparallel",stack=stack,nhb=nhb,nbulge=nbulge,hb=hb)
         !! diagnostic
@@ -649,27 +667,27 @@ CONTAINS
       do i=1,nseams
         overlap(i,i) = 0
         do j=1,i-1
-          if     (seams(i)%start(1)-novr<=seams(j)%end(1)  .and. &
-                  seams(i)%end(1)+novr  >=seams(j)%start(1)) then
+          if     (seams(i)%start(1)+novr<=seams(j)%end(1)  .and. &
+                  seams(i)%end(1)-novr>=seams(j)%start(1)) then
             overlap(i,j) = 1  !! seam i connects to j, strand 1 to strand 1
             overlap(j,i) = 1
             !! diagnostic
             !! write(*,*) "1__",seams(i)%idx, seams(i)%start(1), seams(i)%end(1), &
              !!                 seams(j)%idx, seams(j)%start(1), seams(j)%end(1)
-          elseif (seams(i)%start(2)-novr<=seams(j)%end(1)  .and. &
-                  seams(i)%end(2)+novr  >=seams(j)%start(1)) then
+         elseif (seams(i)%start(2)+novr<=seams(j)%end(1)  .and. &
+                  seams(i)%end(2)-novr>=seams(j)%start(1)) then
             overlap(i,j) = 2  !! seam i connects to j, strand 2 to strand 1
             overlap(j,i) = 1
             !! write(*,*) "2__",seams(i)%idx, seams(i)%start(2), seams(i)%end(2), &
             !!                  seams(j)%idx, seams(j)%start(1), seams(j)%end(1)
-          elseif (seams(i)%start(1)-novr<=seams(j)%end(2)  .and. &
-                  seams(i)%end(1)+novr  >=seams(j)%start(2)) then
+        elseif (seams(i)%start(1)+novr<=seams(j)%end(2)  .and. &
+                  seams(i)%end(1)-novr>=seams(j)%start(2)) then
             overlap(i,j) = 1  !! seam i connects to j, strand 1 to strand 2
             overlap(j,i) = 2
             !! write(*,*) "3__",seams(i)%idx, seams(i)%start(1), seams(i)%end(1), &
             !!                  seams(j)%idx, seams(j)%start(2), seams(j)%end(2)
-          elseif (seams(i)%start(2)-novr<=seams(j)%end(2)  .and. &
-                  seams(i)%end(2)+novr  >=seams(j)%start(2)) then
+        elseif (seams(i)%start(2)+novr<=seams(j)%end(2)  .and. &
+                  seams(i)%end(2)-novr>=seams(j)%start(2)) then
             overlap(i,j) = 2  !! seam i connects to j, strand 2 to strand 2
             overlap(j,i) = 2
             !! write(*,*) "4__",seams(i)%idx, seams(i)%start(2), seams(i)%end(2), &
@@ -679,6 +697,9 @@ CONTAINS
             overlap(j,i) = 0
           endif
         enddo
+      enddo
+      do i = 1, nseams
+          write(0,*) overlap(i,:)
       enddo
   end subroutine connectseams
   !!--------------------
@@ -698,6 +719,178 @@ CONTAINS
              aseam%start(2), aseam%end(2)
       enddo
   end subroutine outputDAGlines
+  
+  subroutine mergeseams(root,nseams)
+      implicit none
+      integer,intent(inout)::nseams
+      type(seamtype),intent(inout),pointer :: root
+      type(seamtype),pointer :: itr,jtr,ktr,newseam
+      integer :: i,j,k
+      
+      ! mess with the linked list
+      itr => root
+      do while(associated(itr%next))
+          jtr => itr%next
+          do while(associated(jtr))
+              !1-3, 2-4
+              if(itr%start(1) <= jtr%end(1)&
+              .and. itr%end(1) >= jtr%start(1)&
+              .and. itr%start(2) <= jtr%end(2)&
+              .and. itr%end(2) >= jtr%start(2)&
+              .and. itr%orient == jtr%orient) then
+                allocate(newseam)
+                ! start
+                newseam%start(1) = itr%start(1)
+                newseam%start(2) = itr%start(2)
+                ! end
+                newseam%end(1) = jtr%end(1)
+                newseam%end(2) = jtr%end(2)
+                call merge(itr,jtr,root,newseam)
+                ! deallocate itr and jtr
+                deallocate(itr)
+                deallocate(jtr)
+                ! reassign itr and jtr
+                itr => newseam
+                jtr => newseam%next
+              ! 1-4, 2-3
+              elseif(itr%start(1) <= jtr%end(2)&
+              .and. itr%end(1) >= jtr%start(2)&
+              .and. itr%start(2) <= jtr%end(1)&
+              .and. itr%end(2) >= jtr%start(1)&
+              .and. itr%orient == jtr%orient) then
+                allocate(newseam)
+                ! start
+                newseam%start(1) = itr%start(1)
+                newseam%start(2) = itr%start(2)
+                ! end
+                newseam%end(1) = jtr%end(2)
+                newseam%end(2) = jtr%end(1)
+                call merge(itr,jtr,root,newseam)
+                ! deallocate itr and jtr
+                deallocate(itr)
+                deallocate(jtr)
+                ! reassign itr and jtr
+                itr => newseam
+                jtr => newseam%next
+              ! 3-1, 4-2
+              elseif(jtr%start(1) <= itr%end(1)&
+              .and. jtr%end(1) >= itr%start(1)&
+              .and. jtr%start(2) <= itr%end(2)&
+              .and. jtr%end(2) >= itr%start(2)&
+              .and. jtr%orient == itr%orient) then
+                allocate(newseam)
+                ! start
+                newseam%start(1) = jtr%start(1)
+                newseam%start(2) = jtr%start(2)
+                ! end
+                newseam%end(1) = itr%end(1)
+                newseam%end(2) = itr%end(2)
+                call merge(itr,jtr,root,newseam)
+                ! deallocate itr and jtr
+                deallocate(itr)
+                deallocate(jtr)
+                ! reassign itr and jtr
+                itr => newseam
+                jtr => newseam%next
+              ! 4-1, 3-2
+              elseif(jtr%start(1) <= itr%end(2)&
+              .and. jtr%end(1) >= itr%start(2)&
+              .and. jtr%start(2) <= itr%end(1)&
+              .and. jtr%end(2) >= itr%start(1)&
+              .and. jtr%orient == itr%orient) then
+                allocate(newseam)
+                ! start
+                newseam%start(1) = jtr%start(2)
+                newseam%start(2) = jtr%start(1)
+                ! end
+                newseam%end(1) = itr%end(1)
+                newseam%end(2) = itr%end(2)
+                call merge(itr,jtr,root,newseam)
+                ! deallocate itr and jtr
+                deallocate(itr)
+                deallocate(jtr)
+                ! reassign itr and jtr
+                itr => newseam
+                jtr => newseam%next
+              else  
+                jtr => jtr%next
+              endif
+          enddo
+          itr => itr%next
+      enddo
+      nullify(itr)
+      nullify(jtr)
+      nullify(ktr)
+      nullify(newseam)
+  end subroutine mergeseams
+  
+  subroutine merge(itr,jtr,root,newseam)
+      !Do the common operations for merging seams itr and jtr into seam
+      implicit none
+      type(seamtype),intent(in),pointer :: itr,jtr
+      type(seamtype),intent(inout),pointer :: newseam,root
+      type(seamtype),pointer :: ktr
+      integer :: i,j,k
+      
+      
+      ! idx
+      newseam%idx = itr%idx
+      ! orient
+      newseam%orient = itr%orient
+      ! nbbhb, nschb, nbulge
+      newseam%nbbhb = itr%nbbhb + jtr%nbbhb
+      newseam%nschb = itr%nschb + jtr%nschb
+      newseam%nbulge = itr%nbulge + jtr%nbulge
+      ! b1num, b2num
+      ! I don't know what these are...
+      ! bbhb
+      allocate(newseam%bbhb(newseam%nbbhb))
+      i = 1
+      do while(i <= itr%nbbhb)
+          newseam%bbhb(i) = itr%bbhb(i)
+      enddo
+      j = 1
+      do while(j <= jtr%nbbhb)
+          newseam%bbhb(i+j) = jtr%bbhb(j)
+      enddo
+      ! schb
+      allocate(newseam%schb(newseam%nschb))
+      i = 1
+      do while(i <= itr%nschb)
+          newseam%schb(i) = itr%schb(i)
+      enddo
+      j = 1
+      do while(j <= jtr%nschb)
+          newseam%schb(i+j) = jtr%schb(j)
+      enddo
+      ! previous's next
+      if(root%idx == itr%idx) then
+          root => newseam
+      else
+          ktr => root
+          do 
+              if(associated(ktr%next)) then
+                  if(ktr%next%idx == itr%idx) then
+                      ktr%next => newseam
+                      exit
+                  endif
+                  ktr => ktr%next
+              else
+                  exit
+              endif
+          enddo
+      endif
+      ! next
+      newseam%next => jtr%next
+      ! upstream reindexing
+      ktr => newseam
+      k = newseam%idx
+      do while(associated(ktr%next))
+          ktr => ktr%next
+          k = k + 1
+          ktr%idx = k
+      enddo
+  end subroutine merge
 !!------------------------------------------------------------------
 !! NOTE: outputDAGseams should be synched with geofold_seams.f90
 !! writeBarrels()
