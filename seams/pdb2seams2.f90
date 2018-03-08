@@ -667,27 +667,27 @@ CONTAINS
       do i=1,nseams
         overlap(i,i) = 0
         do j=1,i-1
-          if     (seams(i)%start(1)-novr<seams(j)%end(1)  .and. &
-                  seams(i)%end(1)+novr  >seams(j)%start(1)) then
+          if     (seams(i)%start(1)+novr<=seams(j)%end(1)  .and. &
+                  seams(i)%end(1)-novr>=seams(j)%start(1)) then
             overlap(i,j) = 1  !! seam i connects to j, strand 1 to strand 1
             overlap(j,i) = 1
             !! diagnostic
             !! write(*,*) "1__",seams(i)%idx, seams(i)%start(1), seams(i)%end(1), &
              !!                 seams(j)%idx, seams(j)%start(1), seams(j)%end(1)
-          elseif (seams(i)%start(2)-novr<seams(j)%end(1)  .and. &
-                  seams(i)%end(2)+novr  >seams(j)%start(1)) then
+         elseif (seams(i)%start(2)+novr<=seams(j)%end(1)  .and. &
+                  seams(i)%end(2)-novr>=seams(j)%start(1)) then
             overlap(i,j) = 2  !! seam i connects to j, strand 2 to strand 1
             overlap(j,i) = 1
             !! write(*,*) "2__",seams(i)%idx, seams(i)%start(2), seams(i)%end(2), &
             !!                  seams(j)%idx, seams(j)%start(1), seams(j)%end(1)
-          elseif (seams(i)%start(1)-novr<seams(j)%end(2)  .and. &
-                  seams(i)%end(1)+novr  >seams(j)%start(2)) then
+        elseif (seams(i)%start(1)+novr<=seams(j)%end(2)  .and. &
+                  seams(i)%end(1)-novr>=seams(j)%start(2)) then
             overlap(i,j) = 1  !! seam i connects to j, strand 1 to strand 2
             overlap(j,i) = 2
             !! write(*,*) "3__",seams(i)%idx, seams(i)%start(1), seams(i)%end(1), &
             !!                  seams(j)%idx, seams(j)%start(2), seams(j)%end(2)
-          elseif (seams(i)%start(2)-novr<seams(j)%end(2)  .and. &
-                  seams(i)%end(2)+novr  >seams(j)%start(2)) then
+        elseif (seams(i)%start(2)+novr<=seams(j)%end(2)  .and. &
+                  seams(i)%end(2)-novr>=seams(j)%start(2)) then
             overlap(i,j) = 2  !! seam i connects to j, strand 2 to strand 2
             overlap(j,i) = 2
             !! write(*,*) "4__",seams(i)%idx, seams(i)%start(2), seams(i)%end(2), &
