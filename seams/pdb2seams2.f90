@@ -827,8 +827,8 @@ CONTAINS
   subroutine merge(itr,jtr,root,newseam)
       !Do the common operations for merging seams itr and jtr into seam
       implicit none
-      type(seamtype),intent(in),pointer :: itr,jtr,root
-      type(seamtype),intent(inout),pointer :: newseam
+      type(seamtype),intent(in),pointer :: itr,jtr
+      type(seamtype),intent(inout),pointer :: newseam,root
       type(seamtype),pointer :: ktr
       integer :: i,j,k
       
@@ -864,18 +864,22 @@ CONTAINS
           newseam%schb(i+j) = jtr%schb(j)
       enddo
       ! previous's next
-      ktr => root
-      do 
-          if(associated(ktr%next)) then
-              if(ktr%next%idx == itr%idx) then
-                  ktr%next => newseam
+      if(root%idx == itr%idx) then
+          root => newseam
+      else
+          ktr => root
+          do 
+              if(associated(ktr%next)) then
+                  if(ktr%next%idx == itr%idx) then
+                      ktr%next => newseam
+                      exit
+                  endif
+                  ktr => ktr%next
+              else
                   exit
               endif
-              ktr => ktr%next
-          else
-              exit
-          endif
-      enddo
+          enddo
+      endif
       ! next
       newseam%next => jtr%next
       ! upstream reindexing
