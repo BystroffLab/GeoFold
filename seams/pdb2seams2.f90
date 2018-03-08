@@ -644,7 +644,7 @@ CONTAINS
       integer,intent(in) :: nseams
       type(seamtype),dimension(:),pointer :: seams
       integer,dimension(nseams,nseams),intent(inout) :: overlap
-      integer,parameter :: novr=0  !! additional required overlap in sequence
+      integer,parameter :: novr=1  !! additional required overlap in sequence
       integer :: i,j
       do i=1,nseams
         overlap(i,i) = 0
