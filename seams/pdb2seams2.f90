@@ -32,7 +32,7 @@ program pdb2seams2
   type(seamtype),pointer :: seamsroot, aseam
   integer,dimension(:,:),allocatable :: overlap
   integer :: nhb,nseams, this,ios=0,i,j,jarg,nb,nbarrel
-  integer,parameter :: MINSEAM=3 !! minimum number of beta H-bonds to count as a seam
+  integer,parameter :: MINSEAM=2 !! minimum number of beta H-bonds to count as a seam
   integer,parameter :: MAXBARREL=22 !! Maximum number of seams in a barrel
   integer,dimension(MAXBARREL) :: barrel
   logical :: isthere
@@ -726,18 +726,24 @@ CONTAINS
       type(seamtype),intent(inout),pointer :: root
       type(seamtype),pointer :: itr,jtr,ktr,newseam
       integer :: i,j,k
+      integer,parameter :: over = 1
       
       ! mess with the linked list
       itr => root
       do while(associated(itr%next))
           jtr => itr%next
           do while(associated(jtr))
+              write(0,'("itr%idx: ",i4," jtr%idx: ",i4)')itr%idx,jtr%idx
               !1-3, 2-4
-              if(itr%start(1) <= jtr%end(1)&
-              .and. itr%end(1) >= jtr%start(1)&
-              .and. itr%start(2) <= jtr%end(2)&
-              .and. itr%end(2) >= jtr%start(2)&
-              .and. itr%orient == jtr%orient) then
+              if(itr%end(1)-jtr%start(1) <= over .and. itr%end(1)-jtr%start(1) >= 0&
+              .and. itr%start(2)-jtr%start(2) <= over .and. itr%start(2)-jtr%start(2) >= 0&
+              ! )
+              ! if(itr%start(1)+1 <= jtr%end(1)&
+              ! .and. itr%end(1)-1 >= jtr%start(1)&
+              ! .and. itr%start(2)+1 <= jtr%end(2)&
+              ! .and. itr%end(2)-1 >= jtr%start(2)&
+              ! .and. itr%orient == jtr%orient&
+              ) then
                 allocate(newseam)
                 ! start
                 newseam%start(1) = itr%start(1)
@@ -753,11 +759,15 @@ CONTAINS
                 itr => newseam
                 jtr => newseam%next
               ! 1-4, 2-3
-              elseif(itr%start(1) <= jtr%end(2)&
-              .and. itr%end(1) >= jtr%start(2)&
-              .and. itr%start(2) <= jtr%end(1)&
-              .and. itr%end(2) >= jtr%start(1)&
-              .and. itr%orient == jtr%orient) then
+          elseif(itr%end(1)-jtr%start(2) <= over .and. itr%end(1)-jtr%start(2) >= 0&
+              .and. itr%end(2)-jtr%start(1) <= over .and. itr%end(2)-jtr%start(1) >= 0&
+          !     )
+          ! elseif(itr%start(1)+1 <= jtr%end(2)&
+          !     .and. itr%end(1)-1 >= jtr%start(2)&
+          !     .and. itr%start(2)+1 <= jtr%end(1)&
+          !     .and. itr%end(2)-1 >= jtr%start(1)&
+              ! .and. itr%orient == jtr%orient&
+              ) then
                 allocate(newseam)
                 ! start
                 newseam%start(1) = itr%start(1)
@@ -773,11 +783,15 @@ CONTAINS
                 itr => newseam
                 jtr => newseam%next
               ! 3-1, 4-2
-              elseif(jtr%start(1) <= itr%end(1)&
-              .and. jtr%end(1) >= itr%start(1)&
-              .and. jtr%start(2) <= itr%end(2)&
-              .and. jtr%end(2) >= itr%start(2)&
-              .and. jtr%orient == itr%orient) then
+          elseif(jtr%end(1)-itr%start(1) <= over .and. jtr%end(1)-itr%start(1) >= 0&
+              .and. jtr%end(2)-itr%start(2) <= over .and. jtr%end(2)-itr%start(2) >= 0&
+          !     )
+          ! elseif(jtr%start(1)+1 <= itr%end(1)&
+          !     .and. jtr%end(1)-1 >= itr%start(1)&
+          !     .and. jtr%start(2)+1 <= itr%end(2)&
+          !     .and. jtr%end(2)-1 >= itr%start(2)&
+              ! .and. jtr%orient == itr%orient&
+              ) then
                 allocate(newseam)
                 ! start
                 newseam%start(1) = jtr%start(1)
@@ -793,11 +807,15 @@ CONTAINS
                 itr => newseam
                 jtr => newseam%next
               ! 4-1, 3-2
-              elseif(jtr%start(1) <= itr%end(2)&
-              .and. jtr%end(1) >= itr%start(2)&
-              .and. jtr%start(2) <= itr%end(1)&
-              .and. jtr%end(2) >= itr%start(1)&
-              .and. jtr%orient == itr%orient) then
+          elseif(jtr%end(2)-itr%start(1) <= over .and. jtr%end(2)-itr%start(1) >= 0&
+              .and. jtr%end(1)-itr%start(2) <= over .and. jtr%end(1)-itr%start(2) >= 0&
+          !     )
+          ! elseif(jtr%start(1)+1 <= itr%end(2)&
+          !     .and. jtr%end(1)-1 >= itr%start(2)&
+          !     .and. jtr%start(2)+1 <= itr%end(1)&
+          !     .and. jtr%end(2)-1 >= itr%start(1)&
+              ! .and. jtr%orient == itr%orient
+              ) then
                 allocate(newseam)
                 ! start
                 newseam%start(1) = jtr%start(2)
@@ -822,6 +840,7 @@ CONTAINS
       nullify(jtr)
       nullify(ktr)
       nullify(newseam)
+      write(0,*) "Mergeseams complete"
   end subroutine mergeseams
   
   subroutine merge(itr,jtr,root,newseam)
@@ -832,41 +851,59 @@ CONTAINS
       type(seamtype),pointer :: ktr
       integer :: i,j,k
       
+      write(0,'("Merging seams: ",2i4)')itr%idx,jtr%idx
+      
       
       ! idx
       newseam%idx = itr%idx
+      write(0,*) newseam%idx
       ! orient
       newseam%orient = itr%orient
+      ! write(0,*) newseam%orient
       ! nbbhb, nschb, nbulge
       newseam%nbbhb = itr%nbbhb + jtr%nbbhb
       newseam%nschb = itr%nschb + jtr%nschb
       newseam%nbulge = itr%nbulge + jtr%nbulge
+      ! write(0,'("nbbhb,nschb,nbulge: ",3i4)')newseam%nbbhb,newseam%nschb,newseam%nbulge
       ! b1num, b2num
       ! I don't know what these are...
       ! bbhb
+      ! write(0,*)"bbhb"
+      ! write(0,'("itr%nbbhb: ",i4)')itr%nbbhb
       allocate(newseam%bbhb(newseam%nbbhb))
       i = 1
       do while(i <= itr%nbbhb)
+          ! write(0,*) i
           newseam%bbhb(i) = itr%bbhb(i)
+          i = i + 1
       enddo
-      j = 1
-      do while(j <= jtr%nbbhb)
-          newseam%bbhb(i+j) = jtr%bbhb(j)
+      ! write(0,'("jtr%nbbhb: ",i4)') jtr%nbbhb
+      j = 0
+      do while(j < jtr%nbbhb)
+          ! write(0,*) i, j+i
+          newseam%bbhb(i+j) = jtr%bbhb(j+1)
+          j = j + 1
       enddo
       ! schb
+      ! write(0,*) "schb"
       allocate(newseam%schb(newseam%nschb))
       i = 1
       do while(i <= itr%nschb)
           newseam%schb(i) = itr%schb(i)
+          i = i + 1
       enddo
-      j = 1
-      do while(j <= jtr%nschb)
-          newseam%schb(i+j) = jtr%schb(j)
+      j = 0
+      do while(j < jtr%nschb)
+          newseam%schb(i+j) = jtr%schb(j+1)
+          j = j + 1
       enddo
       ! previous's next
       if(root%idx == itr%idx) then
+          write(0,*) "root == itr"
           root => newseam
+          write(0,*) "Done"
       else
+          write(0,*) "adjusting prev"
           ktr => root
           do 
               if(associated(ktr%next)) then
@@ -890,6 +927,7 @@ CONTAINS
           k = k + 1
           ktr%idx = k
       enddo
+      write(0,*) "Seams merged"
   end subroutine merge
 !!------------------------------------------------------------------
 !! NOTE: outputDAGseams should be synched with geofold_seams.f90
