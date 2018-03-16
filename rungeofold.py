@@ -1047,11 +1047,11 @@ def main(args):
           outWrite.close()
         writeParam = "echo CONTACTS %s/%s.sas >> %s" %(tmpDir,LName,paramFilename)
         commands.getstatusoutput(writeParam)
-        print("============= PDB2SEAMS (extract seams) =============")
-        tmpWrite.write("============= PDB2SEAMS (extract seams) =============<br>\n")
-        writeOut("============= PDB2SEAMS (extract seams) =============\n")
+        print("============= PDB2SEAMS2 (extract seams) =============")
+        tmpWrite.write("============= PDB2SEAMS2 (extract seams) =============<br>\n")
+        writeOut("============= PDB2SEAMS2 (extract seams) =============\n")
         if barrels:
-          pdb2seams = "%s/seams/xpdb2seams %s %s/%s.sas > %s/%s.seams" %(gDir,LNamePDB,tmpDir,LName,tmpDir,LName)
+          pdb2seams = "%s/seams/xpdb2seams2 %s/%s.hb > %s/%s.seams" %(gDir,tmpDir,LName,tmpDir,LName)
           os.environ['GDIR']=gDir
           os.environ['TMPDIR']=tmpDir
           runProgram(pdb2seams)
