@@ -38,6 +38,7 @@ import argparse
 import asyncio
 
 # async stuff
+# https://kevinmccarthy.org/2016/07/25/streaming-subprocess-stdin-and-stdout-with-asyncio-in-python/
 async def _read_stream(stream, cb):  
     while True:
         line = await stream.readline()
@@ -68,6 +69,7 @@ def execute(cmd, stdout_cb, stderr_cb):
     loop.close()
     return rc
 
+# https://stackoverflow.com/questions/41283595/how-to-redirect-python-subprocess-stderr-and-stdout-to-multiple-files
 class MultiOut(object):
     def __init__(self, *args):
         self.handles = args
