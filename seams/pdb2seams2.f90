@@ -325,7 +325,7 @@ CONTAINS
         enddo
       endif
       if (count(stack==2)>=MINSEAM) then
-        call printStack2(stack,hb,nhb)
+        ! call printStack2(stack,hb,nhb)
         nseams = nseams+1
         call saveseam(seamsroot,nseams,orient="parallel",stack=stack,nhb=nhb,hb=hb)
         !! diagnostic
@@ -412,7 +412,7 @@ CONTAINS
       enddo
       !! done looking for a antiparallel seam. Did we find it?
       if (count(stack==2)>=MINSEAM) then
-        call printStack2(stack,hb,nhb)
+        ! call printStack2(stack,hb,nhb)
         nseams = nseams+1
         call saveseam(seamsroot,nseams,orient="antiparallel",stack=stack,nhb=nhb,nbulge=nbulge,hb=hb)
         !! diagnostic
@@ -733,7 +733,7 @@ CONTAINS
       do while(associated(itr%next))
           jtr => itr%next
           do while(associated(jtr))
-              write(0,'("itr%idx: ",i4," jtr%idx: ",i4)')itr%idx,jtr%idx
+              ! write(0,'("itr%idx: ",i4," jtr%idx: ",i4)')itr%idx,jtr%idx
               !1-3, 2-4
               if(itr%end(1)-jtr%start(1) <= over .and. itr%end(1)-jtr%start(1) >= 0&
               .and. itr%start(2)-jtr%start(2) <= over .and. itr%start(2)-jtr%start(2) >= 0&
@@ -840,7 +840,7 @@ CONTAINS
       nullify(jtr)
       nullify(ktr)
       nullify(newseam)
-      write(0,*) "Mergeseams complete"
+      ! write(0,*) "Mergeseams complete"
   end subroutine mergeseams
   
   subroutine merge(itr,jtr,root,newseam)
@@ -851,7 +851,7 @@ CONTAINS
       type(seamtype),pointer :: ktr
       integer :: i,j,k
       
-      write(0,'("Merging seams: ",2i4)')itr%idx,jtr%idx
+      ! write(0,'("Merging seams: ",2i4)')itr%idx,jtr%idx
       
       
       ! idx
@@ -899,11 +899,11 @@ CONTAINS
       enddo
       ! previous's next
       if(root%idx == itr%idx) then
-          write(0,*) "root == itr"
+          ! write(0,*) "root == itr"
           root => newseam
-          write(0,*) "Done"
+          ! write(0,*) "Done"
       else
-          write(0,*) "adjusting prev"
+          ! write(0,*) "adjusting prev"
           ktr => root
           do 
               if(associated(ktr%next)) then
@@ -927,7 +927,7 @@ CONTAINS
           k = k + 1
           ktr%idx = k
       enddo
-      write(0,*) "Seams merged"
+      ! write(0,*) "Seams merged"
   end subroutine merge
 !!------------------------------------------------------------------
 !! NOTE: outputDAGseams should be synched with geofold_seams.f90
