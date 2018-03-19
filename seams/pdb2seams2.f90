@@ -732,9 +732,10 @@ CONTAINS
       implicit none
       integer,intent(inout)::nseams
       type(seamtype),intent(inout),pointer :: root
-      type(seamtype),pointer :: itr,jtr,ktr,newseam
+      type(seamtype),pointer :: itr,jtr
       integer :: i,j,k
       integer,parameter :: over = 1
+      integer :: newstart(2),newend(2)
       
       ! mess with the linked list
       itr => root
@@ -744,144 +745,49 @@ CONTAINS
               write(0,'("itr%idx: ",i4," jtr%idx: ",i4)')itr%idx,jtr%idx
               !1-3, 2-4
               if(itr%end(1)-jtr%start(1) <= over .and. itr%end(1)-jtr%start(1) >= 0&
-              .and. itr%start(2)-jtr%start(2) <= over .and. itr%start(2)-jtr%start(2) >= 0&
-              ! )
-              ! if(itr%start(1)+1 <= jtr%end(1)&
-              ! .and. itr%end(1)-1 >= jtr%start(1)&
-              ! .and. itr%start(2)+1 <= jtr%end(2)&
-              ! .and. itr%end(2)-1 >= jtr%start(2)&
-              ! .and. itr%orient == jtr%orient&
-              ) then
-                write(0,*) associated(newseam,jtr)
-                allocate(newseam)
-                write(0,*) associated(newseam,jtr)
+              .and. itr%start(2)-jtr%start(2) <= over .and. itr%start(2)-jtr%start(2) >= 0) then
+                
                 ! start
-                newseam%start(1) = itr%start(1)
-                newseam%start(2) = itr%start(2)
+                newstart(1) = itr%start(1)
+                newstart(2) = itr%start(2)
                 ! end
-                newseam%end(1) = jtr%end(1)
-                newseam%end(2) = jtr%end(2)
-                call merge(itr,jtr,root,newseam)
-                ! deallocate itr and jtr
-                deallocate(itr)
-                deallocate(jtr)
-                ! reassign itr and jtr
-                itr => newseam
-                nullify(newseam)
-                write(0,*) "associated(newseam)"
-                write(0,*) associated(newseam)
-                if(associated(itr%next))then 
-                    jtr => itr%next
-                else
-                    ! write(0,*) "Exiting loop1"
-                    exit loop1
-                endif
+                newend(1) = jtr%end(1)
+                newend(2) = jtr%end(2)
+                call merge(itr,jtr,root,newstart,newend)
+                if(.not. associated(jtr)) exit loop1
               ! 1-4, 2-3
           elseif(itr%end(1)-jtr%start(2) <= over .and. itr%end(1)-jtr%start(2) >= 0&
-              .and. itr%end(2)-jtr%start(1) <= over .and. itr%end(2)-jtr%start(1) >= 0&
-          !     )
-          ! elseif(itr%start(1)+1 <= jtr%end(2)&
-          !     .and. itr%end(1)-1 >= jtr%start(2)&
-          !     .and. itr%start(2)+1 <= jtr%end(1)&
-          !     .and. itr%end(2)-1 >= jtr%start(1)&
-              ! .and. itr%orient == jtr%orient&
-              ) then
-                write(0,*) associated(newseam,jtr)
-                allocate(newseam)
-                write(0,*) associated(newseam,jtr)
+              .and. itr%end(2)-jtr%start(1) <= over .and. itr%end(2)-jtr%start(1) >= 0) then
                 ! start
-                newseam%start(1) = itr%start(1)
-                newseam%start(2) = itr%start(2)
+                newstart(1) = itr%start(1)
+                newstart(2) = itr%start(2)
                 ! end
-                newseam%end(1) = jtr%end(2)
-                newseam%end(2) = jtr%end(1)
-                call merge(itr,jtr,root,newseam)
-                ! deallocate itr and jtr
-                deallocate(itr)
-                deallocate(jtr)
-                ! reassign itr and jtr
-                itr => newseam
-                nullify(newseam)
-                write(0,*) "associated(newseam)"
-                write(0,*) associated(newseam)
-                if(associated(itr%next))then 
-                    jtr => itr%next
-                else
-                    ! write(0,*) "Exiting loop1"
-                    exit loop1
-                endif
+                newend(1) = jtr%end(2)
+                newend(2) = jtr%end(1)
+                call merge(itr,jtr,root,newstart,newend)
+                if(.not. associated(jtr)) exit loop1
               ! 3-1, 4-2
           elseif(jtr%end(1)-itr%start(1) <= over .and. jtr%end(1)-itr%start(1) >= 0&
-              .and. jtr%end(2)-itr%start(2) <= over .and. jtr%end(2)-itr%start(2) >= 0&
-          !     )
-          ! elseif(jtr%start(1)+1 <= itr%end(1)&
-          !     .and. jtr%end(1)-1 >= itr%start(1)&
-          !     .and. jtr%start(2)+1 <= itr%end(2)&
-          !     .and. jtr%end(2)-1 >= itr%start(2)&
-              ! .and. jtr%orient == itr%orient&
-              ) then
-                write(0,*) associated(newseam,jtr)
-                allocate(newseam)
-                write(0,*) associated(newseam,jtr)
+              .and. jtr%end(2)-itr%start(2) <= over .and. jtr%end(2)-itr%start(2) >= 0) then
                 ! start
-                newseam%start(1) = jtr%start(1)
-                newseam%start(2) = jtr%start(2)
+                newstart(1) = jtr%start(1)
+                newstart(2) = jtr%start(2)
                 ! end
-                newseam%end(1) = itr%end(1)
-                newseam%end(2) = itr%end(2)
-                call merge(itr,jtr,root,newseam)
-                ! deallocate itr and jtr
-                deallocate(itr)
-                deallocate(jtr)
-                ! reassign itr and jtr
-                itr => newseam
-                nullify(newseam)
-                write(0,*) "associated(newseam)"
-                write(0,*) "associated(newseam)"
-                write(0,*) associated(newseam)
-                if(associated(itr%next))then 
-                    jtr => itr%next
-                else
-                    ! write(0,*) "Exiting loop1"
-                    exit loop1
-                endif
+                newend(1) = itr%end(1)
+                newend(2) = itr%end(2)
+                call merge(itr,jtr,root,newstart,newend)
+                if(.not. associated(jtr)) exit loop1
               ! 4-1, 3-2
           elseif(jtr%end(2)-itr%start(1) <= over .and. jtr%end(2)-itr%start(1) >= 0&
-              .and. jtr%end(1)-itr%start(2) <= over .and. jtr%end(1)-itr%start(2) >= 0&
-          !     )
-          ! elseif(jtr%start(1)+1 <= itr%end(2)&
-          !     .and. jtr%end(1)-1 >= itr%start(2)&
-          !     .and. jtr%start(2)+1 <= itr%end(1)&
-          !     .and. jtr%end(2)-1 >= itr%start(1)&
-              ! .and. jtr%orient == itr%orient
-              ) then
-                write(0,*) associated(newseam,jtr)
-                allocate(newseam)
-                write(0,*) associated(newseam,jtr)
+              .and. jtr%end(1)-itr%start(2) <= over .and. jtr%end(1)-itr%start(2) >= 0) then
                 ! start
-                newseam%start(1) = jtr%start(2)
-                newseam%start(2) = jtr%start(1)
+                newstart(1) = jtr%start(2)
+                newstart(2) = jtr%start(1)
                 ! end
-                newseam%end(1) = itr%end(1)
-                newseam%end(2) = itr%end(2)
-                call merge(itr,jtr,root,newseam)
-                ! write(0,*) "827"
-                ! write(0,*) associated(newseam%next)
-                ! deallocate itr and jtr
-                deallocate(itr)
-                deallocate(jtr)
-                ! reassign itr and jtr
-                itr => newseam
-                nullify(newseam)
-                write(0,*) "associated(newseam)"
-                write(0,*) associated(newseam)
-                write(0,*) associated(newseam)
-                if(associated(itr%next))then 
-                    jtr => itr%next
-                else
-                    ! write(0,*) "Exiting loop1"
-                    exit loop1
-                endif
+                newend(1) = itr%end(1)
+                newend(2) = itr%end(2)
+                call merge(itr,jtr,root,newstart,newend)
+                if(.not. associated(jtr)) exit loop1
               else  
                 jtr => jtr%next
               endif
@@ -890,119 +796,69 @@ CONTAINS
       enddo loop1
       nullify(itr)
       nullify(jtr)
-      nullify(ktr)
-      nullify(newseam)
-      write(0,*) "associated(newseam)"
-      write(0,*) associated(newseam)
       ! write(0,*) "Mergeseams complete"
   end subroutine mergeseams
   
-  subroutine merge(itr,jtr,root,newseam)
+  subroutine merge(itr,jtr,root,newstart,newend)
       !Do the common operations for merging seams itr and jtr into seam
       implicit none
-      type(seamtype),intent(in),pointer :: itr,jtr
-      type(seamtype),intent(inout),pointer :: newseam,root
+      integer,intent(in) :: newstart(2),newend(2)
+      type(seamtype),intent(inout),pointer :: itr,jtr
+      type(seamtype),intent(inout),pointer :: root
       type(seamtype),pointer :: ktr
       integer :: i,j,k
-      
+      type(hbtype),dimension(:),pointer :: bbhb,schb
       write(0,'("Merging seams: ",2i4)')itr%idx,jtr%idx
       
-      ! idx
-      newseam%idx = itr%idx
-      ! write(0,*) newseam%idx
-      ! orient
-      newseam%orient = itr%orient
-      ! write(0,*) newseam%orient
+      
       ! nbbhb, nschb, nbulge
-      write(0,'("894: nbbhb = ",i4," + ",i4," = ",i4)')itr%nbbhb,jtr%nbbhb,itr%nbbhb+jtr%nbbhb
-      write(0,*) itr%bbhb
-      write(0,*) jtr%bbhb
-      newseam%nbbhb = itr%nbbhb + jtr%nbbhb 
-      write(0,*) jtr%nbbhb
-      write(0,*) jtr%bbhb
-      write(0,*) jtr%nbbhb
-      newseam%nschb = itr%nschb + jtr%nschb
-      write(0,*) jtr%nbbhb
-      newseam%nbulge = itr%nbulge + jtr%nbulge
-      write(0,*) jtr%nbbhb
-      ! write(0,'("nbbhb,nschb,nbulge: ",3i4)')newseam%nbbhb,newseam%nschb,newseam%nbulge
-      ! b1num, b2num
-      ! I don't know what these are...
-      ! bbhb
-      ! write(0,*)"bbhb"
-      ! write(0,'("itr%nbbhb: ",i4)')itr%nbbhb
-      write(0,'("904: nbbhb = ",i4," + ",i4," = ",i4)')itr%nbbhb,jtr%nbbhb,newseam%nbbhb
-      write(0,*) jtr%nbbhb
-      allocate(newseam%bbhb(newseam%nbbhb))
-      write(0,*) jtr%nbbhb
+      itr%nbulge = itr%nbulge + jtr%nbulge
+      allocate(bbhb(itr%nbbhb+jtr%nbbhb))
       i = 1
       do while(i <= itr%nbbhb)
-          ! write(0,*) i
-          newseam%bbhb(i) = itr%bbhb(i)
+          bbhb(i) = itr%bbhb(i)
           i = i + 1
       enddo
-      ! write(0,'("jtr%nbbhb: ",i4)') jtr%nbbhb
       j = 0
-      write(0,*) jtr%nbbhb
       do while(j < jtr%nbbhb)
-          ! write(0,*) i, j+i
-          newseam%bbhb(i+j) = jtr%bbhb(j+1)
+          bbhb(i+j) = jtr%bbhb(j+1)
           j = j + 1
       enddo
+      itr%nbbhb = itr%nbbhb+jtr%nbbhb
+      if(associated(itr%bbhb)) deallocate(itr%bbhb)
+      itr%bbhb => bbhb
       ! schb
-      ! write(0,*) "schb"
-      allocate(newseam%schb(newseam%nschb))
+      allocate(schb(itr%nschb+jtr%nschb))
       i = 1
       do while(i <= itr%nschb)
-          newseam%schb(i) = itr%schb(i)
+          schb(i) = itr%schb(i)
           i = i + 1
       enddo
       j = 0
       do while(j < jtr%nschb)
-          newseam%schb(i+j) = jtr%schb(j+1)
+          schb(i+j) = jtr%schb(j+1)
           j = j + 1
       enddo
-      ! previous's next
-      if(root%idx == itr%idx) then
-          ! write(0,*) "root == itr"
-          root => newseam
-          ! write(0,*) "Done"
-      else
-          ! write(0,*) "adjusting prev"
-          ktr => root
-          do 
-              if(associated(ktr%next)) then
-                  if(ktr%next%idx == itr%idx) then
-                      ktr%next => newseam
-                      exit
-                  endif
-                  ktr => ktr%next
-              else
-                  exit
-              endif
-          enddo
-      endif
-      ! next
-      if(jtr%idx == itr%idx + 1) then
-          newseam%next => jtr%next
-      else
-          newseam%next => itr%next
-      endif
+      itr%nschb = itr%nschb+jtr%nschb
+      if(associated(itr%schb)) deallocate(itr%schb)
+      itr%schb=>schb
+      
       ! upstream reindexing
-      if(associated(jtr%next)) then
-          ktr => newseam
-          k = newseam%idx
+      if(associated(itr%next)) then
+          ktr => itr
+          k = itr%idx
           do while(associated(ktr%next))
+              if(associated(ktr%next,jtr)) ktr%next => jtr%next
               ktr => ktr%next
-              ! write(0,*) ktr%idx
               k = k + 1
               ktr%idx = k
           enddo
-      else
-          ! write(0,*) "nullifying newseam%next"
-          nullify(newseam%next)
+          if(associated(ktr)) nullify(ktr)
       endif
-      ! write(0,*) "Seams merged"
+      ktr => jtr%next
+      if(associated(jtr)) deallocate(jtr)
+      jtr => ktr
+      if(associated(ktr)) nullify(ktr)
   end subroutine merge
 !!------------------------------------------------------------------
 !! NOTE: outputDAGseams should be synched with geofold_seams.f90
