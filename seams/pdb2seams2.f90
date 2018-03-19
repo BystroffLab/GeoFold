@@ -500,9 +500,6 @@ CONTAINS
         !! ---- find the min greater than div -> start(2)
         !! ---- find the max -> end(2)
         j = 999; k=-999; l=999; m=-999
-        write(0,*) myseam%nbbhb
-        write(0,*) "myseam%bbhb"
-        write(0,*) myseam%bbhb
         do i=1,myseam%nbbhb
            j = min(j,    myseam%bbhb(i)%donornum,myseam%bbhb(i)%acceptnum)
            k = max(k,min(myseam%bbhb(i)%donornum,myseam%bbhb(i)%acceptnum))
@@ -742,7 +739,7 @@ CONTAINS
       loop1: do while(associated(itr%next))
           jtr => itr%next
           do while(associated(jtr))
-              write(0,'("itr%idx: ",i4," jtr%idx: ",i4)')itr%idx,jtr%idx
+              ! write(0,'("itr%idx: ",i4," jtr%idx: ",i4)')itr%idx,jtr%idx
               !1-3, 2-4
               if(itr%end(1)-jtr%start(1) <= over .and. itr%end(1)-jtr%start(1) >= 0&
               .and. itr%start(2)-jtr%start(2) <= over .and. itr%start(2)-jtr%start(2) >= 0) then
@@ -808,7 +805,7 @@ CONTAINS
       type(seamtype),pointer :: ktr
       integer :: i,j,k
       type(hbtype),dimension(:),pointer :: bbhb,schb
-      write(0,'("Merging seams: ",2i4)')itr%idx,jtr%idx
+      ! write(0,'("Merging seams: ",2i4)')itr%idx,jtr%idx
       
       
       ! nbbhb, nschb, nbulge
@@ -848,7 +845,14 @@ CONTAINS
           ktr => itr
           k = itr%idx
           do while(associated(ktr%next))
-              if(associated(ktr%next,jtr)) ktr%next => jtr%next
+              if(associated(ktr%next,jtr)) then
+                  if(associated(jtr%next)) then
+                      ktr%next => jtr%next
+                  else
+                      nullify(ktr%next)
+                      exit
+                  endif
+              endif
               ktr => ktr%next
               k = k + 1
               ktr%idx = k
