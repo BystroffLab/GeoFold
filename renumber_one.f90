@@ -69,9 +69,14 @@ do
   read(11,'(a)',iostat=ios) aline
   if (ios/=0) exit
   if (aline(1:5).ne.'ATOM ') then
-    write(12,'(a)') trim(aline)
+    if(aline(1:6) .eq. 'HETATM'.and.aline(18:20).eq.'MSE') then
+        call mse(aline)
+        GOTO 79  !I know it's not good form to  use GOTO lines, but this is easier than trying to encapsulate the rest of the program at the moment
+    else
+        write(12,'(a)') trim(aline)
+    endif
   else
-    read(aline(23:26),*,iostat=ios) ires
+    79 read(aline(23:26),*,iostat=ios) ires
     read(aline(27:27),*,iostat=ios) insert_char
     if(ios /= 0) insert_char = " "
     read(aline(17:17),*,iostat=is_zero) current_alt !is_zero will only equal 0 if the altloc is not a space
@@ -130,4 +135,17 @@ write(*,*) 'all done. atoms out=', iatm
 close(11)
 
 close(12)
+
+contains
+    ! Replace MSE HETATM lines with MET ATOM lines
+    subroutine mse(aline)
+        implicit none
+        character(len=1000),intent(inout) :: aline
+        
+        write(aline(1:6),'(A6)') 'ATOM  '
+        write(aline(18:20),'(A3)') 'MET'
+        if(aline(77:78).eq. 'SE') write(aline(77:78),'(A2)') " S"
+        if(aline(13:14) .eq. 'SE') write(aline(13:14),'(A2)') " S"
+    end subroutine mse
+
 end program renumber_one
