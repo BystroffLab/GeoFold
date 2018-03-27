@@ -30,7 +30,7 @@ program pdb2seams2
   type(hbtype),dimension(:),pointer :: hb
   type(seamtype),dimension(:),pointer :: seams
   type(seamtype),pointer :: seamsroot, aseam
-  integer,dimension(:,:),allocatable :: overlap
+  integer,dimension(:,:),allocatable :: overlap,overlaps
   integer :: nhb,nseams, this,ios=0,i,j,jarg,nb,nbarrel
   integer,parameter :: MINSEAM=2 !! minimum number of beta H-bonds to count as a seam
   integer,parameter :: MAXBARREL=22 !! Maximum number of seams in a barrel
@@ -38,6 +38,7 @@ program pdb2seams2
   logical :: isthere
   character(len=1000) :: tmpfile,hbfile
   character(len=1000) :: aline
+  integer :: barrelstart
   !!----------------------
   jarg = command_argument_count()
   if (jarg < 1) then
@@ -56,7 +57,9 @@ program pdb2seams2
   call gethbonds(hb,hbfile,nhb)
   call findseams(hb,nhb,seamsroot,nseams)
   call mergeseams(seamsroot,nseams)
+  call prune(seamsroot,nseams)
   allocate(overlap(nseams,nseams))
+  allocate(overlaps(nseams,nseams))
   allocate(seams(nseams))
   overlap = 0
   aseam => seamsroot
@@ -66,6 +69,7 @@ program pdb2seams2
     aseam => aseam%next
   enddo
   call connectseams(seams,overlap,nseams)
+  overlaps = overlap
   this = 1
   nb = 0
   barrel = 0
@@ -91,11 +95,12 @@ program pdb2seams2
     !!   write(*,*)
     !! enddo
     nb = 1
+    barrelstart = 1
     barrel(nb) = this
     j = minloc(overlap(this,:),mask=(overlap(this,:)/=0),dim=1)
-    if (findbarrels(nseams,overlap,barrel,nb,j)) then
+    if (findbarrels(nseams,overlap,barrel,nb,j,overlaps,barrelstart)) then
       nbarrel = nbarrel + 1
-      call outputDAGlines(11,nseams,seams,barrel,nb,nbarrel)
+      call outputDAGlines(11,nseams,seams,barrel,nb,nbarrel,barrelstart)
     endif
   enddo
   close(11)
@@ -125,12 +130,13 @@ program pdb2seams2
   stop
   !!----------------------
 CONTAINS
-  recursive logical function findbarrels(nseams,overlap,barrel,nb,this) result(isabarrel)
+  recursive logical function findbarrels(nseams,overlap,barrel,nb,this,overlaps,barrelstart) result(isabarrel)
     integer,intent(in) :: nseams, this
-    integer,intent(inout) :: nb
+    integer,intent(inout) :: nb,barrelstart
     integer,dimension(nseams,nseams),intent(inout) :: overlap
+    integer,dimension(nseams,nseams),intent(in) :: overlaps
     integer,dimension(nseams),intent(inout) :: barrel
-    integer :: i,j,last,nbin
+    integer :: i,j,last,nbin,k
     !! ---------------
     !! Trace the connected seams to look for a cycle.
     !! If the connections in overlap() loop back
@@ -155,20 +161,62 @@ CONTAINS
     !! look for a cycle
     if (nb > 2) then
       if (any(barrel(1:nb-2)==this)) then
-        isabarrel = .true.
-        return
+         barrelstart = minloc(barrel(1:nb-2),mask=(barrel(1:nb-2)==this),dim=1)
+         ! do k = barrelstart,nb
+             ! write(0,*) barrel(k)
+             ! write(0,*) overlaps(barrel(k),:)
+         ! enddo
+         if(checkbarrel(nseams,barrel,nb,overlaps,barrelstart)) then
+            isabarrel = .true.
+            return
+        endif
       endif
     endif
     !! no cycle, go to the next edge of this
     j = 1
     do while (j/=0)
       j = minloc(overlap(this,:),mask=(overlap(this,:)/=0),dim=1)
-      isabarrel = findbarrels(nseams,overlap,barrel,nb,j)
+      isabarrel = findbarrels(nseams,overlap,barrel,nb,j,overlaps,barrelstart)
       if (isabarrel) return
     enddo
     nb = nbin
     return   
   end function findbarrels
+  
+  !Check a given barrel to ensure that each seam is covered on both sides
+  logical function checkbarrel(nseams,barrel,nb,overlaps,barrelstart)
+      implicit none
+      integer,intent(in) :: nseams,nb,barrelstart
+      integer,dimension(nseams),intent(in) :: barrel
+      integer,dimension(nseams,nseams),intent(in) :: overlaps
+      integer :: i,j,k,l,prev
+      integer,dimension(nb-barrelstart,2) :: protobarrel
+      
+      protobarrel = 0
+      checkbarrel = .false.
+      j = 1
+      do i  = barrelstart,nb-1
+          protobarrel(j,1) = overlaps(barrel(i),barrel(i+1))
+          if(j == nb - barrelstart) then
+              protobarrel(1,2) = overlaps(barrel(i+1),barrel(i))
+          else
+              protobarrel(j+1,2) = overlaps(barrel(i+1),barrel(i))
+          endif
+          j = j + 1
+      enddo
+      do i = 1, nb-barrelstart
+          write(0,*) protobarrel(i,:)
+      enddo
+      !seams must connect on both sides, so sum of overlap is 3
+      if(any(sum(protobarrel,dim=2)/=3)) then
+          checkbarrel = .false.
+      else
+          checkbarrel = .true.
+      endif
+  end function checkbarrel
+          
+      
+  
   !!---------------------
   !! Read H-bonds from a file. H-bonds are generated
   !! as an edge list, from pdb2hb.f90
@@ -703,27 +751,88 @@ CONTAINS
           endif
         enddo
       enddo
-      do i = 1, nseams
-          ! write(0,*) overlap(i,:)
-      enddo
+      ! do i = 1, nseams
+      !     write(0,*) overlap(i,:)
+      ! enddo
   end subroutine connectseams
   !!--------------------
-  subroutine outputDAGlines(iunit,nseams,seams,barrel,nb,nbarrel)
+  subroutine outputDAGlines(iunit,nseams,seams,barrel,nb,nbarrel,barrelstart)
       implicit none
       integer,intent(in) :: iunit
-      integer,intent(in) :: nseams, nb,nbarrel
+      integer,intent(in) :: nseams, nb,nbarrel,barrelstart
       type (seamtype),dimension(:),pointer :: seams
       integer,dimension(nseams),intent(in) :: barrel
       integer :: ib
       !----------------------
       write(iunit,'("BARREL ",I5," ",I5)') nbarrel, nb-1
-      do ib=1,nb-1
+      do ib=barrelstart,nb-1
         aseam => seams(barrel(ib))
         write (iunit, '("SEAM    ",I5,I5,f10.3,4I5)')  &
              aseam%idx, 0, 0.0, aseam%start(1), aseam%end(1), &
              aseam%start(2), aseam%end(2)
       enddo
   end subroutine outputDAGlines
+  
+  ! check each seam for self-overlap and prune them
+  subroutine prune(root,nseams)
+      implicit none
+      integer,intent(inout) :: nseams
+      type(seamtype),intent(inout),pointer :: root
+      type(seamtype),pointer :: itr,jtr
+      integer :: start1,start2,end1,end2
+      
+      itr=>root
+      do while(associated(itr))
+        start1 = itr%start(1)
+        start2 = itr%start(2)
+        end1 = itr%end(1)
+        end2 = itr%end(2)
+        if((start1 <= end2 .and. end1 >= start2)&
+        .or.(start2 <= end1 .and. end2 >= start1)) then
+            !edge case itr is root
+            if(associated(itr,root)) then
+                if(associated(itr%next)) then
+                    root => itr%next
+                    deallocate(itr)
+                    itr=>root
+                    nseams = nseams - 1
+                else
+                    ! no more seams
+                    deallocate(itr)
+                    if(associated(root)) deallocate(root)
+                    allocate(root)
+                    nullify(root%bbhb)
+                    nullify(root%schb)
+                    nullify(root%next)
+                    nseams = 0
+                    exit
+                endif
+            else
+                jtr => root
+                do while(.not. associated(jtr%next,itr)) 
+                    jtr => jtr%next
+                enddo
+                if(associated(itr%next)) then
+                    jtr%next => itr%next
+                else
+                    nullify(jtr%next)
+                endif
+                deallocate(itr)
+                nseams = nseams - 1
+                itr => jtr%next
+                nullify(jtr)
+            endif
+        else
+            if(associated(itr%next)) then
+                itr => itr%next
+            else
+                exit
+            endif
+        endif
+    enddo
+end subroutine prune
+        
+                    
   
   subroutine mergeseams(root,nseams)
       implicit none
