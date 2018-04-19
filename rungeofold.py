@@ -1258,14 +1258,14 @@ def main(args):
       nn=0
       for value in omegaRange:
         nn+=1
-        runConvert = "%s -trim -geometry 100 -background white %s/%s_%s.ps %s/%s_%s_thumb.png" %(convert,tmpDir,LName,nn,tmpDir,LName,nn)
+        runConvert = "%s -trim -geometry 100 -background white -alpha remove %s/%s_%s.ps %s/%s_%s_thumb.png" %(convert,tmpDir,LName,nn,tmpDir,LName,nn)
         tmpWrite.write(runConvert+'<br>')
         commands.getstatusoutput(runConvert)
-        runConvert = "%s -background white %s/%s_%s_thumb.png %s/%s_%s_thumb.png" %(convert,tmpDir,LName,nn,htmlDir,LName,nn)
+        runConvert = "%s -background white -alpha remove %s/%s_%s_thumb.png %s/%s_%s_thumb.png" %(convert,tmpDir,LName,nn,htmlDir,LName,nn)
         commands.getstatusoutput(runConvert)
-        runConvert = "%s -trim -background white %s/%s_%s.ps %s/%s_%s.png" %(convert,tmpDir,LName,nn,tmpDir,LName,nn)
+        runConvert = "%s -trim -background white -alpha remove %s/%s_%s.ps %s/%s_%s.png" %(convert,tmpDir,LName,nn,tmpDir,LName,nn)
         commands.getstatusoutput(runConvert)
-        runConvert = "%s -background white %s/%s_%s.png %s/%s_%s.png" %(convert,tmpDir,LName,nn,htmlDir,LName,nn)
+        runConvert = "%s -background white -alpha remove %s/%s_%s.png %s/%s_%s.png" %(convert,tmpDir,LName,nn,htmlDir,LName,nn)
         commands.getstatusoutput(runConvert)
 
       print("============= MAXTRAFFIC =============")
@@ -1296,7 +1296,7 @@ def main(args):
       nn = 0
       for value in omegaRange:
         nn+=1
-        runConvert = "%s -trim -geometry 100 %s/%s_%s.dag.png  %s/%s_%s.dag_thumb.png" %(convert,htmlDir,LName,nn,tmpDir,LName,nn)
+        runConvert = "%s -trim -geometry 100 -background white -alpha remove %s/%s_%s.dag.png  %s/%s_%s.dag_thumb.png" %(convert,htmlDir,LName,nn,tmpDir,LName,nn)
         tmpWrite.write(runConvert+'<br>')
         runProgram(runConvert)
         runConvert = "%s %s/%s_%s.dag_thumb.png %s/%s_%s.dag_thumb.png" %(convert,tmpDir,LName,nn,htmlDir,LName,nn)
@@ -1499,7 +1499,7 @@ def main(args):
       for value in omegaRange:
         nn+=1
         plotTimeCourse("%s/%s"%(tmpDir,LName),nn)
-        runConvert = '%s -trim -geometry 100 %s/%s_%s.tc.ps %s/%s_%s.tc_thumb.png'%(convert,tmpDir,LName,nn,htmlDir,LName,nn)
+        runConvert = '%s -trim -geometry 100 -background white -alpha remove %s/%s_%s.tc.ps %s/%s_%s.tc_thumb.png'%(convert,tmpDir,LName,nn,htmlDir,LName,nn)
         runProgram(runConvert)
         runConvert = '%s -trim %s/%s_%s.tc.ps %s/%s_%s.tc.png'%(convert,tmpDir,LName,nn,htmlDir,LName,nn)
         runProgram(runConvert)
@@ -1507,7 +1507,7 @@ def main(args):
         if status != 0:
           sys.exit(output)
         picLink(htmlDir,LName,nn)
-        runConvert = '%s -trim -geometry 100 %s/%s_%s.nrg.ps %s/%s_%s.nrg_thumb.png'%(convert,tmpDir,LName,nn,htmlDir,LName,nn)
+        runConvert = '%s -trim -geometry 100 -background white -alpha remove %s/%s_%s.nrg.ps %s/%s_%s.nrg_thumb.png'%(convert,tmpDir,LName,nn,htmlDir,LName,nn)
         runProgram(runConvert)
         runConvert = '%s -trim %s/%s_%s.nrg.ps %s/%s_%s.nrg.png'%(convert,tmpDir,LName,nn,htmlDir,LName,nn)
         runProgram(runConvert)
@@ -1516,7 +1516,7 @@ def main(args):
         print(status)
         print(output)
       else:
-        runConvert = '%s -trim -geometry 200 %s/%s_all.nrg.ps %s/%s_all.nrg_thumb.png'%(convert,tmpDir,LName,htmlDir,LName)
+        runConvert = '%s -trim -geometry 200 -background white -alpha remove %s/%s_all.nrg.ps %s/%s_all.nrg_thumb.png'%(convert,tmpDir,LName,htmlDir,LName)
         runProgram(runConvert)
         runConvert = '%s -trim %s/%s_all.nrg.ps %s/%s_all.nrg.png'%(convert,tmpDir,LName,htmlDir,LName)
         runProgram(runConvert)
@@ -1526,11 +1526,11 @@ def main(args):
         print(status)
         print(output)
       else:
-        runConvert = "%s -trim %s/%s.gp.ps %s/%s.gp.png" %(convert,tmpDir,LName,tmpDir,LName)
+        runConvert = "%s -trim -background white -alpha remove %s/%s.gp.ps %s/%s.gp.png" %(convert,tmpDir,LName,tmpDir,LName)
         runProgram(runConvert)
         runConvert = "%s %s/%s.gp.png %s/%s.gp.png" %(convert,tmpDir,LName,htmlDir,LName)
         runProgram(runConvert)
-        runConvert = "%s -trim -geometry 200 %s/%s.gp.ps %s/%s.gp_thumb.png" %(convert,tmpDir,LName,tmpDir,LName)
+        runConvert = "%s -trim -geometry 200 -background white -alpha remove %s/%s.gp.ps %s/%s.gp_thumb.png" %(convert,tmpDir,LName,tmpDir,LName)
         runProgram(runConvert)
         runConvert = "%s %s/%s.gp_thumb.png %s/%s.gp_thumb.png" %(convert,tmpDir,LName,htmlDir,LName)
         runProgram(runConvert)
