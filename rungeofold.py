@@ -1488,8 +1488,8 @@ def main(args):
       permWrite.write('<a href="%s_all.nrg.png"><img src="%s_all.nrg_thumb.png" alt="data missing"></a><br>\n</td></tr></table>'%(LName,LName))
       #Completion time
       permWrite.write('<br>Completed %s<br>'%(time.strftime("%c")))
-    # zip file
-    permWrite.write('<a href="%s.zip">Click here to download zip file of GeoFold output.</a>'%(LName))
+      # zip file
+      permWrite.write('<br><a href="%s.zip">Click here to download zip file of GeoFold output.</a><br>'%(LName))
       permWrite.write('<p>Modify and do over:\n')
 
       #### Create gnuplot image
