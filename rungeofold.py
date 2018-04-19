@@ -1488,6 +1488,8 @@ def main(args):
       permWrite.write('<a href="%s_all.nrg.png"><img src="%s_all.nrg_thumb.png" alt="data missing"></a><br>\n</td></tr></table>'%(LName,LName))
       #Completion time
       permWrite.write('<br>Completed %s<br>'%(time.strftime("%c")))
+    # zip file
+    permWrite.write('<a href="%s.zip">Click here to download zip file of GeoFold output.</a>'%(LName))
       permWrite.write('<p>Modify and do over:\n')
 
       #### Create gnuplot image
@@ -1532,8 +1534,6 @@ def main(args):
         runProgram(runConvert)
         runConvert = "%s %s/%s.gp_thumb.png %s/%s.gp_thumb.png" %(convert,tmpDir,LName,htmlDir,LName)
         runProgram(runConvert)
-      # zip file
-      permWrite.write('<a href="%s.zip">Click here to download zip file of GeoFold output.</a>'%(LName))
       ######Create "do over" button
       createForm(permWrite,paramFilename)
       #####BACK button
