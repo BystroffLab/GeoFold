@@ -1532,6 +1532,8 @@ def main(args):
         runProgram(runConvert)
         runConvert = "%s %s/%s.gp_thumb.png %s/%s.gp_thumb.png" %(convert,tmpDir,LName,htmlDir,LName)
         runProgram(runConvert)
+      # zip file
+      permWrite.write('<a href="%s.zip">Click here to download zip file of GeoFold output.</a>'%(LName))
       ######Create "do over" button
       createForm(permWrite,paramFilename)
       #####BACK button
