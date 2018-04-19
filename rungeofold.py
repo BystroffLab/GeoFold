@@ -149,7 +149,6 @@ def writeEnergyProfile(tmpDir,htmlDir,LName,nn):
   gnuOut.write('unset key\n')
   gnuOut.write('set datafile separator ","\n')
   #Cosmetics
-  gnuOut.write("set object rectangle from screen 0,0 to screen 1,1 behind fillcolor rgb 'white' fillstyle solid noborder")
   gnuOut.write('set style line 80 lt rgb "#808080"\n')
   gnuOut.write('set style line 81 lt 0\n')
   gnuOut.write('set style line 81 lt rgb "#808080"\n')
@@ -340,7 +339,6 @@ def createGnuplot(LName, wat):
   gnuOut.write('set ylabel "unfolding rate, ln(k_u) s^{-1}"\n')
   gnuOut.write('set pointsize 2\n')
   #Cosmetics
-  gnuOut.write("set object rectangle from screen 0,0 to screen 1,1 behind fillcolor rgb 'white' fillstyle solid noborder")
   gnuOut.write('set style line 80 lt rgb "#808080"\n')
   gnuOut.write('set style line 81 lt 0\n')
   gnuOut.write('set style line 81 lt rgb "#808080"\n')
@@ -385,7 +383,6 @@ def plotTimeCourse(LName,nn):
   gnuOut.write('set ylabel "% of total concentration"\n')
   gnuOut.write('set pointsize 2\n')
   #Cosmetics
-  gnuOut.write("set object rectangle from screen 0,0 to screen 1,1 behind fillcolor rgb 'white' fillstyle solid noborder")
   gnuOut.write('set style line 80 lt rgb "#808080"\n')
   gnuOut.write('set style line 81 lt 0\n')
   gnuOut.write('set style line 81 lt rgb "#808080"\n')
@@ -463,7 +460,6 @@ def energyProfileAll(LName,omegaRange):
   gnuOut.write('set pointsize 2\n')
   gnuOut.write('set key outside right\n')
   #Cosmetics
-  gnuOut.write("set object rectangle from screen 0,0 to screen 1,1 behind fillcolor rgb 'white' fillstyle solid noborder")
   gnuOut.write('set style line 80 lt rgb "#808080"\n')
   gnuOut.write('set style line 81 lt 0\n')
   gnuOut.write('set style line 81 lt rgb "#808080"\n')
