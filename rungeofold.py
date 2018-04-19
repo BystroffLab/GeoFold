@@ -326,7 +326,7 @@ def createGnuplot(LName, wat):
   except IOError:
     return [1,"Couldn't open file %s.gnu"%(LName)]
   #initial gnuplot settings
-  gnuOut.write('set terminal postscript enhanced portrait background rgb "white"\n')
+  gnuOut.write('set terminal postscript enhanced portrait color background rgb "white"\n')
   gnuOut.write('set size 1.4,0.7\n')
   gnuOut.write('set output "%s.gp.ps"\n'%(LName))
   gnuOut.write('set encoding iso_8859_1\n') #allows for the use of special characters in gnuplot
@@ -374,7 +374,7 @@ def plotTimeCourse(LName,nn):
   #os.environ['GNUPLOT_PS_DIR'] = '/bach1/usr/local/share/gnuplot/4.2/PostScript'
   #os.environ['GNUHELP'] = '/bach1/usr/local/share/gnuplot/4.2/gnuplot.gih'
   #initial gnuplot settings
-  gnuOut.write('set terminal postscript enhanced portrait background rgb "white"\n')
+  gnuOut.write('set terminal postscript enhanced portrait color background rgb "white"\n')
   gnuOut.write('set size 1.4,0.7\n')
   gnuOut.write('set output "%s_%s.tc.ps"\n'%(LName,nn))
   gnuOut.write('set encoding iso_8859_1\n')
@@ -450,7 +450,7 @@ def energyProfileAll(LName,omegaRange):
   except IOError:
     return [1,"Couldn't open file %s_all.nrg.gnu"%(LName)]
  #initial gnuplot settings for plot
-  gnuOut.write('set terminal postscript enhanced portrait background rgb "white"\n')
+  gnuOut.write('set terminal postscript enhanced portrait color background rgb "white"\n')
   gnuOut.write('set size 1.4,0.7\n')
   gnuOut.write('set output "%s_all.nrg.ps"\n'%(LName))
   gnuOut.write('set encoding iso_8859_1\n')
