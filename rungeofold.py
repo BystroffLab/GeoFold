@@ -326,7 +326,7 @@ def createGnuplot(LName, wat):
   except IOError:
     return [1,"Couldn't open file %s.gnu"%(LName)]
   #initial gnuplot settings
-  gnuOut.write('set terminal postscript enhanced portrait\n')
+  gnuOut.write('set terminal postscript enhanced portrait color background rgb "white"\n')
   gnuOut.write('set size 1.4,0.7\n')
   gnuOut.write('set output "%s.gp.ps"\n'%(LName))
   gnuOut.write('set encoding iso_8859_1\n') #allows for the use of special characters in gnuplot
@@ -374,7 +374,7 @@ def plotTimeCourse(LName,nn):
   #os.environ['GNUPLOT_PS_DIR'] = '/bach1/usr/local/share/gnuplot/4.2/PostScript'
   #os.environ['GNUHELP'] = '/bach1/usr/local/share/gnuplot/4.2/gnuplot.gih'
   #initial gnuplot settings
-  gnuOut.write('set terminal postscript enhanced portrait\n')
+  gnuOut.write('set terminal postscript enhanced portrait color background rgb "white"\n')
   gnuOut.write('set size 1.4,0.7\n')
   gnuOut.write('set output "%s_%s.tc.ps"\n'%(LName,nn))
   gnuOut.write('set encoding iso_8859_1\n')
@@ -450,7 +450,7 @@ def energyProfileAll(LName,omegaRange):
   except IOError:
     return [1,"Couldn't open file %s_all.nrg.gnu"%(LName)]
  #initial gnuplot settings for plot
-  gnuOut.write('set terminal postscript enhanced portrait\n')
+  gnuOut.write('set terminal postscript enhanced portrait color background rgb "white"\n')
   gnuOut.write('set size 1.4,0.7\n')
   gnuOut.write('set output "%s_all.nrg.ps"\n'%(LName))
   gnuOut.write('set encoding iso_8859_1\n')
@@ -1259,14 +1259,14 @@ def main(args):
       nn=0
       for value in omegaRange:
         nn+=1
-        runConvert = "%s -trim -geometry 100 -background white %s/%s_%s.ps %s/%s_%s_thumb.png" %(convert,tmpDir,LName,nn,tmpDir,LName,nn)
+        runConvert = "%s -trim -geometry 100 -background white -alpha remove %s/%s_%s.ps %s/%s_%s_thumb.png" %(convert,tmpDir,LName,nn,tmpDir,LName,nn)
         tmpWrite.write(runConvert+'<br>')
         commands.getstatusoutput(runConvert)
-        runConvert = "%s -background white %s/%s_%s_thumb.png %s/%s_%s_thumb.png" %(convert,tmpDir,LName,nn,htmlDir,LName,nn)
+        runConvert = "%s -background white -alpha remove %s/%s_%s_thumb.png %s/%s_%s_thumb.png" %(convert,tmpDir,LName,nn,htmlDir,LName,nn)
         commands.getstatusoutput(runConvert)
-        runConvert = "%s -trim -background white %s/%s_%s.ps %s/%s_%s.png" %(convert,tmpDir,LName,nn,tmpDir,LName,nn)
+        runConvert = "%s -trim -background white -alpha remove %s/%s_%s.ps %s/%s_%s.png" %(convert,tmpDir,LName,nn,tmpDir,LName,nn)
         commands.getstatusoutput(runConvert)
-        runConvert = "%s -background white %s/%s_%s.png %s/%s_%s.png" %(convert,tmpDir,LName,nn,htmlDir,LName,nn)
+        runConvert = "%s -background white -alpha remove %s/%s_%s.png %s/%s_%s.png" %(convert,tmpDir,LName,nn,htmlDir,LName,nn)
         commands.getstatusoutput(runConvert)
 
       print("============= MAXTRAFFIC =============")
@@ -1297,7 +1297,7 @@ def main(args):
       nn = 0
       for value in omegaRange:
         nn+=1
-        runConvert = "%s -trim -geometry 100 %s/%s_%s.dag.png  %s/%s_%s.dag_thumb.png" %(convert,htmlDir,LName,nn,tmpDir,LName,nn)
+        runConvert = "%s -trim -geometry 100 -background white -alpha remove %s/%s_%s.dag.png  %s/%s_%s.dag_thumb.png" %(convert,htmlDir,LName,nn,tmpDir,LName,nn)
         tmpWrite.write(runConvert+'<br>')
         runProgram(runConvert)
         runConvert = "%s %s/%s_%s.dag_thumb.png %s/%s_%s.dag_thumb.png" %(convert,tmpDir,LName,nn,htmlDir,LName,nn)
@@ -1489,6 +1489,8 @@ def main(args):
       permWrite.write('<a href="%s_all.nrg.png"><img src="%s_all.nrg_thumb.png" alt="data missing"></a><br>\n</td></tr></table>'%(LName,LName))
       #Completion time
       permWrite.write('<br>Completed %s<br>'%(time.strftime("%c")))
+      # zip file
+      permWrite.write('<br><a href="%s.zip">Click here to download zip file of GeoFold output.</a><br>'%(LName))
       permWrite.write('<p>Modify and do over:\n')
 
       #### Create gnuplot image
@@ -1498,7 +1500,7 @@ def main(args):
       for value in omegaRange:
         nn+=1
         plotTimeCourse("%s/%s"%(tmpDir,LName),nn)
-        runConvert = '%s -trim -geometry 100 %s/%s_%s.tc.ps %s/%s_%s.tc_thumb.png'%(convert,tmpDir,LName,nn,htmlDir,LName,nn)
+        runConvert = '%s -trim -geometry 100 -background white -alpha remove %s/%s_%s.tc.ps %s/%s_%s.tc_thumb.png'%(convert,tmpDir,LName,nn,htmlDir,LName,nn)
         runProgram(runConvert)
         runConvert = '%s -trim %s/%s_%s.tc.ps %s/%s_%s.tc.png'%(convert,tmpDir,LName,nn,htmlDir,LName,nn)
         runProgram(runConvert)
@@ -1506,7 +1508,7 @@ def main(args):
         if status != 0:
           sys.exit(output)
         picLink(htmlDir,LName,nn)
-        runConvert = '%s -trim -geometry 100 %s/%s_%s.nrg.ps %s/%s_%s.nrg_thumb.png'%(convert,tmpDir,LName,nn,htmlDir,LName,nn)
+        runConvert = '%s -trim -geometry 100 -background white -alpha remove %s/%s_%s.nrg.ps %s/%s_%s.nrg_thumb.png'%(convert,tmpDir,LName,nn,htmlDir,LName,nn)
         runProgram(runConvert)
         runConvert = '%s -trim %s/%s_%s.nrg.ps %s/%s_%s.nrg.png'%(convert,tmpDir,LName,nn,htmlDir,LName,nn)
         runProgram(runConvert)
@@ -1515,7 +1517,7 @@ def main(args):
         print(status)
         print(output)
       else:
-        runConvert = '%s -trim -geometry 200 %s/%s_all.nrg.ps %s/%s_all.nrg_thumb.png'%(convert,tmpDir,LName,htmlDir,LName)
+        runConvert = '%s -trim -geometry 200 -background white -alpha remove %s/%s_all.nrg.ps %s/%s_all.nrg_thumb.png'%(convert,tmpDir,LName,htmlDir,LName)
         runProgram(runConvert)
         runConvert = '%s -trim %s/%s_all.nrg.ps %s/%s_all.nrg.png'%(convert,tmpDir,LName,htmlDir,LName)
         runProgram(runConvert)
@@ -1525,11 +1527,11 @@ def main(args):
         print(status)
         print(output)
       else:
-        runConvert = "%s -trim %s/%s.gp.ps %s/%s.gp.png" %(convert,tmpDir,LName,tmpDir,LName)
+        runConvert = "%s -trim -background white -alpha remove %s/%s.gp.ps %s/%s.gp.png" %(convert,tmpDir,LName,tmpDir,LName)
         runProgram(runConvert)
         runConvert = "%s %s/%s.gp.png %s/%s.gp.png" %(convert,tmpDir,LName,htmlDir,LName)
         runProgram(runConvert)
-        runConvert = "%s -trim -geometry 200 %s/%s.gp.ps %s/%s.gp_thumb.png" %(convert,tmpDir,LName,tmpDir,LName)
+        runConvert = "%s -trim -geometry 200 -background white -alpha remove %s/%s.gp.ps %s/%s.gp_thumb.png" %(convert,tmpDir,LName,tmpDir,LName)
         runProgram(runConvert)
         runConvert = "%s %s/%s.gp_thumb.png %s/%s.gp_thumb.png" %(convert,tmpDir,LName,htmlDir,LName)
         runProgram(runConvert)
