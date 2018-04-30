@@ -678,19 +678,26 @@ recursive subroutine getmelting(f,force)
   type(intermediate), target :: child1, child2
   type(intermediate), pointer :: u1, u2
   type(intermediate), POINTER :: ihead
-  integer :: found, i, id, n, z1,z2, check
+  integer :: found, i, id, n, z1,z2, check,ios
   logical,parameter :: veryverbose=.true.
   !!
+  
   if (.not.associated(ilistroot)) stop 'geofold.f90:: getmelting BUG 1'
-  IF ( count(f%iflag(1:geofold_nres) /= '.') == 0 ) RETURN ! empty
+  IF ( count(f%iflag(1:geofold_nres) /= '.') == 0 ) then
+      RETURN ! empty
+  endif
   id =  oldintermediate(f)
   if (id/=0) then
     f%idnum = id
     if (verbose.and.veryverbose) write(0,*) "getmelting:: Found an old intermediate ",id
-    if (.not.present(force)) return
+    if (.not.present(force)) then
+        return
+    endif
   endif
   if (id==0) call saveintermediate(f)
-  IF ( count(f%iflag(1:geofold_nres) /= '.') == 1 ) RETURN !checks to see if it is a single aa
+  IF ( count(f%iflag(1:geofold_nres) /= '.') == 1 ) then
+      RETURN !checks to see if it is a single aa
+  endif
   ihead => ilistroot
   found = 0
   n = 0
@@ -757,14 +764,23 @@ recursive subroutine getmelting(f,force)
   u2%idnum = oldintermediate(u2)
   z1 = count(u1%iflag(1:geofold_nres)/='.')
   z2 = count(u2%iflag(1:geofold_nres)/='.')
-  if (z1==0) call getmelting(u1)
-  if (z2==0) call getmelting(u2)
-  if (z1/=0.and.z2/=0) then
-    !if u1 or u2 are intermediate #0, saveintermediate
-    if(u1%idnum == 0) call saveintermediate(u1)
-    if(u2%idnum == 0) call saveintermediate(u2)
-    call savetstate(f,u1,u2=u2,t=meltflag, ent=0.1)
-  endif
+  ! if (z1==0) call getmelting(u1,called=771)
+  ! if (z2==0) call getmelting(u2,called=772)
+  ! if(u1%idnum == 0) call saveintermediate(u1)
+  ! if(u2%idnum == 0) call saveintermediate(u2)
+  ! call savetstate(f,u1,u2=u2,t=meltflag, ent=0.1)
+  if (z1/=1) call getmelting(u1)
+  if (z2/=1) call getmelting(u2)
+  if(u1%idnum == 0) call saveintermediate(u1)
+  if(u2%idnum == 0) call saveintermediate(u2)
+  call savetstate(f,u1,u2=u2,t=meltflag, ent=0.1)
+  ! if (z1/=0.and.z2/=0) then
+  ! if (z1==1.and.z2==1) then
+  !   !if u1 or u2 are intermediate #0, saveintermediate
+  !   if(u1%idnum == 0) call saveintermediate(u1)
+  !   if(u2%idnum == 0) call saveintermediate(u2)
+  !   call savetstate(f,u1,u2=u2,t=meltflag, ent=0.1)
+  ! endif
   !!  
 end subroutine getmelting
 

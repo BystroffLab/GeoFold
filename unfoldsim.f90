@@ -119,7 +119,7 @@
 !! ---- The following are fixed parameters ------
 !! nuk = 10^6 from Fersht book
 !! timestep = variable, but should be << nuk
-!! NOTE: changing the timestep should not effect the rate.
+!! NOTE: changing the timestep should not affect the rate.
 !!================================================================================
 program unfoldsim
   use geofold_global, only : barrels_array, seam_type, button_type , barrel_type,&
@@ -282,7 +282,7 @@ program unfoldsim
   !!------------------ Create LOG file for inspection of tstates.  --------------
   if (verbose) then
     open(99,file=trim(inputfile)//".LOG",status="replace",form='formatted',iostat=ios)
-    if (ios/=0) stop 'unfoldsim.f90 :: ERROR cant creat file. Permissions?'
+    if (ios/=0) stop 'unfoldsim.f90 :: ERROR cannot create file. Permissions?'
   endif
   icycle = 0
   !! -------------- Initialize all transition state energies and rates -----------
@@ -584,6 +584,10 @@ program unfoldsim
       u1ptr => inter(u1)
       u2ptr => inter(u2)
       tsptr => tstate(its)
+      ! write(*,*) "TSTATE: ",its
+      ! write(*,*)  f,trim(fptr%flags)
+      !  write(*,*) u1,trim(u1ptr%flags)
+      ! if (u2/=0) write(*,*) u2,trim(u2ptr%flags)
       if (inter(f)%conc > TINYCONC) then  
         rate = fptr%conc * tsptr%ku 
         decrement = rate 
@@ -593,12 +597,19 @@ program unfoldsim
         tsptr%traffic = tsptr%traffic + decrement
       endif 
       if (u1ptr%conc>TINYCONC) then
+          ! write(*,*) "u1ptr%conc > TINYCONC"
+          ! write(*,*) u1ptr%flags,"u2ptr conc: ",u2ptr%conc,u2ptr%flags
         rate = 0.0
         if (tsptr%cuttype=="s") then     !! seam is a unimolecular reaction
+          ! write(*,*) "SEAM"
           rate = u1ptr%conc*tsptr%kf
+          ! write(*,*) rate,u1
         else  !! All other cuttypes m, b, h, p are (virtually) bimolecular.
+          ! write(*,*) "NOT A SEAM"
           if (u2ptr%conc>TINYCONC) then 
+            ! write(*,*) "u2ptr%conc>TINYCONC"
             rate = u1ptr%conc*u2ptr%conc*tsptr%kf
+            ! write(*,*) rate
           endif
         endif
         decrement = rate
@@ -608,6 +619,12 @@ program unfoldsim
         tsptr%traffic = tsptr%traffic + decrement 
       endif
     enddo
+    ! debugloop: do ii = 1, minter
+    !     if(inter(ii)%conc>TINYCONC)then
+    !         write(*,'("INTER ",i4,", dc ",e12.5e1,i4,e12.5e1)')ii,dc(ii),inter(ii)%folded,inter(ii)%conc
+    !     endif
+    ! enddo debugloop
+    ! stop "Debugging"
     iflag = 0
     !! ----- would concentration be negative? If so, reduce timestep
     x = timestep
@@ -775,7 +792,7 @@ program unfoldsim
     do its=1,mtstate
       if (tstate(its)%cuttype == "m") then  
         write(*,'("TSTATE ",4i5,3f9.6," fsize=",i4,2(1x,1pe10.4e2))') &
-            ii,tstate(its)%f,tstate(its)%u1,tstate(its)%u2,&
+            its,tstate(its)%f,tstate(its)%u1,tstate(its)%u2,&
             inter(tstate(its)%f)%conc,   &
             inter(tstate(its)%u1)%conc,   &
             inter(tstate(its)%u2)%conc,   &
@@ -811,12 +828,12 @@ CONTAINS
     real    :: discard
     integer :: nres, iseg, ires, iseam
     !!!!!
-    iunit = pickunit(10)
-    open(iunit,file=inputfile,status='old',action='read',iostat=ios)
+    ! iunit = pickunit(10)
+    open(newunit=iunit,file=inputfile,status='old',action='read',iostat=ios)
     if (ios/=0) stop 'unfoldsim.f90:: ERROR file not found.'
-    ounit = pickunit(11)
+    ! ounit = pickunit(11)
     if (present(traffic_out)) then
-      open(ounit,file=trim(inputfile)//".out",status='replace',action='write',iostat=ios)
+      open(newunit=ounit,file=trim(inputfile)//".out",status='replace',action='write',iostat=ios)
       if (ios/=0) stop 'Error opening inputfile'
       !! normalize traffic values
       !! ------------------------------ changed 12-MAY-2009
