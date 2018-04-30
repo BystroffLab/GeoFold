@@ -737,7 +737,7 @@ def main(args):
         if keyword != '':
           LName = '%s.%s'%(keyword,pdbCode)
       #Strip LName of any suspicious characters
-      LName = LName.strip("/*{}[]!@#$%^&();:<>,?\\~\"\'")
+      LName = ''.join([x for x in LName if x not in "/*\{\}[]!@#$%^&();:<>,?\\~\"\'"])
       print("LName " + LName)
       findParam(paramFile, "EMAIL")
       status,OName=  findParam(paramFile, "ONAME")
@@ -1187,6 +1187,7 @@ def main(args):
           tmpWrite.write("============= UNFOLDSIM =============<br>")
           writeOut("============= UNFOLDSIM =============\n")
           nn = 0
+          print(omegaRange)
           for value in omegaRange:
             nn += 1
             cp = "cp %s/%s.dag %s/%s_%s.dag" %(tmpDir,LName,tmpDir,LName,nn)
