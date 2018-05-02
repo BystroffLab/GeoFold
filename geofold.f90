@@ -165,7 +165,7 @@ CONTAINS
 !recurses until unfolded
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-RECURSIVE SUBROUTINE getcutpoints( f ,contacts,flory,T)
+RECURSIVE SUBROUTINE getcutpoints(f,contacts,flory,T)
   !! ------- cut point algorithm ---------
   !! 
   !! If the intermediate is multichain, break if possible.
@@ -227,7 +227,7 @@ RECURSIVE SUBROUTINE getcutpoints( f ,contacts,flory,T)
   mres = count(f%iflag(1:geofold_nres) /= '.')
   if (nchain==1.and.mres<=(2*pivottail+3)) then
 !    write(0,*) 'getmelting'
-    call getmelting(f)
+    call getmelting(f,contacts,flory,T)
     return
   endif
 !  write(0,*) 'saveintermediate'
@@ -372,7 +372,7 @@ RECURSIVE SUBROUTINE getcutpoints( f ,contacts,flory,T)
   if (any(f%barrel(:)/=0)) write(*,*) "NOTE: It is an open barrel."
   WRITE(*,*) 'MELTING it.'
 !  write(0,*) 'getmelting'
-  call getmelting(f,force=.true.)
+  call getmelting(f,contacts,flory,T)
   return
 END SUBROUTINE getcutpoints
 
@@ -397,6 +397,7 @@ SUBROUTINE getbreaks(f,allu1,allentropy,nbreak,contacts,flory)
   real :: entropy, energy, fenergy, u1energy, u2energy
   integer :: ires, nchain, nres, bpoint, ibreak, mbreak, nsplit, bvec, i, j, ios
   integer :: flory
+  !==========================================================================================!
   if (allocated(allenergy)) deallocate(allenergy)
   allocate(allenergy(geofold_split+1),stat=ios); if (ios/=0) stop 'geofold:: getbreaks: BUG allocating allenergy'
   call geofold_masker_energy(f,fenergy)
@@ -672,63 +673,31 @@ endsubroutine getseams
 ! getmelting divides a short segment into
 ! smaller pieces until it consists of single residues.
 !
-recursive subroutine getmelting(f,force)
-  type(intermediate), POINTER :: f
-  logical,optional :: force
+subroutine getmelting(f,contacts,flory,T)
+  type(intermediate),pointer :: f
+  type(contact),dimension(:),allocatable,intent(in) :: contacts
+  integer :: flory
+  real,intent(in) :: T
   type(intermediate), target :: child1, child2
   type(intermediate), pointer :: u1, u2
-  type(intermediate), POINTER :: ihead
-  integer :: found, i, id, n, z1,z2, check,ios
+  integer :: i,id
   logical,parameter :: veryverbose=.true.
-  !!
-  
-  if (.not.associated(ilistroot)) stop 'geofold.f90:: getmelting BUG 1'
-  IF ( count(f%iflag(1:geofold_nres) /= '.') == 0 ) then
-      RETURN ! empty
-  endif
+  !!==========================================================================!!
+  ! if f is empty, return
+  IF ( count(f%iflag(1:geofold_nres) /= '.') == 0 ) return
+  ! get id number of f
   id =  oldintermediate(f)
+  ! if it already exists, return
   if (id/=0) then
     f%idnum = id
     if (verbose.and.veryverbose) write(0,*) "getmelting:: Found an old intermediate ",id
-    if (.not.present(force)) then
-        return
-    endif
+    return
   endif
+  ! save f
   if (id==0) call saveintermediate(f)
-  IF ( count(f%iflag(1:geofold_nres) /= '.') == 1 ) then
-      RETURN !checks to see if it is a single aa
-  endif
-  ihead => ilistroot
-  found = 0
-  n = 0
-  outloop: do while ( associated(ihead%next) )
-     ihead => ihead%next
-     n = n + 1
-     if (f%idnum==ihead%idnum) cycle
-     if (all((ihead%iflag(1:geofold_nres)=='.').or.(f%iflag(1:geofold_nres)/='.'))) then
-       !! check to see that the first or last flag is set
-       inloop1: do i=1,geofold_nres
-         if (f%iflag(i)/='.') then
-           if (ihead%iflag(i)/='.') then
-             found = 1
-             exit outloop
-           else
-             exit inloop1
-           endif
-         endif
-       enddo inloop1
-       inloop2: do i=geofold_nres,1,-1
-         if (f%iflag(i)/='.') then
-           if (ihead%iflag(i)/='.') then
-             found = 1
-             exit outloop
-           else
-             exit inloop2
-           endif
-         endif
-       enddo inloop2
-     endif
-  enddo outloop
+  ! if f is only one residue, return
+  IF ( count(f%iflag(1:geofold_nres) /= '.') == 1 ) return
+  ! initialize u1 and u2
   u1 => child1
   u2 => child2
   u1%iflag = '.'
@@ -739,49 +708,22 @@ recursive subroutine getmelting(f,force)
   u2%state = f%state + 1
   u1%barrel = f%barrel
   u2%barrel = f%barrel
-  if (found==1) then
-    do i=1,geofold_nres
-      u1%iflag(i) = ihead%iflag(i)
-      if (f%iflag(i)/='.' .and. ihead%iflag(i)=='.') then
-        u2%iflag(i) = f%iflag(i)
-      endif
-    enddo
-    ! call getmelting(u1)  !! not necessary since u1 = ihead
-  else  
-    !  write(0,*) "Melting by one character  n= ", n
-    !! no existing subsets in the intermediate list. peel one residue.
-    u2%iflag = f%iflag
-    do i=1,geofold_nres
-       if (f%iflag(i)/='.') then
-         u1%iflag(i) = f%iflag(i)
-         u2%iflag(i) = '.'
-         exit
-       endif
-    enddo
-  endif
-  !set idnums for u1 and u2
-  u1%idnum = oldintermediate(u1)
-  u2%idnum = oldintermediate(u2)
-  z1 = count(u1%iflag(1:geofold_nres)/='.')
-  z2 = count(u2%iflag(1:geofold_nres)/='.')
-  ! if (z1==0) call getmelting(u1,called=771)
-  ! if (z2==0) call getmelting(u2,called=772)
-  ! if(u1%idnum == 0) call saveintermediate(u1)
-  ! if(u2%idnum == 0) call saveintermediate(u2)
-  ! call savetstate(f,u1,u2=u2,t=meltflag, ent=0.1)
-  if (z1/=1) call getmelting(u1)
-  if (z2/=1) call getmelting(u2)
-  if(u1%idnum == 0) call saveintermediate(u1)
-  if(u2%idnum == 0) call saveintermediate(u2)
+  nullify(u1%next)
+  nullify(u2%next)
+  ! melt one residue on the N-terminal part of f
+  u2%iflag = f%iflag
+  do i=1,geofold_nres
+     if (f%iflag(i)/='.') then
+       u1%iflag(i) = f%iflag(i)
+       u2%iflag(i) = '.'
+       exit
+     endif
+  enddo
+  ! call getcutpoints
+  call getcutpoints(u1,contacts,flory,T)
+  call getcutpoints(u2,contacts,flory,T)
+  ! save the transition state
   call savetstate(f,u1,u2=u2,t=meltflag, ent=0.1)
-  ! if (z1/=0.and.z2/=0) then
-  ! if (z1==1.and.z2==1) then
-  !   !if u1 or u2 are intermediate #0, saveintermediate
-  !   if(u1%idnum == 0) call saveintermediate(u1)
-  !   if(u2%idnum == 0) call saveintermediate(u2)
-  !   call savetstate(f,u1,u2=u2,t=meltflag, ent=0.1)
-  ! endif
-  !!  
 end subroutine getmelting
 
 !!====================================================================================
