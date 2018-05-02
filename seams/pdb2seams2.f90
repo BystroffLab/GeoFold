@@ -57,7 +57,9 @@ program pdb2seams2
   call gethbonds(hb,hbfile,nhb)
   call findseams(hb,nhb,seamsroot,nseams)
   call mergeseams(seamsroot,nseams)
+  ! write(0,*) "Pruning"
   call prune(seamsroot,nseams)
+  ! write(0,*) "Pruning complete"
   allocate(overlap(nseams,nseams))
   allocate(overlaps(nseams,nseams))
   allocate(seams(nseams))
@@ -160,6 +162,10 @@ CONTAINS
     if (nb <= nseams) barrel(nb) = this  !! guards against outofbounds when adding last seam for 2nd time.
     !! look for a cycle
     if (nb > 2) then
+      if(nb == nseams) then
+          overlap = 0
+          return
+      endif
       if (any(barrel(1:nb-2)==this)) then
          barrelstart = minloc(barrel(1:nb-2),mask=(barrel(1:nb-2)==this),dim=1)
          ! do k = barrelstart,nb
@@ -170,7 +176,7 @@ CONTAINS
             isabarrel = .true.
             return
         endif
-      endif
+      endif 
     endif
     !! no cycle, go to the next edge of this
     j = 1
@@ -192,10 +198,11 @@ CONTAINS
       integer :: i,j,k,l,prev
       integer,dimension(nb-barrelstart,2) :: protobarrel
       
+      ! write(0,*) "CHECKBARREL"
       protobarrel = 0
       checkbarrel = .false.
       j = 1
-      do i  = barrelstart,nb-1
+      do i  = barrelstart,min(nb-1,nseams-1)
           protobarrel(j,1) = overlaps(barrel(i),barrel(i+1))
           if(j == nb - barrelstart) then
               protobarrel(1,2) = overlaps(barrel(i+1),barrel(i))
@@ -205,7 +212,7 @@ CONTAINS
           j = j + 1
       enddo
       do i = 1, nb-barrelstart
-          write(0,*) protobarrel(i,:)
+          ! write(0,*) protobarrel(i,:)
       enddo
       !seams must connect on both sides, so sum of overlap is 3
       if(any(sum(protobarrel,dim=2)/=3)) then
@@ -373,7 +380,7 @@ CONTAINS
         enddo
       endif
       if (count(stack==2)>=MINSEAM) then
-        ! call printStack2(stack,hb,nhb)
+        call printStack2(stack,hb,nhb)
         nseams = nseams+1
         call saveseam(seamsroot,nseams,orient="parallel",stack=stack,nhb=nhb,hb=hb)
         !! diagnostic
@@ -460,7 +467,7 @@ CONTAINS
       enddo
       !! done looking for a antiparallel seam. Did we find it?
       if (count(stack==2)>=MINSEAM) then
-        ! call printStack2(stack,hb,nhb)
+        call printStack2(stack,hb,nhb)
         nseams = nseams+1
         call saveseam(seamsroot,nseams,orient="antiparallel",stack=stack,nhb=nhb,nbulge=nbulge,hb=hb)
         !! diagnostic
@@ -789,40 +796,55 @@ CONTAINS
         end2 = itr%end(2)
         if((start1 <= end2 .and. end1 >= start2)&
         .or.(start2 <= end1 .and. end2 >= start1)) then
+            ! write(0,*) "if1"
             !edge case itr is root
             if(associated(itr,root)) then
+                ! write(0,*) "if2"
                 if(associated(itr%next)) then
+                    ! write(0,*) "if3"
                     root => itr%next
-                    deallocate(itr)
+                    if(associated(itr)) deallocate(itr)
                     itr=>root
                     nseams = nseams - 1
                 else
+                    ! write(0,*) "else3"
                     ! no more seams
-                    deallocate(itr)
+                    if(associated(itr))deallocate(itr)
+                    nullify(root)
+                    ! write(0,*) "deallocated itr"
+                    ! write(0,*) associated(root)
                     if(associated(root)) deallocate(root)
+                    ! write(0,*) "deallocated root"   
                     allocate(root)
+                    ! write(0,*) "allocated root"
                     nullify(root%bbhb)
                     nullify(root%schb)
                     nullify(root%next)
+                    ! write(0,*) "nullified bbhb schb next"
                     nseams = 0
+                    ! write(0,*) "nseams = 0"
                     exit
                 endif
             else
+                ! write(0,*) "else2"
                 jtr => root
                 do while(.not. associated(jtr%next,itr)) 
                     jtr => jtr%next
                 enddo
                 if(associated(itr%next)) then
+                    ! write(0,*) "if4"
                     jtr%next => itr%next
                 else
+                    ! write(0,*) "else4"
                     nullify(jtr%next)
                 endif
-                deallocate(itr)
+                if(associated(itr)) deallocate(itr)
                 nseams = nseams - 1
                 itr => jtr%next
                 nullify(jtr)
             endif
         else
+            ! write(0,*) "else1"
             if(associated(itr%next)) then
                 itr => itr%next
             else
@@ -840,19 +862,22 @@ end subroutine prune
       type(seamtype),intent(inout),pointer :: root
       type(seamtype),pointer :: itr,jtr
       integer :: i,j,k
-      integer,parameter :: over = 1
+      integer,parameter :: over = 0
       integer :: newstart(2),newend(2)
+      ! write(0,'(i5," seams")') nseams
       
       ! mess with the linked list
       itr => root
       loop1: do while(associated(itr%next))
+          ! jtr => root
           jtr => itr%next
           do while(associated(jtr))
-              ! write(0,'("itr%idx: ",i4," jtr%idx: ",i4)')itr%idx,jtr%idx
+            ! write(0,'("itr%idx: ",i4," jtr%idx: ",i4)')itr%idx,jtr%idx
+            ! write(0,*) itr%start(1),itr%end(1),itr%start(2),itr%end(2),jtr%start(1),jtr%end(1),jtr%start(2),jtr%end(2)
               !1-3, 2-4
-              if(itr%end(1)-jtr%start(1) <= over .and. itr%end(1)-jtr%start(1) >= 0&
-              .and. itr%start(2)-jtr%start(2) <= over .and. itr%start(2)-jtr%start(2) >= 0) then
-                
+            if(jtr%start(1) >= itr%start(1) .and. jtr%start(1) <= itr%end(1)+over&
+              .and. jtr%start(2) >= itr%start(2) .and. jtr%start(2) <= itr%end(2)+over&
+              .and. itr%orient == jtr%orient) then
                 ! start
                 newstart(1) = itr%start(1)
                 newstart(2) = itr%start(2)
@@ -862,8 +887,9 @@ end subroutine prune
                 call merge(itr,jtr,root,newstart,newend)
                 if(.not. associated(jtr)) exit loop1
               ! 1-4, 2-3
-          elseif(itr%end(1)-jtr%start(2) <= over .and. itr%end(1)-jtr%start(2) >= 0&
-              .and. itr%end(2)-jtr%start(1) <= over .and. itr%end(2)-jtr%start(1) >= 0) then
+          elseif(jtr%start(2) >= itr%start(1) .and. jtr%start(2) <= itr%end(1)+over&
+              .and. jtr%start(1) >= itr%start(2) .and. jtr%start(1) <= itr%end(2)+over&
+              .and. itr%orient == jtr%orient) then
                 ! start
                 newstart(1) = itr%start(1)
                 newstart(2) = itr%start(2)
@@ -873,8 +899,9 @@ end subroutine prune
                 call merge(itr,jtr,root,newstart,newend)
                 if(.not. associated(jtr)) exit loop1
               ! 3-1, 4-2
-          elseif(jtr%end(1)-itr%start(1) <= over .and. jtr%end(1)-itr%start(1) >= 0&
-              .and. jtr%end(2)-itr%start(2) <= over .and. jtr%end(2)-itr%start(2) >= 0) then
+          elseif(itr%start(1) >= jtr%start(1) .and. itr%start(1) <= jtr%end(1)+over&
+              .and. itr%start(2) >= jtr%start(2) .and. itr%start(2) <= jtr%end(2)+over&
+              .and. itr%orient == jtr%orient) then
                 ! start
                 newstart(1) = jtr%start(1)
                 newstart(2) = jtr%start(2)
@@ -884,8 +911,9 @@ end subroutine prune
                 call merge(itr,jtr,root,newstart,newend)
                 if(.not. associated(jtr)) exit loop1
               ! 4-1, 3-2
-          elseif(jtr%end(2)-itr%start(1) <= over .and. jtr%end(2)-itr%start(1) >= 0&
-              .and. jtr%end(1)-itr%start(2) <= over .and. jtr%end(1)-itr%start(2) >= 0) then
+          elseif(itr%start(1) >= jtr%start(2) .and. itr%start(1) <= jtr%end(2)+over&
+              .and. itr%start(2) >= jtr%start(1) .and. itr%start(2) <= jtr%end(1)+over&
+              .and. itr%orient == jtr%orient) then
                 ! start
                 newstart(1) = jtr%start(2)
                 newstart(2) = jtr%start(1)
@@ -894,9 +922,53 @@ end subroutine prune
                 newend(2) = itr%end(2)
                 call merge(itr,jtr,root,newstart,newend)
                 if(.not. associated(jtr)) exit loop1
-              else  
+        !     ! 1-3, 4-2
+        !     elseif(jtr%start(1) >= itr%start(1) .and. jtr%start(1) <= itr%end(1)+1&
+        !       .and. itr%start(2) >= jtr%start(2) .and. itr%start(2) <= jtr%end(2)+1) then
+        !       ! start
+        !       newstart(1) = itr%start(1)
+        !       newstart(2) = jtr%start(2)
+        !       ! end
+        !       newend(1) = jtr%end(1)
+        !       newend(2) = itr%end(2)
+        !       call merge(itr,jtr,root,newstart,newend)
+        !       if(.not. associated(jtr)) exit loop1
+        !     ! 1-4, 3-2
+        ! elseif(jtr%start(2) >= itr%start(1) .and. jtr%start(2) <= itr%end(1)+1&
+        !       .and. jtr%start(1) >= itr%start(2) .and. jtr%start(1) <= itr%end(2)+1) then
+        !       ! start
+        !       newstart(1) = itr%start(1)
+        !       newstart(2) = jtr%start(1)
+        !       ! end
+        !       newend(1) = jtr%end(2)
+        !       newend(2) = itr%end(2)
+        !       call merge(itr,jtr,root,newstart,newend)
+        !       if(.not. associated(jtr)) exit loop1
+        !     ! 3-1, 2-4
+        ! elseif(itr%start(1) >= jtr%start(1) .and. itr%start(1) <= jtr%end(1)+1&
+        !       .and. jtr%start(2) >= itr%start(2) .and. jtr%start(2) <= itr%end(2)+1) then
+        !       ! start
+        !       newstart(1) = jtr%start(1)
+        !       newstart(2) = itr%start(2)
+        !       ! end
+        !       newend(1) = itr%end(1)
+        !       newend(2) = jtr%end(2)
+        !       call merge(itr,jtr,root,newstart,newend)
+        !       if(.not. associated(jtr)) exit loop1
+        !     ! 4-1, 2-3
+        ! elseif(itr%start(1) >= jtr%start(2) .and. itr%start(1) <= jtr%end(2)+1&
+        !     .and. itr%start(2) >= jtr%start(1) .and. itr%start(2) <= jtr%end(1)+1) then
+        !       ! start
+        !       newstart(1) = jtr%start(2)
+        !       newstart(2) = itr%start(2)
+        !       ! end
+        !       newend(1) = itr%end(1)
+        !       newend(2) = jtr%end(1)
+        !       call merge(itr,jtr,root,newstart,newend)
+        !       if(.not. associated(jtr)) exit loop1
+            else  
                 jtr => jtr%next
-              endif
+            endif
           enddo
           itr => itr%next
       enddo loop1
@@ -914,9 +986,15 @@ end subroutine prune
       type(seamtype),pointer :: ktr
       integer :: i,j,k
       type(hbtype),dimension(:),pointer :: bbhb,schb
-      ! write(0,'("Merging seams: ",2i4)')itr%idx,jtr%idx
+      write(0,'("Merging seams: ",2i4)')itr%idx,jtr%idx
+      write(0,*) itr%start(1),itr%end(1),itr%start(2),itr%end(2),jtr%start(1),jtr%end(1),jtr%start(2),jtr%end(2)
+      write(0,*) "Newseam"
+      write(0,*) newstart(1),newend(1),newstart(2),newend(2)
       
-      
+      itr%start(1) = newstart(1)
+      itr%start(2) = newstart(2)
+      itr%end(1) = newend(1)
+      itr%end(2) = newend(2)
       ! nbbhb, nschb, nbulge
       itr%nbulge = itr%nbulge + jtr%nbulge
       allocate(bbhb(itr%nbbhb+jtr%nbbhb))
@@ -968,10 +1046,11 @@ end subroutine prune
           enddo
           if(associated(ktr)) nullify(ktr)
       endif
-      ktr => jtr%next
+      ! ktr => jtr%next
       if(associated(jtr)) deallocate(jtr)
-      jtr => ktr
-      if(associated(ktr)) nullify(ktr)
+      ! jtr => ktr
+      ! if(associated(ktr)) nullify(ktr)
+      jtr => itr%next
   end subroutine merge
 !!------------------------------------------------------------------
 !! NOTE: outputDAGseams should be synched with geofold_seams.f90
