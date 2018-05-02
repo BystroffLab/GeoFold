@@ -247,19 +247,19 @@ program splitseams
     
       
   enddo
-  dunit = pickunit(10)
+  ! dunit = pickunit(10)
   !stop 'works'
   write (0,*) 'newfile ',trim(newfile),', dunit ',dunit,', ios ',ios
   !SEGFAULT HERE?
-  open(dunit,file=newfile,status='replace',iostat=ios)
+  open(newunit=dunit,file=newfile,status='replace',iostat=ios)
   !stop 'works'
   if (ios/=0) stop 'splitseams.f90 :: error opening new file. Permissions?'
   write(dunit,'("# Processed by splitseams.f90 ")')
   call geofold_seams_write(dunit)
   close(dunit)
   deallocate(aseam)
-  dunit = pickunit(10)
-  open(dunit, file=parfile, form="formatted", status='old', access="append", iostat=ierr)
+  ! dunit = pickunit(10)
+  open(newunit=dunit, file=parfile, form="formatted", status='old', access="append", iostat=ierr)
   IF (ierr > 0 ) STOP "splitseams.f90:: Error opening parfile to append."
   write(dunit,'(a)') "SEAMS "//trim(newfile)
   close(dunit)
@@ -281,10 +281,12 @@ CONTAINS
       if (f1(ires)/='.') cycle
       if (f2(ires)/='.') cycle
       hseam%u1flag = f1(1:geofold_nres)
+      ! where(hseam%u1flag == '.') hseam%u1flag = hems%u1flag
       hseam%u2flag = '.'
       hseam%u2flag(ires) = 'A'
       call geofold_masker_seamenergy(hseam,u1x)
       hseam%u1flag = f2(1:geofold_nres)
+      ! where(hseam%u1flag == '.') hseam%u1flag = hems%u2flag
       hseam%u2flag = '.'
       hseam%u2flag(ires) = 'A'
       call geofold_masker_seamenergy(hseam,u2x)
