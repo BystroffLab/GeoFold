@@ -258,7 +258,8 @@ package : masker.tgz
 clean :
 	rm -vrf *.o xgeofold x3to1 xgeofold xvoidmask xunfoldsim xcontactmask \
 	xgetchain xrenumber_one xpdb2cij xageplot xpathway2ps x3to1 xpdb2hb \
-	xfit_poly maxTraffic xsplitseams  *.mod *.o *.dSYM
+	xfit_poly maxTraffic xsplitseams  *.mod *.o *.dSYM \
+	seams/xpdb2seams2 seams/*.mod seams/*.o seams/*.dSYM
 
 cleaner :
 	rm -vf x* *.o *.mod masker.tgz masker/*.o masker/*.mod masker/x*
