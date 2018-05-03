@@ -94,8 +94,8 @@ CONTAINS
     if (ierr/=0) stop 'read_maskerfile:: error allocating sasnrg'
     allocate(sasvalues(geofold_nres,geofold_nres),stat=ierr)
     if (ierr/=0) stop 'read_maskerfile:: error allocating sasvalues'
-    dunit = pickunit(dunit)
-    open(dunit, file = mfile, iostat=ierr, status="old", form="formatted")
+    ! dunit = pickunit(dunit)
+    open(newunit = dunit, file = mfile, iostat=ierr, status="old", form="formatted")
     IF (ierr /= 0 ) then
       write(0,*) "geofold_masker:: error opening masker file! ", trim(mfile)
       STOP "geofold_masker:: error opening masker file!"
