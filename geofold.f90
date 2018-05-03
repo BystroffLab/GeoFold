@@ -255,7 +255,7 @@ RECURSIVE SUBROUTINE getcutpoints(f,contacts,flory,T)
   !!------------- BREAKS ----------------
 !  write(0,*) 'getbreaks'
   call getbreaks(f,allu1,allentropy,nbreak,contacts,flory)
-  if (verbose.and.nbreak > 0) write(*,*) '============>>> found ',nbreak,' BREAKs'
+  if (verbose.and.nbreak > 0) write(*,*) '============>>> found ',nbreak,' BREAKS'
   breakloop: DO ibreak=1,nbreak
      entropy = allentropy(ibreak)
      u1%iflag = allu1(ibreak)%iflag
@@ -372,7 +372,7 @@ RECURSIVE SUBROUTINE getcutpoints(f,contacts,flory,T)
   if (any(f%barrel(:)/=0)) write(*,*) "NOTE: It is an open barrel."
   WRITE(*,*) 'MELTING it.'
 !  write(0,*) 'getmelting'
-  call getmelting(f,contacts,flory,T)
+  call getmelting(f,contacts,flory,T,peel=.true.)
   return
 END SUBROUTINE getcutpoints
 
@@ -673,15 +673,16 @@ endsubroutine getseams
 ! getmelting divides a short segment into
 ! smaller pieces until it consists of single residues.
 !
-subroutine getmelting(f,contacts,flory,T)
+subroutine getmelting(f,contacts,flory,T,peel)
   type(intermediate),pointer :: f
   type(contact),dimension(:),allocatable,intent(in) :: contacts
   integer :: flory
   real,intent(in) :: T
-  type(intermediate), target :: child1, child2
-  type(intermediate), pointer :: u1, u2
+  type(intermediate), target :: child1, child2,child3,child4
+  type(intermediate), pointer :: u1, u2,u3,u4
   integer :: i,id
   logical,parameter :: veryverbose=.true.
+  logical,optional :: peel ! If we're peeling, we should try from both sides
   !!==========================================================================!!
   ! if f is empty, return
   IF ( count(f%iflag(1:geofold_nres) /= '.') == 0 ) return
@@ -710,8 +711,24 @@ subroutine getmelting(f,contacts,flory,T)
   u2%barrel = f%barrel
   nullify(u1%next)
   nullify(u2%next)
+  if(present(peel)) then
+      ! initialize u1 and u2
+      u3 => child3
+      u4 => child4
+      u3%iflag = '.'
+      u4%iflag = '.'
+      u3%axis = 0
+      u4%axis = 0
+      u3%state = f%state + 1    ! recursion depth
+      u4%state = f%state + 1
+      u3%barrel = f%barrel
+      u4%barrel = f%barrel
+      nullify(u3%next)
+      nullify(u4%next)
+  endif
   ! melt one residue on the N-terminal part of f
   u2%iflag = f%iflag
+  if(present(peel)) u4%iflag = f%iflag
   do i=1,geofold_nres
      if (f%iflag(i)/='.') then
        u1%iflag(i) = f%iflag(i)
@@ -719,9 +736,33 @@ subroutine getmelting(f,contacts,flory,T)
        exit
      endif
   enddo
-  ! call getcutpoints
-  call getcutpoints(u1,contacts,flory,T)
-  call getcutpoints(u2,contacts,flory,T)
+  if(present(peel)) then
+      do i = geofold_nres,1,-1
+          if(f%iflag(i) /= '.') then
+              u3%iflag(i) = f%iflag(i)
+              u4%iflag(i) = '.'
+              exit
+          endif
+      enddo
+  ! zero out barrel if ISEGMT is single residue
+  if(count(u1%iflag(1:geofold_nres) /= ".")==1) u1%barrel = 0
+  if(count(u2%iflag(1:geofold_nres) /= ".")==1) u2%barrel = 0
+  if(present(peel)) then
+      if(count(u3%iflag(1:geofold_nres) /= ".")==1) u3%barrel = 0
+      if(count(u4%iflag(1:geofold_nres) /= ".")==1) u4%barrel = 0
+  endif
+  ! set idnums
+  u1%idnum = oldintermediate(u1)
+  u2%idnum = oldintermediate(u2)
+  if(u1%idnum==0) call getcutpoints(u1,contacts,flory,T)
+  if(u2%idnum==0) call getcutpoints(u2,contacts,flory,T)
+  if(present(peel)) then
+      u3%idnum = oldintermediate(u3)
+      u4%idnum = oldintermediate(u4)
+      if(u3%idnum==0) call getcutpoints(u3,contacts,flory,T)
+      if(u4%idnum==0) call getcutpoints(u4,contacts,flory,T)
+      call savetstate(f,u3,u2=u4,t=meltflag,ent=0.1)
+  endif
   ! save the transition state
   call savetstate(f,u1,u2=u2,t=meltflag, ent=0.1)
 end subroutine getmelting
