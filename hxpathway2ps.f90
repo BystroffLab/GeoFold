@@ -13,7 +13,7 @@
 ! LAST MODIFIED: Tue Mar  3 18:28:36 EST 2009
 !=========================================================
 
-program pathway2ps
+program hxpathway2ps
 implicit none
 integer :: I,J,t,q,N1,N2,NQ,ounit=12,L,k,M,ii,jj,nc,nc2
 real,dimension(:,:),allocatable :: eij
@@ -43,6 +43,7 @@ if (jarg < 5) then
   write(*,*) 'agefile(in) contains i j time(1/2) (from unfoldsim.f90)'
   write(*,*) 'cijfile(in) contains i j 1.0'
   write(*,*) 'psfile(out) '
+  write(*,*) 'hxfile contains hydrogen deuterium exchange data'
   write(*,*) 'Default ilocal =',ilocal
   write(*,*) 'Default rt =',rt
   write(*,*) 'Default start =',istart
@@ -432,9 +433,10 @@ do J=1,M
     !if (I < J) then !! another way to draw upper triangle
     if (cij(I,J)==0) cycle
       write(0,*) eij(I,J)
-      if (eij(I,J) < 0.) then  !! draw a black box
-        write(22,'(f8.2," cm ",f8.2," cm ",f6.3," graybox")') x,y,0.
-      elseif (eij(I,J) <= 1.000 ) then
+      ! if (eij(I,J) < 0.) then  !! draw a black box
+        ! write(22,'(f8.2," cm ",f8.2," cm ",f6.3," graybox")') x,y,0.
+      ! else
+      if (eij(I,J) <= 1.000 ) then
         g = 0.670*(1.00 - eij(I,J))   !! blue to red. Low eij is blue.
         if (incolor) then
           write(22,'(3f6.3,f8.2," cm ",f8.2," cm  hsbbox")') g,1.0,1.0,x,y
@@ -592,4 +594,4 @@ integer function getnc2(eij,n)
   write(0,'("getnc2 = ",i4)')getnc2
 end function getnc2
 
-end program pathway2ps
+end program hxpathway2ps

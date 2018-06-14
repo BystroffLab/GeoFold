@@ -143,7 +143,7 @@ program unfoldsim
   real(8)              :: Temperature = 300   
   real(8)              :: breakpointentropy = 100.   
   real(8)              :: pivotpointentropy = 0.  
-  real(8)              :: hingepointentropy = 10
+  real(8)              :: hingepointentropy = 10.
   real(8)              :: seampointentropy = 0.
   REAL(8)              :: SPERRESID=10.00
   real(8)              :: omega=30., decrement, spervoid=4.0, eperhbond=1.0
@@ -440,7 +440,7 @@ program unfoldsim
           dnrg, &  
           trim(inter(tstate(its)%f)%residuelist)
       else
-        write(99,'(i7,2i5,1x,a1,10(1pe10.2e2),2i5,1pE11.3e2,a)') &
+        write(99,'(i7,2i5,5x,1x,a1,10(1pe10.2e2),2i5,5x,1pE11.3e2,a)') &
           its,tstate(its)%f,  &
           tstate(its)%u1,  &
           ! tstate(its)%u2,  &
@@ -1070,18 +1070,18 @@ CONTAINS
       case ("p") 
         ! BUG found 21-MAY-2009. entropy used in two places, here and Solidity().
         ! dSfunction = tstate%entropy*pivotpointentropy
-        dSfunction = pivotpointentropy + nu*SPERRESID/2.
+        dSfunction = tstate%entropy*pivotpointentropy + nu*SPERRESID/2.
       case ("h") 
         ! dSfunction = tstate%entropy*hingepointentropy
-        dSfunction = hingepointentropy
+        dSfunction = tstate%entropy*hingepointentropy
       case ("b") 
         ! dSfunction = tstate%entropy*breakpointentropy
-        dSfunction = breakpointentropy + nu*SPERRESID
+        dSfunction = tstate%entropy*breakpointentropy + nu*SPERRESID
       case ("m")
         !! Melting rates are fixed using MELTINGENERGY
         dSfunction = 0.0     
       case ("s")
-        dSfunction = seampointentropy
+        dSfunction = tstate%entropy*seampointentropy
       case default
         write(0,*) 'unfoldsim:: unknown cuttype: ',tstate%cuttype
       dSfunction = 0.0     
@@ -1267,6 +1267,11 @@ CONTAINS
     gt = (2*dnrg - TdS)/(2*dnrg)
     if (gt > 0.8) gt = 0.8
     if (gt < 0.2) gt = 0.2
+    ! NaN
+    if (gt /= gt) then
+        write (0,*) "WARNING: thetanam NaN"
+        gt = 0.8
+    endif
     getthetam = gt
     return
   end function getthetam
@@ -1347,8 +1352,8 @@ CONTAINS
   real,parameter :: MAXDD=12.
   type(intype),pointer :: iptr
   !!
-  iunit = pickunit(12)
-  open(iunit,file=trim(infile)//".path",form='formatted',status='replace',iostat=ios)
+  ! iunit = pickunit(12)
+  open(newunit=iunit,file=trim(infile)//".path",form='formatted',status='replace',iostat=ios)
   if (ios/=0) stop 'unfoldsim.f90 :: ERROR writing to pathway file. '
   sumi = getsumc(0)
   sumf = getsumc(1)
@@ -1379,8 +1384,8 @@ CONTAINS
   character(len=200) :: agefile
   integer :: iunit, ios=0,i,j
   !!
-  iunit = pickunit(11)
-  open(iunit,file=trim(infile)//".age",form='formatted',status='replace',iostat=ios)
+  ! iunit = pickunit(11)
+  open(newunit=iunit,file=trim(infile)//".age",form='formatted',status='replace',iostat=ios)
   do i=1,global_nres
     do j=i+3,global_nres
       if (age(i,j) < 999999.0) then
@@ -1542,6 +1547,10 @@ CONTAINS
         read(aline(index(aline,' '):),*,iostat=ios) hingepointentropy
         if (ios/=0) STOP 'unfoldsim.f90:: bad value for HINGEPOINTENTROPY'
         if (verbose) write(*,'(a,f8.3)') "REMARK hinge entropy set to ",hingepointentropy
+    case ("SEAMPOINTENTROPY")
+        read(aline(index(aline,' '):),*,iostat=ios) seampointentropy
+        if (ios/=0) STOP 'unfoldsim.f90:: bad value for SEAMPOINTENTROPY'
+        if (verbose) write(*,'(a,f8.3)') "REMARK seam entropy set to ",seampointentropy
       case ("OMEGA")
         read(aline(index(aline,' '):),*,iostat=ios) omega
         if (ios/=0) STOP 'unfoldsim.f90:: bad value for OMEGA'

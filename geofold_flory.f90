@@ -521,13 +521,16 @@ subroutine find_contacts_seam(f,u1,c_list,broken,nres,subcontacts)
   call geofold_flory_get_subcontacts(c_list,subcontacts,f,nres)
   !determine which seam is broken
   do i = 1, maxbarrel 
-  if(u1%barrel(i)==0) cycle
-  seam = u1%barrel(i)
-  exit
+      if(u1%barrel(i)==0) cycle
+      seam = u1%barrel(i)
+      exit
   enddo
   !set u1flag and u2flag
+  write (0,*) i, seam
   u1flag = barrels_array(i)%seams(seam)%u1flag
+  ! stop 'works'
   u2flag = barrels_array(i)%seams(seam)%u2flag
+  ! bug
   !initializations
   if(allocated(broken)) deallocate(broken)
   allocate(broken(nres))

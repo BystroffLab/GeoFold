@@ -55,6 +55,7 @@ PROGRAM geofold
   type(contact),dimension(:),allocatable :: contacts
   real :: w,T
   logical :: all_seams = .false.
+  real,parameter :: R = 8.314 !J/mol*K
   ! character(len=3) :: aa
   !------------------------------ COMMAND LINE ----------------
 
@@ -328,7 +329,7 @@ RECURSIVE SUBROUTINE getcutpoints(f,contacts,flory,T)
        write(0,'("ERROR: seammove(",i3,")%barrel=",i3)') iseam,seammove(iseam)%barrel
        stop "geofold.f90:: error in seamloop."
      endif
-     entropy = seammove(iseam)%energy  !! contact energy
+     entropy = seammove(iseam)%entropy  !! contact energy
      u1%iflag = f%iflag
      u1%barrel(seammove(iseam)%barrel) = seammove(iseam)%seam !! set flag
      write(*,*) "seamloop:: u1%barrel(seammove(",iseam,")%barrel)=",u1%barrel(seammove(iseam)%barrel)
@@ -620,7 +621,7 @@ subroutine getseams (f, seammove, nMove,contacts,flory,w,T)
       integer                              :: nBarrels, iBarrel, nseams, iSeam, i, side, nseam
       type (seammove_type)                 :: tmpMove
       type (seam_type),pointer             :: aseam
-      real                                 :: energy
+      real                                 :: energy,entropy
       integer, intent(in)                  :: flory
       real, intent(in)                     :: w,T
     CHARACTER, dimension(1600) :: flags     ! flags that define the intermediate
@@ -637,12 +638,14 @@ subroutine getseams (f, seammove, nMove,contacts,flory,w,T)
     if (f%barrel(iBarrel) /= 0) cycle  !! open already. No more seam moves on this barrel.
     do iseam=1, barrels_array(iBarrel)%nseams
             aseam => barrels_array(iBarrel)%seams(iseam)
-      energy = getEnergySeam(aseam,T=T)
+      energy = getEnergySeam(aseam,T=T,sce=entropy)
       tmpMove%barrel = iBarrel
       tmpMove%seam   = iSeam
       tmpMove%energy = energy
+      tmpMove%ScEntropy = entropy
+       ! geofold_flory_calc_entropy(3,f,u1,c_list=contacts,w=1.,T=T)
 
-      if(flory /= 0) then
+      if(flory /= 0 .or. flory == 0) then
         allocate(u1)
         u1%idnum = 0
         u1%iflag = f%iflag
@@ -652,10 +655,11 @@ subroutine getseams (f, seammove, nMove,contacts,flory,w,T)
         u1%axis = iSeam
         u1%barrel = f%barrel
         u1%barrel(iBarrel)=iSeam      
-        tmpMove%energy = tmpMove%energy - &
-        T*geofold_flory_calc_entropy(flory,f,u1,c_list=contacts,w=w,T=T)
+        tmpMove%entropy = 2.1+(1.5*R*log(DCO(contacts,1.,f,u1)))
+        ! tmpMove%energy = tmpMove%energy - &
+        ! T*geofold_flory_calc_entropy(flory,f,u1,c_list=contacts,w=w,T=T)
         if(associated(u1)) deallocate(u1)
-        energy = tmpMove%energy
+        ! energy = tmpMove%energy
       endif
       if (energy < maxval(seammove(1:nseam)%energy,dim=1)) then
         i = maxloc(seammove(1:nseam)%energy,dim=1)
@@ -744,6 +748,7 @@ subroutine getmelting(f,contacts,flory,T,peel)
               exit
           endif
       enddo
+  endif
   ! zero out barrel if ISEGMT is single residue
   if(count(u1%iflag(1:geofold_nres) /= ".")==1) u1%barrel = 0
   if(count(u2%iflag(1:geofold_nres) /= ".")==1) u2%barrel = 0

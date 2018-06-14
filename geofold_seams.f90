@@ -14,6 +14,8 @@ module geofold_seams
     integer    :: seam
     real       :: energy
     integer    :: side
+    real       :: entropy
+    real       :: ScEntropy
   endtype
 
   !call test() !To check the module

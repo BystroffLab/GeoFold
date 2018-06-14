@@ -50,7 +50,7 @@ CONTAINS
       IF (aline(22:22) /="V" ) CYCLE
       ivoid = ivoid + 1
       ! Get Coordinates and Chain ID (_ 'Char')
-      read( aline(31:54),'(3f8.3)' ), voidcoords(1:3, ivoid)   
+      read( aline(31:54),'(3f8.3)' ) voidcoords(1:3, ivoid)   
     END DO 
     geofold_masker_nvoid = ivoid
   END SUBROUTINE geofold_masker_readvoids
